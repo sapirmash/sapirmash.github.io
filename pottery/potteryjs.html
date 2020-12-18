@@ -767,13 +767,13 @@ for (i = 0; i < acc.length; i++) {
           $('#info').click(function(){
               var $this = $(this);
               if($this.hasClass('infoclass')){
-                $this.text('objects');
+                $this.text('Objects');
                 // $(".grid-wrapper").velocity("fadeOut", { duration: 500 });    
                 // $("#about").velocity("fadeIn", { delay: 300, duration: 100 });
                 $("#about").delay(300).fadeIn(200);
                 $("section").fadeOut(500);    
               } else {
-                $this.text('info');
+                $this.text('Info');
                 $("section").delay(100).fadeIn(500);
                 $("#about").fadeOut(100);    
               }
