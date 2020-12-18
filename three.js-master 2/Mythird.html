@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener"></a>
+		</div>
+
+		<script type="x-shader/x-vertex" id="sem-vs">
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 e = normalize( vec3( modelViewMatrix * vec4( position, .5 ) ) );
+        vec3 n = normalize( normalMatrix * normal );
+
+        vec3 r = reflect( e, n );
+        float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );
+        vN = r.xy / m + .5;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
+
+      }
+
+    </script>
+
+    <script type="x-shader/x-vertex" id="sem-fs">
+
+      uniform sampler2D tMatCap;
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 base = texture2D( tMatCap, vN ).rgb;
+        gl_FragColor = vec4( base, 1.0 );
+
+      }
+
+    </script>
+
+
+		<script type="module">
+
+			import * as THREE from '/build/three.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+			import { Reflector } from '/examples/jsm/objects/Reflector.js';
+			import { RGBELoader } from '/examples/jsm/loaders/RGBELoader.js';
+
+			import { GUI } from '/examples/jsm/libs/dat.gui.module.js';
+			import { RectAreaLightUniformsLib } from '/examples/jsm/lights/RectAreaLightUniformsLib.js';
+
+
+			
+			// scene size
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+
+			var SHADOW_MAP_WIDTH = WIDTH, SHADOW_MAP_HEIGHT = HEIGHT;
+
+			// camera
+			var VIEW_ANGLE = 35;
+			var ASPECT = WIDTH / HEIGHT;
+			var NEAR = 1;
+			var FAR = 25000;
+
+			var camera, scene, renderer, light1, cube, cylinder, box, sphere, sky, cone;
+
+			var mouseX = 0, mouseY = 0;
+
+			var y1=0;
+
+			var x1 = 0;
+  			var z1 =0;
+
+  			var new_texture;
+
+  			var windowHalfX = window.innerWidth / 2;
+      		var windowHalfY = window.innerHeight / 2;
+
+			//new code
+			var material_new;
+			var dirLight;
+
+			var count = 0, cubeCamera, cubeRenderTarget;
+
+			var group;
+			
+
+			var targetRotation = 0;
+			var targetRotationOnMouseDown = 0;
+
+			var mouseX = 0;
+			var mouseXOnMouseDown = 0;
+
+
+				init();
+				animate();
+
+			////////////
+
+			function init() {
+
+			  		// scene
+					scene = new THREE.Scene();
+
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false )
+		            document.addEventListener( 'wheel', onDocumentWheel, false );
+
+					var container = document.getElementById( 'container' );
+
+					// renderer
+					renderer = new THREE.WebGLRenderer( { antialias: true } );
+					renderer.setPixelRatio( window.devicePixelRatio );
+					renderer.setSize( WIDTH, HEIGHT );
+					container.appendChild( renderer.domElement );
+
+					renderer.setClearColor('#B7ADED');
+
+					
+
+					renderer.shadowMap.enabled = true;
+	        		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+					// camera
+					camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+					// camera.position.set( 0, 75, 160 );
+					camera.position.z = 2300;
+	        		camera.position.y = 1000;
+	        		
+	        		var controls = new OrbitControls( camera, renderer.domElement );
+					controls.minDistance = 2000;
+					controls.maxDistance = 3000;
+
+	        		var fogs = [
+			          0xBDE3F4,
+			          0x1A1F21,
+			          0xf2eedd
+			        ]
+
+	        		scene.fog = new THREE.Fog( 0xFFFFFF, 1, 25000 );
+
+        			//LIGHTS
+
+        		  	light1 = new THREE.SpotLight( 0xffffff, 0.3, 0, Math.PI / 2 );
+			        light1.position.set( 2000, 4000, -3000 );
+			        light1.target.position.set( 1, 1, 1 );
+
+			  
+
+			        light1.castShadow = true;
+
+			        light1.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 20, 10, 100, 20000 ) );
+			        light1.shadow.bias = 0.0001;
+			        light1.shadow.camera.near = NEAR;
+			        light1.shadow.camera.far = FAR;
+			        light1.shadow.camera.fov = 15;
+
+			        light1.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+			        light1.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+			        light1.shadow.camera.right    =  50000;
+			        light1.shadow.camera.left     = -50000;
+			        light1.shadow.camera.top      =  50000;
+			        light1.shadow.camera.bottom   = -50000;
+
+			        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8 );
+				    hemiLight.position.set( 100, 500, 0 );
+				    scene.add( hemiLight );
+
+				    dirLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+			        //dirLight.color.setHSL( 0.1, 1, 0.95 );
+			        dirLight.position.set( -3000, 4000, 3000 );
+			        //dirLight.position.multiplyScalar( 50 );
+
+			    
+			        scene.add( dirLight );
+
+			        dirLight.castShadow = true;
+
+			        dirLight.shadow.mapSize.width = 3048;
+			        dirLight.shadow.mapSize.height = 3048;
+
+			        var d = 1500;
+
+			        dirLight.shadow.camera.left = -d;
+			        dirLight.shadow.camera.right = d;
+			        dirLight.shadow.camera.top = d;
+			        dirLight.shadow.camera.bottom = -d;
+			        dirLight.shadow.camera.near = 40;
+			        dirLight.shadow.camera.far = 10000;
+			        dirLight.shadow.bias = 0.00001;
+			        dirLight.shadow.darkness = 0.2;
+
+			     	// Cube_texture
+			    	var path = "examples/textures/cube/skyboxsun25deg/";
+		        	var format = '.jpg';
+		        	var urls = [
+		            path + 'px' + format, path + 'nx' + format,
+		            path + 'py' + format, path + 'ny' + format,
+		            path + 'pz' + format, path + 'nz' + format
+		          ];
+
+
+				   var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+				   var refractionCube = new THREE.CubeTextureLoader().load( urls );
+			       refractionCube.mapping = THREE.SphericalReflectionMapping;
+			       refractionCube.format = THREE.RGBFormat;
+
+		  			// scene.background = refractionCube;
+
+
+				 var iridescent = new THREE.ShaderMaterial( {
+
+		          uniforms: { 
+		            tMatCap: {type: 't', value: new_texture },
+		          },
+          
+		          vertexShader: document.getElementById( 'sem-vs' ).textContent,
+		          fragmentShader: document.getElementById( 'sem-fs' ).textContent,
+		          flatShading: THREE.SmoothShading
+		          
+		        } );
+
+
+				//new code
+
+				var options = {
+					generateMipmaps: true,
+					minFilter: THREE.LinearMipmapLinearFilter,
+					magFilter: THREE.LinearFilter
+				};
+
+
+				var textureLoader = new THREE.TextureLoader();
+
+				var new_texture = textureLoader.load( 'examples/textures/IMG_9859.JPG' );
+				new_texture.mapping = THREE.UVMapping;
+				// new_texture.repeat.set( 50 ,50);
+				new_texture.wrapS = new_texture.wrapT = THREE.RepeatWrapping;
+				new_texture.magFilter = THREE.LinearFilter;
+				new_texture.anisotropy = renderer.getMaxAnisotropy();
+
+
+                
+     //            var brokeShape = new THREE.Shape();
+     //            brokeShape.moveTo( 0, 0 );
+     //            brokeShape.quadraticCurveTo(0, 300, 600, 0);
+     //            brokeShape.lineTo( 600, 0);
+     //            brokeShape.quadraticCurveTo(900,-100, 800, -200);
+     //            brokeShape.quadraticCurveTo(800,-400,700, -500);
+     //            brokeShape.bezierCurveTo( 650, -550, 150, -550,-50, -500);
+     //            brokeShape.quadraticCurveTo( -100, -450, -100, -350);
+     //            brokeShape.quadraticCurveTo( -100, -350,-50, -200);
+     //            // brokeShape.lineTo( );
+     //            brokeShape.quadraticCurveTo( -30, -100, 0, 0);
+
+     //            var extrudeSettings = { amount: 8, bevelEnabled: true, material: 0, extrudeMaterial: 0 };
+     //            var geometry = new THREE.ExtrudeGeometry( brokeShape, extrudeSettings );
+     //            var material = new THREE.MeshPhongMaterial ({ 
+					// 	color: 'green',
+					// });
+     //            var mesh = new THREE.Mesh( geometry, material );
+     //            mesh.position.x = -300;
+     //            mesh.position.y = 300;
+     //            // mesh.position.z = 400;
+     //            scene.add(mesh);
+
+
+                var brokeShape = new THREE.Shape();
+                brokeShape.moveTo( 0, 0 );
+                brokeShape.quadraticCurveTo(500, 0, 500, -200);
+                brokeShape.bezierCurveTo(500, -400, 500, -570, 210, -600);
+                brokeShape.bezierCurveTo(-50, -600, -200, -950, -200, -300);
+
+                brokeShape.bezierCurveTo( -200, -100, -200, 0, 0, 0);
+
+                var holePath = new THREE.Path()
+				holePath.moveTo( 200, -75)
+				holePath.bezierCurveTo( 200 , -75, 375, -75, 375, -225);
+	            holePath.bezierCurveTo( 375, -375, 300, -427.5, 100, -525);
+	            holePath.bezierCurveTo( -30, -525, -150, -750, -100, -300);
+	            holePath.bezierCurveTo( -100, -150, -100, -100, 200, -75);
+
+				brokeShape.holes.push( holePath );
+
+                var extrudeSettings = { amount: 20, bevelEnabled: true, material: 0, extrudeMaterial: 0 };
+                var geometry = new THREE.ExtrudeGeometry( brokeShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						color: 'white',
+					});
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.position.x = -300;
+                mesh.position.y = 300;
+                // mesh.position.z = 400;
+                scene.add(mesh);
+
+
+               	var boxShape = new THREE.Shape();
+                boxShape.moveTo( 0, 0 );
+                boxShape.lineTo( -130, 0 );
+                boxShape.lineTo( -130, 400);
+                boxShape.lineTo( 130, 400);
+                boxShape.lineTo( 130, 0);
+
+                var extrudeSettings = { amount: 20, bevelEnabled: true, material: 0, extrudeMaterial: 0 };
+                var geometry = new THREE.ExtrudeGeometry( boxShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						color: 'orange',
+					});
+                var mesh1 = new THREE.Mesh( geometry, material );
+                mesh1.position.x = 300;
+                mesh1.position.y = 100;
+                mesh1.position.z = -50;
+                mesh1.rotation.z = Math.PI/2;                
+                scene.add(mesh1);
+
+
+                var hShape = new THREE.Shape();
+                hShape.moveTo( 0, 0 );
+                hShape.lineTo( -80, 0 );
+                hShape.lineTo( -80, 400);
+                hShape.lineTo( 80, 400);
+                hShape.lineTo( 80, 0);
+
+                var extrudeSettings = { amount: 20, bevelEnabled: true, material: 0, extrudeMaterial: 0 };
+                var geometry = new THREE.ExtrudeGeometry( hShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						color: 'white',
+					});
+                var front = new THREE.Mesh( geometry, material );
+                front.position.x = -570;
+                front.position.y = -200;
+                front.position.z = 50;
+                front.rotation.z = -Math.PI/20;                
+                scene.add(front);        
+					
+			}
+
+
+	function onDocumentMouseMove(event) {
+
+        mouseX = ( event.clientX - windowHalfX );
+        mouseY = ( event.clientY - windowHalfY );
+
+      }
+
+
+      function onDocumentWheel(event) {
+        event.preventDefault();
+        //mag = event.deltaY * 0.0008;
+      }
+
+
+	function animate(){
+	
+		requestAnimationFrame(animate);
+		render();
+	}
+	
+	
+	function render(){
+
+		camera.position.x += ( mouseX - camera.position.x ) * .05;
+        camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 800 ) - camera.position.y ) * .05, 50, 1000 );
+
+        dirLight.position.x += ( mouseX - dirLight.position.x - 1000 ) * .05;
+
+        camera.lookAt( scene.position );
+        
+
+		// box.visible = false;
+		// cubeCamera.update( renderer, scene );
+		// material_new.envMap = cubeRenderTarget.texture;
+		// cubeCamera.position.copy( box.position );
+		// cubeCamera.position.set( 500, 200, 1000);
+		// cubeCamera.rotation.y = Math.PI/1;
+		// box.visible = true;
+		// group.rotation.y += ( targetRotation - group.rotation.y ) * 0.05;
+		renderer.render( scene, camera );
+	}
+
+		</script>
+	</body>
+</html>
