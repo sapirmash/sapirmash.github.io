@@ -1,9 +1,9 @@
 
 @font-face{
    font-family:KernTrial-Regular; 
-   src: url(KernTypefaces/KernTrial-Regular.otf);
+   src: url(./KernTypefaces/KernTrial-Regular.otf);
    font-family:KernTrial-Medium; 
-   src: url(KernTypefaces/KernTrial-Medium.otf);
+   src: url(./KernTypefaces/KernTrial-Medium.otf);
  }
 
 #try{
@@ -131,6 +131,13 @@ display: none;
   display: block;
 }
 
+/*.vase-image:hover{
+background-image: linear-gradient(155deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px), repeating-linear-gradient(245deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px), repeating-linear-gradient(-25deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px), repeating-linear-gradient(65deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px);
+background-size: 1px 100%, 100% 1px, 1px 100% , 100% 1px;
+background-position: 0 0, 0 0, 100% 0, 0 100%;
+background-repeat: no-repeat;
+}*/
+
 
 #transitionWrapper{
     width: calc(100% - 100px);
@@ -143,6 +150,7 @@ display: none;
     z-index: 2000;
 }
 
+
 .vase-image{
   position: absolute;
   top: -2px;
@@ -154,6 +162,7 @@ display: none;
   border: 1px solid black;
   opacity: 1;
 }
+
 
 .animation-finished {
   border: 1px solid rgba(0, 0, 0, 0);
@@ -189,7 +198,8 @@ display: none;
 .vase-name{
   margin-bottom: 5px;
   font-size: 18px;
-  font-family:KernTrial-Regular; 
+  font-family:KernTrial-Regular;
+  /*color: #614642;*/
 }
 
 
@@ -364,7 +374,7 @@ display: none;
   width: calc(100% - 103px);
   text-align: center;
   font-family:KernTrial-Regular;
-  height: 60px; 
+  height: 60px;
 }
 
 
@@ -481,6 +491,11 @@ display: none;
 
 #info{
   cursor: pointer;
+  /*color: #573E3B;*/
+}
+
+#index{
+  /*color: #573E3B;*/
 }
 
 #info:hover{
@@ -491,6 +506,7 @@ display: none;
 {
   cursor: pointer;
   display: none;
+  /*color: #573E3B;*/
 
 }
 

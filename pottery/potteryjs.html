@@ -178,7 +178,7 @@
                                   <!-- <span>)</span> -->
                                   <input type="range" id="mouthWidth" min="0.1" max="3" step ="0.01"/>
                                 </div>
-                                <div class="block">
+                                <div class="block is active">
                                   <h class="title">Curve</h>
                                   <!-- <span>(</span> -->
                                   <output for="mouthCurve" id="out16"></output>
@@ -320,18 +320,18 @@
 
 <script type="text/javascript">
 
-// window.jQuery = window.$ = require("jquery.min.js");
-// require("velocity-master/velocity.min.js");
-// require("velocity-master/velocity.ui.min.js");
-
+// var acc = document.getElementsByClassName("accordion");
 var acc = document.getElementsByClassName("accordion");
-var i;
+var panel = document.getElementsByClassName('panel');
 
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
+var i;
+var j;
+
+$('.accordion').each(function(){
+
+for (j = 0; j < acc.length; j++) {
+  acc[j].addEventListener("click", function() {
     this.classList.toggle("open");
-    // this.classList.toggle("show");
-	 // this.nextElementSibling.classList.toggle("show");
     var panel = this.nextElementSibling;
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
@@ -340,6 +340,38 @@ for (i = 0; i < acc.length; i++) {
     } 
   });
 }
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].onclick = function() {
+      var setClasses = !this.classList.contains('is-active');
+        setClass(acc, 'active', 'remove');
+        setClass(panel, 'show', 'remove');
+        
+        if (setClasses) {
+            this.classList.toggle("is-active");
+            this.nextElementSibling.classList.toggle("show");
+        }
+    }
+}
+});
+
+function setClass(els, className, fnName) {
+    for (var i = 0; i < els.length; i++) {
+        els[i].classList[fnName](className);
+    }
+}
+
+
+
+      // $('.accordion').click(function(e) {
+      //   e.preventDefault();
+      //   var currentIsActive = $(this).hasClass('is-active');
+      //   $(this).parent('.panel').find('> *').removeClass('is-active');
+      //   if(currentIsActive != 1) {
+      //     $(this).addClass('is-active');
+      //     $(this).next('.block').addClass('is-active');
+      //   }
+      // });
 </script>
 				 
 	<script type="module">		       
@@ -422,7 +454,7 @@ for (i = 0; i < acc.length; i++) {
 			array_of_functions[counter%array_of_functions.length]();			
 			update = true;
 			cylinderGeom5.verticesNeedUpdate = true;
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 
 			}
 
@@ -604,28 +636,28 @@ for (i = 0; i < acc.length; i++) {
       				var next = document.getElementById('next').addEventListener( 'click', onNextClick);
       				var pre = document.getElementById('pre').addEventListener( 'click', onPreClick);
 
-      				var radiusTopslider = document.getElementById( 'radiusTopslider' ).addEventListener('change', showVal);
-      				var radiusBottom = document.getElementById( 'radiusBottom' ).addEventListener('change', showVal);
-      				var height = document.getElementById( 'height' ).addEventListener('change', showVal);
+      				var radiusTopslider = document.getElementById( 'radiusTopslider' ).addEventListener('input', showVal);
+      				var radiusBottom = document.getElementById( 'radiusBottom' ).addEventListener('input', showVal);
+      				var height = document.getElementById( 'height' ).addEventListener('input', showVal);
 
-      				var legTop = document.getElementById( 'legTop' ).addEventListener('change', showVal);
-      				var legCurve = document.getElementById( 'legCurve' ).addEventListener('change', showVal);
-      				var legWidth = document.getElementById( 'legWidth' ).addEventListener('change', showVal);
-      				var legOffset = document.getElementById( 'legOffset' ).addEventListener('change', showVal);
+      				var legTop = document.getElementById( 'legTop' ).addEventListener('input', showVal);
+      				var legCurve = document.getElementById( 'legCurve' ).addEventListener('input', showVal);
+      				var legWidth = document.getElementById( 'legWidth' ).addEventListener('input', showVal);
+      				var legOffset = document.getElementById( 'legOffset' ).addEventListener('input', showVal);
 
-      				var bellyTop = document.getElementById( 'bellyTop' ).addEventListener('change', showVal);
-      				var bellyWidth = document.getElementById( 'bellyWidth' ).addEventListener('change', showVal);
-      				var bellyOffset = document.getElementById( 'bellyOffset' ).addEventListener('change', showVal);
-      				var bellyCurve = document.getElementById( 'bellyCurve' ).addEventListener('change', showVal);
+      				var bellyTop = document.getElementById( 'bellyTop' ).addEventListener('input', showVal);
+      				var bellyWidth = document.getElementById( 'bellyWidth' ).addEventListener('input', showVal);
+      				var bellyOffset = document.getElementById( 'bellyOffset' ).addEventListener('input', showVal);
+      				var bellyCurve = document.getElementById( 'bellyCurve' ).addEventListener('input', showVal);
 
-      				var neckTop = document.getElementById( 'neckTop' ).addEventListener('change', showVal);
-      				var neckCurve = document.getElementById( 'neckCurve' ).addEventListener('change', showVal);
-      				var neckWidth = document.getElementById( 'neckWidth' ).addEventListener('change', showVal);
-      				var neckOffset = document.getElementById( 'neckOffset' ).addEventListener('change', showVal);
+      				var neckTop = document.getElementById( 'neckTop' ).addEventListener('input', showVal);
+      				var neckCurve = document.getElementById( 'neckCurve' ).addEventListener('input', showVal);
+      				var neckWidth = document.getElementById( 'neckWidth' ).addEventListener('input', showVal);
+      				var neckOffset = document.getElementById( 'neckOffset' ).addEventListener('input', showVal);
 
-      				var mouthCurve = document.getElementById( 'mouthCurve' ).addEventListener('change', showVal);
-      				var mouthWidth = document.getElementById( 'mouthWidth' ).addEventListener('change', showVal);
-      				var mouthOffset = document.getElementById( 'mouthOffset' ).addEventListener('change', showVal);
+      				var mouthCurve = document.getElementById( 'mouthCurve' ).addEventListener('input', showVal);
+      				var mouthWidth = document.getElementById( 'mouthWidth' ).addEventListener('input', showVal);
+      				var mouthOffset = document.getElementById( 'mouthOffset' ).addEventListener('input', showVal);
 
       				//about
       				// document.querySelector('#info').addEventListener('click', infoclick);
@@ -647,12 +679,9 @@ for (i = 0; i < acc.length; i++) {
               document.querySelector('#vase7').addEventListener('click', click);
               document.querySelector('#vase8').addEventListener('click', click);
 				      document.querySelector('#vase9').addEventListener('click', click);
-              document.querySelector('#vase10').addEventListener('click', click);
-        
-        
-
-        
+              document.querySelector('#vase10').addEventListener('click', click);  
       }
+
 
       function getPos(el) {
        var rect=el.getBoundingClientRect();
@@ -853,7 +882,7 @@ for (i = 0; i < acc.length; i++) {
 	        		controls = new OrbitControls( camera, renderer.domElement );
 	        		controls.minDistance = 2300;
     					controls.maxDistance = 200;
-    					// controls.maxPolarAngle = Math.PI/2;
+    					controls.maxPolarAngle = Math.PI/2;
     					controls.update();
               
 			
@@ -1175,7 +1204,7 @@ for (i = 0; i < acc.length; i++) {
 			
 			update = true;
 			cylinderGeom5.verticesNeedUpdate = true;
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
       console.log(counter);
 
 		}
@@ -1194,7 +1223,7 @@ for (i = 0; i < acc.length; i++) {
 			
 			update = true;
 			cylinderGeom5.verticesNeedUpdate = true;
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 
 		}
 
@@ -1226,7 +1255,7 @@ for (i = 0; i < acc.length; i++) {
 			document.getElementById("mouthCurve").value = 2;
 			document.getElementById("mouthWidth").value = 2;
 			document.getElementById("mouthOffset").value = 0;
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 		}
 
 		function drawVase2(){
@@ -1257,7 +1286,7 @@ for (i = 0; i < acc.length; i++) {
 			document.getElementById("mouthCurve").value = 1;
 			document.getElementById("mouthWidth").value = 2;
 			document.getElementById("mouthOffset").value = 2;
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 		}
 
 			
@@ -1287,7 +1316,7 @@ for (i = 0; i < acc.length; i++) {
 			document.getElementById("mouthCurve").value = 1;
 			document.getElementById("mouthWidth").value = 0;
 			document.getElementById("mouthOffset").value = 4.6;
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 
 		}
 
@@ -1335,7 +1364,7 @@ for (i = 0; i < acc.length; i++) {
 			document.getElementById("mouthWidth").value = 2; 
 			// trigger("change", "mouthWidth");
 			document.getElementById("mouthOffset").value = 2; 
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 
 		}
 
@@ -1382,7 +1411,7 @@ for (i = 0; i < acc.length; i++) {
 			document.getElementById("mouthWidth").value = 1.21; 
 			// trigger("change", "mouthWidth");
 			document.getElementById("mouthOffset").value = 3.61; 
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 
 		}
 
@@ -1429,7 +1458,7 @@ for (i = 0; i < acc.length; i++) {
 			document.getElementById("mouthWidth").value = 0.49; 
 			// trigger("change", "mouthWidth");
 			document.getElementById("mouthOffset").value = 1.08; 
-			trigger("change", "mouthOffset");
+			trigger("input", "mouthOffset");
 
 		}
 
@@ -1477,7 +1506,7 @@ for (i = 0; i < acc.length; i++) {
       document.getElementById("mouthWidth").value = 0.83; 
       // trigger("change", "mouthWidth");
       document.getElementById("mouthOffset").value = 0.84; 
-      trigger("change", "mouthOffset");
+      trigger("input", "mouthOffset");
 
     }
 
@@ -1508,7 +1537,7 @@ for (i = 0; i < acc.length; i++) {
       document.getElementById("mouthCurve").value = 1;
       document.getElementById("mouthWidth").value = 0.1;
       document.getElementById("mouthOffset").value = 1.55;
-      trigger("change", "mouthOffset");
+      trigger("input", "mouthOffset");
     }
 
     function drawVase9(){
@@ -1538,7 +1567,7 @@ for (i = 0; i < acc.length; i++) {
       document.getElementById("mouthCurve").value = 1;
       document.getElementById("mouthWidth").value = 2;
       document.getElementById("mouthOffset").value = 2;
-      trigger("change", "mouthOffset");
+      trigger("input", "mouthOffset");
     }
 
     function drawVase10(){
@@ -1568,7 +1597,7 @@ for (i = 0; i < acc.length; i++) {
       document.getElementById("mouthCurve").value = 2.42;
       document.getElementById("mouthWidth").value = 0;
       document.getElementById("mouthOffset").value = 1.9;
-      trigger("change", "mouthOffset");
+      trigger("input", "mouthOffset");
     }
 
 
