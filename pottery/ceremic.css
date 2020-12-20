@@ -765,3 +765,83 @@ input[type=range]::-moz-range-thumb {
   margin-top: -7px;
 }
 
+#explainiphone{
+  display: none;
+}
+
+@media only screen and (max-width: 1280px) {
+
+    #index{
+      font-size: 42px;
+    }
+
+    #info{
+      font-size: 42px;
+    }
+
+    .desc{
+      font-size: 42px;
+      font-family:KernTrial-Regular; 
+      line-height: 48px;
+      width: 85%;
+      color: #382826;
+    }
+
+    #edit{
+      font-size: 42px;
+    }
+
+    #next{
+      font-size: 42px;
+    }
+
+    #pre{
+      font-size: 42px;
+    }
+
+    .close{
+      font-size: 42px;
+    }
+
+    #vasename{
+      font-size: 52px;
+    }
+
+}
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+    #info{
+      display: none;
+    }
+
+    #about{
+      display: none;
+    }
+
+    #wrapper{
+      display: none;
+    }
+
+    #explainiphone{
+      display: block;
+      width: calc(100% - 40px);
+      height: calc(100% - 30px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin: 20px;
+      font-size: 38px;
+      line-height: 42px;
+      font-family:KernTrial-Regular;
+      pointer-events: none; 
+      color: #382826;
+      margin-top: 80px;
+    }
+
+
+}
+
