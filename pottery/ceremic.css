@@ -34,7 +34,7 @@ li{
 }
 
 .close{
-  color: black;
+  color: #382826;
   text-decoration: none;
 }
 
@@ -73,6 +73,7 @@ display: none;
   font-family:KernTrial-Regular; 
   line-height: 56px;
   width: 80%;
+  color: #382826;
 }
 
 #container{
@@ -123,21 +124,40 @@ display: none;
   transition: all 0.4s ease-in-out;
 }
 
-.image-wrapper{
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative;
-  display: block;
+
+.figure{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  border:1px solid #382826;
+  content:"";
 }
 
-/*.vase-image:hover{
-background-image: linear-gradient(155deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px), repeating-linear-gradient(245deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px), repeating-linear-gradient(-25deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px), repeating-linear-gradient(65deg, #333333, #333333 12px, transparent 12px, transparent 27px, #333333 27px);
-background-size: 1px 100%, 100% 1px, 1px 100% , 100% 1px;
-background-position: 0 0, 0 0, 100% 0, 0 100%;
-background-repeat: no-repeat;
-}*/
 
+.image-wrapper{
+  /*background-size: cover;*/
+  background-position: center;
+  /*background-repeat: no-repeat;*/
+  position: relative;
+  display: block;
+  padding: 1px;
+  bottom:0;
+}
+
+.hover{
+  background-color:transparent;
+  background-image:linear-gradient(90deg,#382826 50%,transparent 0),
+  linear-gradient(90deg,#382826 50%,transparent 0),
+  linear-gradient(180deg,#382826 50%,transparent 0),
+  linear-gradient(180deg,#382826 50%,transparent 0);
+  background-position:0 0,0 100%,0 0,100% 0;
+  background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;
+  background-size: 30px 1px,30px 1px,1px 30px,1px 30px;
+  z-index: 800;
+  padding: 1px;
+}
 
 #transitionWrapper{
     width: calc(100% - 100px);
@@ -150,43 +170,27 @@ background-repeat: no-repeat;
     z-index: 2000;
 }
 
-
 .vase-image{
   position: absolute;
-  top: -2px;
-  left: -2px;
+  /*top: -1px;*/
+  /*left: -2px;*/
   display: block;
-  width: 100%;
+  width: 99%;
   height: auto;
   cursor: pointer;
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   opacity: 1;
 }
 
+/*.vase-image:hover{
+  border: 1px dashed black;
+}
+*/
 
 .animation-finished {
   border: 1px solid rgba(0, 0, 0, 0);
 }
 
-
-
-.active{
-  /*text-align: center;
-  display: block;
-  margin: 0 auto;*/
- /* top: 50%;*/
-  /*transform: translate(-50%,-50%);
-  transform: scale(1.1);
-  transition: all 0.4s ease-in-out;
-  height: auto;*/
-  /*transition-delay: 4s;*/
-/* opacity:0;*/
-}
-
-/*@keyframes slide {
-    100% { transform: scale(1.1), translate(-50%,-50%); }
-}
-*/
 
 .inactive{
   opacity: 0;
@@ -199,7 +203,7 @@ background-repeat: no-repeat;
   margin-bottom: 5px;
   font-size: 18px;
   font-family:KernTrial-Regular;
-  /*color: #614642;*/
+  color: #382826;
 }
 
 
@@ -223,39 +227,41 @@ background-repeat: no-repeat;
 
 .glazed-m{
   font-size: 18px;
-  border: 1px solid black;
+  border: 1px solid #382826;
   border-radius: 30px;
   padding: 12px;
   margin: 16px 6px 16px 12px;
   text-align: center;
   cursor: pointer;
   width: 44%;
+  color: #382826;
 }
 
 .glazed-m:hover{
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 11px;
 }
 
 .clay-m{
   font-size: 18px;
-  border: 1px solid black;
+  border: 1px solid #382826;
   border-radius: 30px;
   padding: 12px;
   margin: 16px 12px 16px 6px;
   text-align: center;
   cursor: pointer;
   width: 44%;
+   color: #382826;
 }
 
 .clay-m:hover{
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 11px;
 }
 
 .shade{
   font-size: 18px;
-  border: 1px solid black;
+  border: 1px solid #382826;
   border-radius: 30px;
   padding: 12px;
   text-align: center;
@@ -264,7 +270,7 @@ background-repeat: no-repeat;
 }
 
 .selected {
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 11px;
 }
 
@@ -273,10 +279,11 @@ background-repeat: no-repeat;
   margin-top: 16px;
   margin-right: 6px;
   margin-left: 12px;
+   color: #382826;
 }
 
 #brown:hover{
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 10px;
 }
 
@@ -285,10 +292,11 @@ background-repeat: no-repeat;
   margin-top: 16px;
   margin-left: 6px;
   margin-right: 12px;
+   color: #382826;
 }
 
 #pink:hover{
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 10px;
 }
 
@@ -298,10 +306,11 @@ background-repeat: no-repeat;
   margin-top: 8px;
   margin-right: 6px;
   margin-left: 12px;
+   color: #382826;
 }
 
 #yellow:hover{
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 11px;
 }
 
@@ -310,10 +319,11 @@ background-repeat: no-repeat;
   margin-top: 8px;
   margin-left: 6px;
   margin-right: 12px;
+  color: #382826;
 }
 
 #white:hover{
-  border: 2px solid black;
+  border: 2px solid #382826;
   padding: 11px;
 }
 /*#save:after{
@@ -327,24 +337,26 @@ background-repeat: no-repeat;
 
 #reset{
 	font-size: 18px;
-  border: 1px solid black;
+  border: 1px solid #382826;
   border-radius: 30px;
   padding: 12px;
   margin: 16px 6px 16px 12px;
   text-align: center;
   cursor: pointer;
   width: 44%;
+  color: #382826;
 }
 
 #save{
   font-size: 18px;
-  border: 1px solid black;
+  border: 1px solid #382826;
   border-radius: 30px;
   padding: 12px;
   margin: 16px 12px 16px 6px;
   text-align: center;
   cursor: pointer;
   width: 44%;
+  color: #382826;
 }
 
 #reset:hover{
@@ -375,6 +387,7 @@ background-repeat: no-repeat;
   text-align: center;
   font-family:KernTrial-Regular;
   height: 60px;
+  color: #382826;
 }
 
 
@@ -426,7 +439,7 @@ background-repeat: no-repeat;
   content:'';
   display: block;
 /*  box-sizing: border-box;*/
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
 }
 
 .colors{
@@ -444,7 +457,7 @@ background-repeat: no-repeat;
   content:'';
   display: block;
   box-sizing: border-box;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
 }
 
 
@@ -453,7 +466,7 @@ background-repeat: no-repeat;
   content:'';
   display: block;
   box-sizing: border-box;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
 }
 
 .lip::after{
@@ -461,7 +474,7 @@ background-repeat: no-repeat;
   content:'';
   display: block;
   box-sizing: border-box;
- border-bottom: 1px solid black;
+ border-bottom: 1px solid #382826;
 }
 
 .neck::after{
@@ -469,7 +482,7 @@ background-repeat: no-repeat;
   content:'';
   display: block;
   box-sizing: border-box;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
 }
 
 .belly::after{
@@ -477,7 +490,7 @@ background-repeat: no-repeat;
   content:'';
   display: block;
   box-sizing: border-box;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
 }
 
 .leg::after{
@@ -485,17 +498,17 @@ background-repeat: no-repeat;
   content:'';
   display: block;
   box-sizing: border-box;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
 }
 
 
 #info{
   cursor: pointer;
-  /*color: #573E3B;*/
+  color: #382826;
 }
 
 #index{
-  /*color: #573E3B;*/
+  color: #382826;
 }
 
 #info:hover{
@@ -506,7 +519,7 @@ background-repeat: no-repeat;
 {
   cursor: pointer;
   display: none;
-  /*color: #573E3B;*/
+  color: #382826;
 
 }
 
@@ -553,32 +566,39 @@ background-repeat: no-repeat;
 
 #pre{
   cursor: pointer;
+  color: #382826;
 }
 
 #pre:hover{
    text-decoration: underline;
+   color: #382826;
 }
 
 #next{
   cursor: pointer;
+  color: #382826;
 }
 
 #next:hover{
   text-decoration: underline;
+  color: #382826;
 }
 
 #edit{
   cursor: pointer;
+  color: #382826;
 }
 
 #edit:hover{
   text-decoration: underline;
+  color: #382826;
 }
 
 .title{
 	font-size: 18px;
 	padding-right: .2em;
   font-family: 'KernTrial-Regular';
+  color: #382826;
 }
 
 button{
@@ -614,7 +634,7 @@ font-weight: bold;
   background-color: #E8DDDA; 
   border-style: solid;
   border-width: 1px;
-  border-color: black;
+  border-color: #382826;
 }
 
 .accordion {
@@ -626,17 +646,18 @@ font-weight: bold;
   padding-left: 16px;
   padding-right: 16px;
   width: 300px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #382826;
   text-align: left;
   outline: none;
   font-size: 20px;
   transition: 0.4s;
+  color: #382826;
 }
 
 
 .accordion:after {
   content: '\002B';
-  color: black;
+  color: #382826;
   float: right;
   margin-left: 5px;
 
@@ -653,6 +674,7 @@ font-weight: bold;
 
 .open:after {
   content: "\2212";
+  color: #382826;
  /* background-image:url('http://127.0.0.1:8887/Asset 3@2x.png');
   float: right;
   content:' ';
@@ -701,7 +723,7 @@ input[type=range]:focus {
 
 input[type=range]::-webkit-slider-runnable-track {
   height: 1px;
-  background: black;
+  background: #382826;
   border-radius: 8px; 
   cursor: pointer; 
 }
@@ -727,7 +749,7 @@ input[type=range]::-webkit-slider-thumb {
   width: 15px;
   height: 15px;
   background: #E8DDDA;
-  border: solid 1px black;
+  border: solid 1px #382826;
   border-radius: 50%;
   margin-top: -7px;
 }
@@ -738,7 +760,7 @@ input[type=range]::-moz-range-thumb {
   width: 15px;
   height: 15px;
   background: #E8DDDA;
-  border: solid 1px black;
+  border: solid 1px #382826;
   border-radius: 50%;
   margin-top: -7px;
 }
