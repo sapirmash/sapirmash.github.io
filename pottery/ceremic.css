@@ -1,9 +1,9 @@
 
 @font-face{
    font-family:KernTrial-Regular; 
-   src: url(./KernTypefaces/KernTrial-Regular.otf);
-   font-family:KernTrial-Medium; 
-   src: url(./KernTypefaces/KernTrial-Medium.otf);
+   font-family:KernTrial-Medium;
+   src: url(./KernTypefaces/KernTrial-Regular) format("otf");
+   src: url(./KernTypefaces/KernTrial-Medium) format("otf");
  }
 
 #try{
