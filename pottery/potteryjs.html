@@ -28,8 +28,15 @@
             <div id="about">
               <div class="desc">
                  Pottery is one of the oldest human inventions, with first appearances more than 20,000 years ago.
-                 This project makes the process of desgining such objects accessible in a digital medium, using Three.js as a platform for 3D computer graphics. 
+                 This project makes the process of desgining such objects accessible in a digital medium, using <a href="https://threejs.org/" style="color: #382826">Three.js </a> as a platform for 3D computer graphics. 
                  You can modify an existing design or create one from scratch and export your designs to an STL file for 3D printing.
+                 <br>
+                 <br>
+                 <br>
+                 Made by Sapir Mashiach.
+                 </br>
+                 </br>
+                 </br>
                 </div>
             </div>
             <div id="transitionWrapper"></div>
@@ -897,6 +904,9 @@ $('.image-wrapper').mouseleave(function()
 	        		controls.minDistance = 2300;
     					controls.maxDistance = 200;
     					controls.maxPolarAngle = Math.PI/2;
+              controls.enablePan = false;
+              controls.enableRotate = true;
+              controls.rotateSpeed = 1.0;
     					controls.update();
               
 			
