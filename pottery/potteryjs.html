@@ -104,7 +104,7 @@
                             </a>
                           </div>
                             <div class="vase-wrapper">
-                          <h1 class="vase-name">N-10</h1>
+                          <h1 class="vase-name"></h1>
                           <a class="image-wrapper figure" style="
                         padding-bottom: 125%">
                             <img class="vase-image" id="vase10" src="./Vase (8).jpg">
@@ -344,6 +344,7 @@ for (j = 0; j < acc.length; j++) {
   acc[j].addEventListener("click", function() {
     this.classList.toggle("open");
     var panel = this.nextElementSibling;
+    
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
     } else {
@@ -457,7 +458,6 @@ $('.image-wrapper').mouseleave(function()
          'T-07',
          'T-08',
          'T-09',
-         'N-10',
 			];
 
 			registerEventHandlers();
