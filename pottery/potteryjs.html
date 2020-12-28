@@ -28,8 +28,8 @@
             <div id="about">
               <div class="desc">
                  Pottery is one of the oldest human inventions, with first appearances more than 20,000 years ago.
-                 This project makes the process of desgining such objects accessible in a digital medium, using <a href="https://threejs.org/" style="color: #382826">Three.js </a> as a platform for 3D computer graphics. 
-                 You can modify an existing design or create one from scratch and export your designs to an STL file for 3D printing.
+                 This project makes the process of designing such objects accessible through a digital medium, using <a href="https://threejs.org/" style="color: #382826">Three.js</a> as a platform for 3D computer graphics. 
+                 You can modify an existing design or create one from scratch and export your design to an STL file for 3D printing.
                  <br>
                  <br>
                  <br>
@@ -142,7 +142,7 @@
                               <button class="closed_panel" id="edit">Edit</button>
                             </div>
                              <div id="close">
-                              <a href="./potteryjs.html" class="close">Close</a>
+                              <a href="./potteryjs.html" class="close">Gallery</a>
                             </div>
                           </div>
                           <div id="vasename">T- 01</div>
@@ -807,6 +807,7 @@ $('.image-wrapper').mouseleave(function()
             $('.vase-wrapper').addClass("inactive");
             $(".header").addClass("inactive");
             $("h1").addClass("inactive");
+            $('.grid-wrapper').addClass("after");
             // $('.inactive').fadeOut(600);
             // $('.active').animate({ "left": "50%", "top": "50%" },"slow").delay(1000).fadeOut(1000);
             // $('.active').fadeOut(200);
@@ -818,7 +819,7 @@ $('.image-wrapper').mouseleave(function()
           $('#info').click(function(){
               var $this = $(this);
               if($this.hasClass('infoclass')){
-                $this.text('Objects');
+                $this.text('Gallery');
                 // $(".grid-wrapper").velocity("fadeOut", { duration: 500 });    
                 // $("#about").velocity("fadeIn", { delay: 300, duration: 100 });
                 $("#about").delay(300).fadeIn(200);
@@ -838,7 +839,7 @@ $('.image-wrapper').mouseleave(function()
               if($this.hasClass('closed_panel')){
                 $this.text('Edit');     
               } else {
-                $this.text('Close Edit');
+                $this.text('Close');
               }
             });
 
@@ -1055,7 +1056,7 @@ $('.image-wrapper').mouseleave(function()
 					}
 
 					scene.add(cylinder5);
-					cylinder5.position.x = -2;            
+					cylinder5.position.x = 0;            
 				  cylinder5.position.z = 120;
 				  cylinder5.position.y = -30;
 				  cylinder5.scale.set(70,70,70);
@@ -1315,35 +1316,65 @@ $('.image-wrapper').mouseleave(function()
 		}
 
 			
-			function drawVase3(){
+		// 	function drawVase3(){
 
-			coloryellow();
+		// 	coloryellow();
+  //     document.getElementById("vasename").innerHTML = "T-03";
+		// 	document.getElementById("radiusTopslider").value = 0.6;
+		// 	document.getElementById("radiusBottom").value = 0.4;
+		// 	document.getElementById("height").value = 10;
+
+		// 	document.getElementById("legTop").value = -6;
+		// 	document.getElementById("legCurve").value = 0.3;
+		// 	document.getElementById("legWidth").value = 0.1;
+		// 	document.getElementById("legOffset").value = -3.6;
+
+		// 	document.getElementById("bellyTop").value = 10;
+		// 	document.getElementById("bellyCurve").value = 3;
+		// 	document.getElementById("bellyWidth").value = 1.7;
+		// 	document.getElementById("bellyOffset").value = 2;
+
+		// 	document.getElementById("neckTop").value = 4.8;
+		// 	document.getElementById("neckCurve").value = 1.5;
+		// 	document.getElementById("neckWidth").value = 1;
+		// 	document.getElementById("neckOffset").value = 3;
+
+		// 	document.getElementById("mouthCurve").value = 1;
+		// 	document.getElementById("mouthWidth").value = 0;
+		// 	document.getElementById("mouthOffset").value = 4.6;
+		// 	trigger("input", "mouthOffset");
+
+		// }
+
+    function drawVase3(){
+
+      coloryellow();
       document.getElementById("vasename").innerHTML = "T-03";
-			document.getElementById("radiusTopslider").value = 0.6;
-			document.getElementById("radiusBottom").value = 0.4;
-			document.getElementById("height").value = 10;
+      document.getElementById("radiusTopslider").value = 1.82;
+      document.getElementById("radiusBottom").value = 0.4;
+      document.getElementById("height").value = 13.54;
 
-			document.getElementById("legTop").value = -6;
-			document.getElementById("legCurve").value = 0.3;
-			document.getElementById("legWidth").value = 0.1;
-			document.getElementById("legOffset").value = -3.6;
+      document.getElementById("legTop").value = -5.3;
+      document.getElementById("legCurve").value = 2.42;
+      document.getElementById("legWidth").value = 1.8;
+      document.getElementById("legOffset").value = -3.46;
 
-			document.getElementById("bellyTop").value = 10;
-			document.getElementById("bellyCurve").value = 3;
-			document.getElementById("bellyWidth").value = 1.7;
-			document.getElementById("bellyOffset").value = 2;
+      document.getElementById("bellyTop").value = 3.33;
+      document.getElementById("bellyCurve").value = 3.2;
+      document.getElementById("bellyWidth").value = 2.41;
+      document.getElementById("bellyOffset").value = 2.12;
 
-			document.getElementById("neckTop").value = 4.8;
-			document.getElementById("neckCurve").value = 1.5;
-			document.getElementById("neckWidth").value = 1;
-			document.getElementById("neckOffset").value = 3;
+      document.getElementById("neckTop").value = 5.31;
+      document.getElementById("neckCurve").value = 0.65;
+      document.getElementById("neckWidth").value = 0.51;
+      document.getElementById("neckOffset").value = -1.92;
 
-			document.getElementById("mouthCurve").value = 1;
-			document.getElementById("mouthWidth").value = 0;
-			document.getElementById("mouthOffset").value = 4.6;
-			trigger("input", "mouthOffset");
+      document.getElementById("mouthCurve").value = 2.5;
+      document.getElementById("mouthWidth").value = 2.11;
+      document.getElementById("mouthOffset").value = 4.16;
+      trigger("input", "mouthOffset");
 
-		}
+    }
 
 			function drawVase4(){
 
@@ -1351,43 +1382,27 @@ $('.image-wrapper').mouseleave(function()
       glazed();
       document.getElementById("vasename").innerHTML = "T-04";
 			document.getElementById("radiusTopslider").value = 0.1;
-			// trigger("change", "radiusTopslider");
 			document.getElementById("radiusBottom").value = 1.31151;
-			// trigger("change", "radiusBottom");
 			document.getElementById("height").value = 9.7;
-			// trigger("change", "height");
 
 			document.getElementById("legTop").value = -6;
-			// trigger("change", "legTop");
 			document.getElementById("legCurve").value = 0.3;
-			// trigger("change", "legCurve");
 			document.getElementById("legWidth").value = 0.1;
-			// trigger("change", "legWidth");
 			document.getElementById("legOffset").value = -3.6;
-			// trigger("change", "legOffset");
 
 			document.getElementById("bellyTop").value = 3.67;
-			// trigger("change", "bellyTop");
 			document.getElementById("bellyCurve").value = 2.26;
-			// trigger("change", "bellyCurve");
 			document.getElementById("bellyWidth").value = 1.97;
-			// trigger("change", "bellyWidth");
 			document.getElementById("bellyOffset").value = 1.7;
-			// trigger("change", "bellyOffset");
 
 			document.getElementById("neckTop").value = 4.65;
-			// trigger("change", "neckTop");
 			document.getElementById("neckCurve").value = 0.71;
-			// trigger("change", "neckCurve");
 			document.getElementById("neckWidth").value = 0.66;
-			// trigger("change", "neckWidth");
 			document.getElementById("neckOffset").value = 4.8;
-			// trigger("change", "neckOffset");
+
 
 			document.getElementById("mouthCurve").value = 0.88;
-			// trigger("change", "mouthCurve");
 			document.getElementById("mouthWidth").value = 0.66; 
-			// trigger("change", "mouthWidth");
 			document.getElementById("mouthOffset").value = -0.26; 
 			trigger("input", "mouthOffset");
 
@@ -1567,14 +1582,14 @@ $('.image-wrapper').mouseleave(function()
       document.getElementById("bellyWidth").value = 2.16;
       document.getElementById("bellyOffset").value = 1.7;
 
-      document.getElementById("neckTop").value = 8;
+      document.getElementById("neckTop").value = 6.85;
       document.getElementById("neckCurve").value = 0.71;
       document.getElementById("neckWidth").value = 0.66;
       document.getElementById("neckOffset").value = 4.8;
 
-      document.getElementById("mouthCurve").value = 1;
-      document.getElementById("mouthWidth").value = 2;
-      document.getElementById("mouthOffset").value = 2;
+      document.getElementById("mouthCurve").value = 1.01;
+      document.getElementById("mouthWidth").value = 0.83;
+      document.getElementById("mouthOffset").value = 1.8;
       trigger("input", "mouthOffset");
     }
 
@@ -1582,6 +1597,7 @@ $('.image-wrapper').mouseleave(function()
 
       clay();
       colorbrown();
+      document.getElementById("vasename").innerHTML = "";
       document.getElementById("radiusTopslider").value = 1.62;
       document.getElementById("radiusBottom").value = 1.87;
       document.getElementById("height").value = 10.68;
