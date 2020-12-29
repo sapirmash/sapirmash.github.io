@@ -153,6 +153,7 @@
                             </div>
                           </div>
                           <div id="controls">
+                            <div class="scroll">
                             <button class="accordion">General</button>
                             <div class="general panel">
                               <ul>
@@ -312,12 +313,13 @@
                               <button id="glazed" class="glazed-m">Glazed</button>
                               <button id="clay" class="selected clay-m">Unglazed</button>
                             </div>
-                            <button class="accordion">Color</button>
+                            <button class="accordion acc_colors" >Color</button>
                             <div class="colors panel">
                               <button id="brown" class="selected shade">Brown</button>
                               <button id="pink" class="shade">Pink</button>
                               <button id="yellow" class="shade">Mocha</button>
                               <button id="white" class="shade">White</button>
+                            </div>
                             </div>
                             <div class="actions">
                               <button id="reset">Reset</button>
@@ -641,6 +643,15 @@ $('.image-wrapper').mouseleave(function()
 		        	);
         	}
 
+          function getUrlVars() {
+              var vars = {};
+              var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+                  vars[key] = value;
+              });
+              return vars;
+
+          }
+
 
         	function registerEventHandlers(){
         		// set event handlers
@@ -703,6 +714,8 @@ $('.image-wrapper').mouseleave(function()
 				      document.querySelector('#vase9').addEventListener('click', click);
               document.querySelector('#vase10').addEventListener('click', click);  
       }
+
+
 
 
       function getPos(el) {
@@ -1490,48 +1503,61 @@ $('.image-wrapper').mouseleave(function()
       colorpink();
       glazed();
       document.getElementById("vasename").innerHTML = "T-07";
-      document.getElementById("radiusTopslider").value = 0.8;
-      // trigger("change", "radiusTopslider");
-      document.getElementById("radiusBottom").value = 1.8;
-      // trigger("change", "radiusBottom");
-      document.getElementById("height").value = 15;
-      // trigger("change", "height");
+      document.getElementById("radiusTopslider").value = 1.37;
+      document.getElementById("radiusBottom").value = 1.73;
+      document.getElementById("height").value = 13.5;
 
-      document.getElementById("legTop").value = -7.64;
-      // trigger("change", "legTop");
-      document.getElementById("legCurve").value = 0.3;
-      // trigger("change", "legCurve");
-      document.getElementById("legWidth").value = 0.1;
-      // trigger("change", "legWidth");
-      document.getElementById("legOffset").value = -3.8;
-      // trigger("change", "legOffset");
+      document.getElementById("legTop").value = -6.05;
+      document.getElementById("legCurve").value = 0.2;
+      document.getElementById("legWidth").value = 0.2;
+      document.getElementById("legOffset").value = -0.1;
 
       document.getElementById("bellyTop").value = 3.5;
-      // trigger("change", "bellyTop");
-      document.getElementById("bellyCurve").value = 2.4;
-      // trigger("change", "bellyCurve");
-      document.getElementById("bellyWidth").value = 0.94;
-      // trigger("change", "bellyWidth");
-      document.getElementById("bellyOffset").value = 1.99;
-      // trigger("change", "bellyOffset");
+      document.getElementById("bellyCurve").value = 0.2;
+      document.getElementById("bellyWidth").value = 0.2;
+      document.getElementById("bellyOffset").value = -0.1;
 
       document.getElementById("neckTop").value = 5.05;
-      // trigger("change", "neckTop");
-      document.getElementById("neckCurve").value = 2.51;
-      // trigger("change", "neckCurve");
-      document.getElementById("neckWidth").value = 0.91;
-      // trigger("change", "neckWidth");
-      document.getElementById("neckOffset").value = 2.06;
-      // trigger("change", "neckOffset");
+      document.getElementById("neckCurve").value = 0.2;
+      document.getElementById("neckWidth").value = 0.2;
+      document.getElementById("neckOffset").value = -0.1;
 
-      document.getElementById("mouthCurve").value = 1.5;
-      // trigger("change", "mouthCurve");
-      document.getElementById("mouthWidth").value = 0.83; 
-      // trigger("change", "mouthWidth");
-      document.getElementById("mouthOffset").value = 0.84; 
+      document.getElementById("mouthCurve").value = 0.2;
+      document.getElementById("mouthWidth").value = 0.2; 
+      document.getElementById("mouthOffset").value = -0.1; 
       trigger("input", "mouthOffset");
 
     }
+
+    // function drawVase7(){
+    //   colorpink();
+    //   glazed();
+    //   document.getElementById("vasename").innerHTML = "T-07";
+    //   document.getElementById("radiusTopslider").value = 0.8;
+    //   document.getElementById("radiusBottom").value = 1.8;
+    //   document.getElementById("height").value = 15;
+
+    //   document.getElementById("legTop").value = -7.64;
+    //   document.getElementById("legCurve").value = 0.3;
+    //   document.getElementById("legWidth").value = 0.1;
+    //   document.getElementById("legOffset").value = -3.8;
+
+    //   document.getElementById("bellyTop").value = 3.5;
+    //   document.getElementById("bellyCurve").value = 2.4;
+    //   document.getElementById("bellyWidth").value = 0.94;
+    //   document.getElementById("bellyOffset").value = 1.99;
+
+    //   document.getElementById("neckTop").value = 5.05;
+    //   document.getElementById("neckCurve").value = 2.51;
+    //   document.getElementById("neckWidth").value = 0.91;
+    //   document.getElementById("neckOffset").value = 2.06;
+
+    //   document.getElementById("mouthCurve").value = 1.5;
+    //   document.getElementById("mouthWidth").value = 0.83; 
+    //   document.getElementById("mouthOffset").value = 0.84; 
+    //   trigger("input", "mouthOffset");
+
+    // }
 
     function drawVase8(){
 

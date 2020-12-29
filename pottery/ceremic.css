@@ -160,8 +160,8 @@ display: none;
   background-color:transparent;
   background-image:linear-gradient(90deg,#382826 45%,transparent 0),
   linear-gradient(90deg,#382826 45%,transparent 0),
-  linear-gradient(180deg,#382826 45%,transparent 0),
-  linear-gradient(180deg,#382826 45%,transparent 0);
+  linear-gradient(180deg,#382826 30%,transparent 0),
+  linear-gradient(180deg,#382826 30%,transparent 0);
   background-position:0 0,0 100%,0 0,100% 0;
   background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;
   background-size: 30px 1px,30px 1px,1px 30px,1px 30px;
@@ -218,12 +218,19 @@ display: none;
 
 
 .actions{
- margin: 0;
+ /*margin: 0;
  padding: 0;
+ padding-top: var(--margin);*/
+ /*position: fixed;*/
+ position: -webkit-sticky; /* Safari */
+ position: sticky;
  display: flex;
+ bottom: 0;
  flex-wrap: wrap;
+ width: 300px;
+ border-top: 1px solid #382826;
+ /*border: 1px solid black;*/
  justify-content: space-between;
- padding-top: var(--margin);
 }
 
 #image{
@@ -462,12 +469,12 @@ display: none;
 }
 
 
-.colors::after{
+.colors::before{
   width: 300px;
   content:'';
   display: block;
   box-sizing: border-box;
-  border-bottom: 1px solid #382826;
+  border-top: 1px solid #382826;
 }
 
 
@@ -638,13 +645,19 @@ font-weight: bold;
   width: 300px;
   position: absolute;
   display: none;
-  max-height: 700px;
-  overflow-y: auto;
-  overflow-y: scroll;
+  /*max-height: 700px;*/
+/*  overflow-y: auto;
+  overflow-y: scroll;*/
   background-color: #E8DDDA; 
   border-style: solid;
   border-width: 1px;
   border-color: #382826;
+}
+
+.scroll{
+  overflow-y: auto;
+  overflow-y: scroll;
+  max-height: 700px;
 }
 
 .accordion {
@@ -665,6 +678,9 @@ font-weight: bold;
   color: #382826;
 }
 
+.acc_colors{
+border-bottom: 1px solid #E8DDDA;
+}
 
 .accordion:after {
   content: '\002B';
@@ -675,14 +691,7 @@ font-weight: bold;
   line-height: 21px;
 }
 
-/*.accordion:after{
-  background-image:url('http://127.0.0.1:8887/Asset 2@2x.png');
-  float: right;
-  content:' ';
-  height: 20px;
-  width: 20px;
-  background-size: 20px 20px;
-  }*/
+
 
 .open:after {
   content: "\2212";
@@ -722,7 +731,7 @@ output {
   font-size: 17px;
   font-family: 'KernTrial-Regular';
   color: #382826;
-  display: none;
+  /*display: none;*/
 }
 
 input[type=range] {
