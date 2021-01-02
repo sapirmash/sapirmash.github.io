@@ -876,7 +876,7 @@ output {
   font-size: 17px;
   font-family: 'Kern-r';
   color: #382826;
-  /*display: none;*/
+  display: none;
 }
 
 input[type=range] {
