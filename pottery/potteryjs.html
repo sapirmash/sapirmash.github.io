@@ -15,15 +15,13 @@
           </head>
           <body>
             <div id="explainiphone">
-          Sorry, this website can only be viewed on desktop.
+          Sorry, this website can't be viewed on your device.
+          Please open it on your desktop for the full experience.
           </div>
 
-            <header class="header">
+            <header class="header" id="headerstart">
               <div id="index">Pottery.js</div>
               <div class= "infoclass" id="info">Info</div>
-              <!-- <div id="objects">
-                <a href="http://127.0.0.1:8887/VariableCeremic.html" class="object">Objects</a>
-              </div> -->
             </header>
             <div id="about">
               <div class="desc">
@@ -110,27 +108,6 @@
                             <img class="vase-image" id="vase10" src="./Vase (8).jpg">
                             </a>
                           </div>
-                          <!--  <div class="vase-wrapper">
-                          <h1 class="vase-name">T-10</h1>
-                          <a class="image-wrapper" style="background-image: url('http://127.0.0.1:8887/Vase (6).png');
-                        padding-bottom: 133%">
-                            <img class="vase-image" src="http://127.0.0.1:8887/Vase (6).png">
-                            </a>
-                          </div>
-                           <div class="vase-wrapper">
-                          <h1 class="vase-name">T-11</h1>
-                          <a class="image-wrapper" style="background-image: url('http://127.0.0.1:8887/Vase (6).png');
-                        padding-bottom: 133%">
-                            <img class="vase-image" src="http://127.0.0.1:8887/Vase (6).png">
-                            </a>
-                          </div>
-                            <div class="vase-wrapper">
-                          <h1 class="vase-name">T-12</h1>
-                          <a class="image-wrapper" style="background-image: url('http://127.0.0.1:8887/Vase (6).png');
-                        padding-bottom: 133%">
-                            <img class="vase-image" src="http://127.0.0.1:8887/Vase (6).png">
-                            </a>
-                          </div> -->
                         </section>
 
 
@@ -176,7 +153,7 @@
                                   <!-- <span>(</span> -->
                                   <output for="height" id="out3"></output>
                                   <!-- <span>)</span> -->
-                                  <input type="range" id="height" min="6" max="15" step ="0.01"/>
+                                  <input type="range" id="height" min="8" max="15" step ="0.01"/>
                                 </li>
                               </ul>
                             </div>
@@ -256,7 +233,7 @@
                                   <!-- <span>(</span> -->
                                   <output for="bellyWidth" id="out10"></output>
                                   <!-- <span>)</span> -->
-                                  <input type="range" id="bellyWidth" min="0.2" max="2.6"  step ="0.01"/>
+                                  <input type="range" id="bellyWidth" min="0.2" max="4"  step ="0.01"/>
                                 </div>
                                 <div class="block">
                                   <h class="title">Curve</h>
@@ -315,24 +292,61 @@
                             </div>
                             <button class="accordion acc_colors" >Color</button>
                             <div class="colors panel">
-                              <button id="brown" class="selected shade">Brown</button>
+                              <button id="brown" class="selected shade">Terracotta</button>
                               <button id="pink" class="shade">Pink</button>
                               <button id="yellow" class="shade">Mocha</button>
-                              <button id="white" class="shade">White</button>
+                              <button id="white" class="shade">Off-White</button>
                             </div>
                             </div>
                             <div class="actions">
                               <button id="reset">Reset</button>
-                              <button id="save">Download</button>
-                              <!-- <button id="image">Download Image</button> -->
+                              <button id="export">Export</button>
+                              <!-- <button id="link">Copy Link</button> -->
+                         <!-- <button id="image">Download Image</button> -->
                             </div>
                           </div>
+                          <div class="cursor" style="display: none;">
+                            <img src="reset.png">
+                          </div>
+                        </div>
+                        <div class="modal">
+                        <div class="save-overlay">    
+                        <div class="content-overlay">
+                            <button id="save">Download STL</button>
+                            <button id="link">Copy Link</button>
+                        </div>
+                         <a href='#' class="save-overlay__close">
+                            Close <!-- &times; --></a>
+                        </div>
                         </div>
                         <!-- <div id="info"><a href="https://threejs.org" target="_blank" rel="noopener"></a> -->
                       </div>
 
 <script type="text/javascript">
 
+  
+
+  function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+    vars[key] = value;
+    });
+    return vars;
+  }
+
+
+
+  // ######################################## ENTRY POINT ########################################
+  var parameters = getUrlVars();
+
+
+  if (Object.keys(parameters).length > 0) {
+    $('.vase-wrapper').addClass("onstart");
+    $("#container").fadeIn(100);
+    document.getElementById("vasename").innerHTML = "";
+    document.getElementById("headerstart").innerHTML = "";
+  }
+  
 // var acc = document.getElementsByClassName("accordion");
 var acc = document.getElementsByClassName("accordion");
 var panel = document.getElementsByClassName('panel');
@@ -405,7 +419,7 @@ $('.image-wrapper').mouseleave(function()
 			import { RGBELoader } from '/pottery/examples/jsm/loaders/RGBELoader.js';
 			import { GUI } from '/pottery/examples/jsm/libs/dat.gui.module.js';
 			import { RectAreaLightUniformsLib } from '/pottery/examples/jsm/lights/RectAreaLightUniformsLib.js';			
-			// scene size
+      // scene size
 			var WIDTH = window.innerWidth;
 			var HEIGHT = window.innerHeight;
 
@@ -424,7 +438,6 @@ $('.image-wrapper').mouseleave(function()
 
 			var material_new;
 			var dirLight;
-
 			
       //bottomcap
       var capBottomGeo;
@@ -436,6 +449,10 @@ $('.image-wrapper').mouseleave(function()
 			var cylinderGeom5;		
 			var update = false;
 			var counter = 0;
+
+      var x_cylinder = 0;
+      var y_cylinder = -30;
+      var z_cylinder = 120;
 
 			var array_of_functions = [
 			   drawVase1,
@@ -466,23 +483,105 @@ $('.image-wrapper').mouseleave(function()
 			registerEventHandlers();
 			init();
 
+       function render(){
+        // camera.position.x += ( mouseX - camera.position.x ) * .05;
+            // camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 600 ) - camera.position.y ) * .05, 50, 1000 );
+            // dirLight.position.x += ( mouseX - dirLight.position.x - 1000 ) * .05;
+        // camera.lookAt( scene.position );
+        renderer.render( scene, camera );
+      }
+
+      function animate(){ 
+      requestAnimationFrame(animate);
+      render();
+      cylinder5.verticesNeedUpdate = true;
+      cylinder5.elementsNeedUpdate = true;
+      }
+
+      function drawVaseFromParameters(parameters){
+
+      if (parameters['c']==='brown'){
+        colorbrown();
+      }
+      if (parameters['c']==='pink'){
+        colorpink();
+      }
+      if (parameters['c']==='yellow'){
+        coloryellow();
+      }
+      if (parameters['c']==='white'){
+        colorwhite();
+      }
+
+      if (parameters['g']==='0') {
+        glazed();
+      }
+      else{
+        clay();
+      }
+
+      
+      document.getElementById("vasename").innerHTML = "";
+      document.getElementById("radiusTopslider").value = parameters['t'];
+      document.getElementById("radiusBottom").value = parameters['b'];
+      document.getElementById("height").value = parameters['h'];
+
+      document.getElementById("mouthWidth").value = parameters['mw'];
+      document.getElementById("mouthCurve").value = parameters['mc'];
+      document.getElementById("mouthOffset").value = parameters['mo'];
+
+      document.getElementById("neckTop").value = parameters['ns'];
+      document.getElementById("neckWidth").value = parameters['nw'];
+      document.getElementById("neckCurve").value = parameters['nc'];
+      document.getElementById("neckOffset").value = parameters['no'];
+
+      document.getElementById("bellyTop").value = parameters['bs'];
+      document.getElementById("bellyWidth").value = parameters['bw'];
+      document.getElementById("bellyCurve").value = parameters['bc'];
+      document.getElementById("bellyOffset").value = parameters['bo'];
+
+      document.getElementById("legTop").value = parameters['ls'];
+      document.getElementById("legWidth").value = parameters['lw'];
+      document.getElementById("legCurve").value = parameters['lc'];
+      document.getElementById("legOffset").value = parameters['lo'];      
+      trigger("input", "mouthOffset");
+
+      }
+
 			drawVase1(); 
 			update = true;
 			showVal(0);
-      // animate();
+
+      var changeCursor = true;
+      
+        $("#export").on("click", function() {
+        changeCursor = false;
+        $(".save-overlay, .content-overlay, .modal").addClass("active_overlay");
+        });
+      
+
+        $(".save-overlay__close").on("click", function() {
+          changeCursor = true;
+        $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+      });
+      
+      if (Object.keys(parameters).length > 0) {
+        $("#container").fadeIn(100);
+        document.getElementById("vasename").innerHTML = "";
+        drawVaseFromParameters(parameters);
+        animate();
+      }
 
 
-			////////////
 			function reset(){
-
 			array_of_functions[counter%array_of_functions.length]();			
 			update = true;
 			cylinderGeom5.verticesNeedUpdate = true;
 			trigger("input", "mouthOffset");
-
 			}
 
-			function save(){
+			
+      function save(){
 				saveSTL( scene, vases_names[counter%vases_names.length] );
 			}
 
@@ -491,28 +590,28 @@ $('.image-wrapper').mouseleave(function()
 				if (!update){
 					return;
 				}
-		     	var radiusTop = document.getElementById("radiusTopslider").value;
-		     	var radiusBottom = document.getElementById("radiusBottom").value;
-		     	var height = document.getElementById("height").value;
+  		     	var radiusTop = document.getElementById("radiusTopslider").value;
+  		     	var radiusBottom = document.getElementById("radiusBottom").value;
+  		     	var height = document.getElementById("height").value;
 
-		     	var legTop = document.getElementById("legTop").value;
-		     	var legCurve = document.getElementById("legCurve").value;
-		     	var legWidth = document.getElementById("legWidth").value;
-		     	var legOffset = document.getElementById("legOffset").value;
+  		     	var legTop = document.getElementById("legTop").value;
+  		     	var legCurve = document.getElementById("legCurve").value;
+  		     	var legWidth = document.getElementById("legWidth").value;
+  		     	var legOffset = document.getElementById("legOffset").value;
 
-		     	var bellyTop = document.getElementById("bellyTop").value;
-		     	var bellyWidth = document.getElementById("bellyWidth").value;
-		     	var bellyOffset = document.getElementById("bellyOffset").value;
-		     	var bellyCurve = document.getElementById("bellyCurve").value;
+  		     	var bellyTop = document.getElementById("bellyTop").value;
+  		     	var bellyWidth = document.getElementById("bellyWidth").value;
+  		     	var bellyOffset = document.getElementById("bellyOffset").value;
+  		     	var bellyCurve = document.getElementById("bellyCurve").value;
 
-		     	var neckTop = document.getElementById("neckTop").value;
-		     	var neckCurve = document.getElementById("neckCurve").value;
-		     	var neckOffset = document.getElementById("neckOffset").value;
-		     	var neckWidth = document.getElementById("neckWidth").value;
+  		     	var neckTop = document.getElementById("neckTop").value;
+  		     	var neckCurve = document.getElementById("neckCurve").value;
+  		     	var neckOffset = document.getElementById("neckOffset").value;
+  		     	var neckWidth = document.getElementById("neckWidth").value;
 
-		     	var mouthCurve = document.getElementById("mouthCurve").value;
-		     	var mouthOffset = document.getElementById("mouthOffset").value;
-		     	var mouthWidth = document.getElementById("mouthWidth").value;
+  		     	var mouthCurve = document.getElementById("mouthCurve").value;
+  		     	var mouthOffset = document.getElementById("mouthOffset").value;
+  		     	var mouthWidth = document.getElementById("mouthWidth").value;
 
 		     	  var output = document.getElementById("out1");
 		        output.value = radiusTop;
@@ -643,16 +742,99 @@ $('.image-wrapper').mouseleave(function()
 		        	);
         	}
 
-          function getUrlVars() {
-              var vars = {};
-              var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-                  vars[key] = value;
-              });
-              return vars;
+
+          function getUrlWithParameters(){
+
+            var url = new URL(window.location.href); 
+
+            var radiusTop = document.getElementById("radiusTopslider").value;
+            url.searchParams.append('t', radiusTop); 
+            var radiusBottom = document.getElementById("radiusBottom").value;
+            url.searchParams.append('b', radiusBottom);
+            var height = document.getElementById("height").value;
+            url.searchParams.append('h', height);
+
+            var mouthWidth = document.getElementById("mouthWidth").value;
+            url.searchParams.append('mw', mouthWidth);
+            var mouthCurve = document.getElementById("mouthCurve").value;
+            url.searchParams.append('mc', mouthCurve);
+            var mouthOffset = document.getElementById("mouthOffset").value;
+            url.searchParams.append('mo', mouthOffset);
+            
+
+            var neckTop = document.getElementById("neckTop").value;
+            url.searchParams.append('ns', neckTop);
+            var neckWidth = document.getElementById("neckWidth").value;
+            url.searchParams.append('nw', neckWidth);
+            var neckCurve = document.getElementById("neckCurve").value;
+            url.searchParams.append('nc', neckCurve);
+            var neckOffset = document.getElementById("neckOffset").value;
+            url.searchParams.append('no', neckOffset);
+           
+
+            var bellyTop = document.getElementById("bellyTop").value;
+            url.searchParams.append('bs', bellyTop);
+            var bellyWidth = document.getElementById("bellyWidth").value;
+            url.searchParams.append('bw', bellyWidth);
+            var bellyCurve = document.getElementById("bellyCurve").value;
+            url.searchParams.append('bc', bellyCurve);
+            var bellyOffset = document.getElementById("bellyOffset").value;
+            url.searchParams.append('bo', bellyOffset);
+
+            var legTop = document.getElementById("legTop").value;
+            url.searchParams.append('ls', legTop);
+            var legWidth = document.getElementById("legWidth").value;
+            url.searchParams.append('lw', legWidth);
+            var legCurve = document.getElementById("legCurve").value;
+            url.searchParams.append('lc', legCurve);
+            var legOffset = document.getElementById("legOffset").value;
+            url.searchParams.append('lo', legOffset);
+
+            if ($('#brown').hasClass('selected')) {
+              url.searchParams.append('c', 'brown');
+            }
+            if ($('#pink').hasClass('selected')) {
+              url.searchParams.append('c', 'pink');
+            }
+            if ($('#yellow').hasClass('selected')) {
+              url.searchParams.append('c', 'yellow');
+            }
+            if ($('#white').hasClass('selected')) {
+              url.searchParams.append('c', 'white');
+            }
+
+            if ($('#glazed').hasClass('selected')) {
+              url.searchParams.append('g', '0');
+            }
+            else{
+              url.searchParams.append('g', '1');
+            }
+            return url;
 
           }
 
+    
+          function Copy() {
+          var $temp = $("<input>");
+          var url = getUrlWithParameters();
 
+            $("body").append($temp);
+            $temp.val(url).select();
+            document.execCommand("copy");
+            $temp.remove();
+
+          }
+
+           $(document).ready( function() {
+            $("#link").click(function(){
+            $(this).html("Copied");
+            setTimeout(function() {
+                $("#link").html("Copy link");
+              }, 2000);
+            });
+        });
+
+                    
         	function registerEventHandlers(){
         		// set event handlers
 			      	// document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -661,6 +843,8 @@ $('.image-wrapper').mouseleave(function()
 	            document.getElementById('edit').addEventListener( 'click', myFunction);
 	            document.getElementById('reset').addEventListener( 'click', reset);
 	            document.getElementById('save').addEventListener( 'click', save);
+              // document.getElementById('export').addEventListener( 'click', Export);
+              document.getElementById('link').addEventListener( 'click', Copy);
               // document.getElementById('image').addEventListener( 'click', createImage);
 
 	            document.getElementById('glazed').addEventListener( 'click', glazed);
@@ -764,9 +948,9 @@ $('.image-wrapper').mouseleave(function()
               counter=9;
               drawVase10();  
             }          
-            $('#'+event.currentTarget.id).removeClass("inactive");
+            $('#' + event.currentTarget.id).removeClass("inactive");
 
-            var coords = getPos(document.querySelector('#'+event.currentTarget.id));
+            var coords = getPos(document.querySelector('#' + event.currentTarget.id));
 
             // create custom class
             // var style = document.createElement('style');
@@ -1069,9 +1253,9 @@ $('.image-wrapper').mouseleave(function()
 					}
 
 					scene.add(cylinder5);
-					cylinder5.position.x = 0;            
-				  cylinder5.position.z = 120;
-				  cylinder5.position.y = -30;
+					cylinder5.position.x = x_cylinder;            
+				  cylinder5.position.z = z_cylinder;
+				  cylinder5.position.y = y_cylinder;
 				  cylinder5.scale.set(70,70,70);
 
 
@@ -1170,15 +1354,6 @@ $('.image-wrapper').mouseleave(function()
     //   console.log(box);
     // }
 		
-		
-		function animate(){	
-			requestAnimationFrame(animate);
-			render();
-			cylinder5.verticesNeedUpdate = true;
-      cylinder5.elementsNeedUpdate = true;
-    
-		}
-
 
 		function onMouseMove(event) {
 		  var mousePosition = new THREE.Vector3(0, 0, 0.5);
@@ -1189,16 +1364,15 @@ $('.image-wrapper').mouseleave(function()
 		  var intersects = raycaster.intersectObjects(scene.children);
 			controls.enabled = intersects.length > 0;
 
-      // var el = document.getElementById("try");
-      // el.style.top = event.clientY + "px";
-      // el.style.left = event.clientX + "px";
-
+      if (changeCursor===true) {
 			if(intersects.length > 0) {
-		        $('html,body').css('cursor','move', 'font-size', '20px');
+		        $('html,body').css('cursor', 'url(mouse.svg), move');
+            // $('.cursor').css("display", "block");
+            
 		    } else {
 		        $('html,body').css('cursor', 'default');
 		    }
-  
+      }
 		}
 
 		function glazed(){
@@ -1269,7 +1443,9 @@ $('.image-wrapper').mouseleave(function()
 		function drawVase1(){
 			colorbrown();
 		  glazed();
-
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
 			document.getElementById("vasename").innerHTML = "T-01";
 
 			document.getElementById("radiusTopslider").value = 0.4;
@@ -1301,7 +1477,9 @@ $('.image-wrapper').mouseleave(function()
 
 			clay();
 			colorpink();
-
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
 			document.getElementById("vasename").innerHTML = "T-02";
 			document.getElementById("radiusTopslider").value = 0.4;
 			document.getElementById("radiusBottom").value = 0.7;
@@ -1362,6 +1540,9 @@ $('.image-wrapper').mouseleave(function()
     function drawVase3(){
 
       coloryellow();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-03";
       document.getElementById("radiusTopslider").value = 1.82;
       document.getElementById("radiusBottom").value = 0.4;
@@ -1393,6 +1574,9 @@ $('.image-wrapper').mouseleave(function()
 
       colorbrown();
       glazed();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-04";
 			document.getElementById("radiusTopslider").value = 0.1;
 			document.getElementById("radiusBottom").value = 1.31151;
@@ -1424,6 +1608,9 @@ $('.image-wrapper').mouseleave(function()
 		function drawVase5(){
       colorwhite();
       clay();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-05";
 			document.getElementById("radiusTopslider").value = 0.28009;
 			document.getElementById("radiusBottom").value = 1;
@@ -1454,6 +1641,9 @@ $('.image-wrapper').mouseleave(function()
 		function drawVase6(){
       coloryellow();
       clay();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-06";
 			document.getElementById("radiusTopslider").value = 1.45;
 			// trigger("change", "radiusTopslider");
@@ -1502,6 +1692,9 @@ $('.image-wrapper').mouseleave(function()
     function drawVase7(){
       colorpink();
       glazed();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-07";
       document.getElementById("radiusTopslider").value = 1.37;
       document.getElementById("radiusBottom").value = 1.73;
@@ -1563,6 +1756,9 @@ $('.image-wrapper').mouseleave(function()
 
       clay();
       coloryellow();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-08";
       document.getElementById("radiusTopslider").value = 1.18;
       document.getElementById("radiusBottom").value = 2.34;
@@ -1593,6 +1789,9 @@ $('.image-wrapper').mouseleave(function()
 
       glazed();
       colorwhite();
+      x_cylinder = 0;
+      y_cylinder = -30;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "T-09";
       document.getElementById("radiusTopslider").value = 1.15;
       document.getElementById("radiusBottom").value = 3;
@@ -1623,6 +1822,9 @@ $('.image-wrapper').mouseleave(function()
 
       clay();
       colorbrown();
+      x_cylinder = 0;
+      y_cylinder = 40;
+      z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "";
       document.getElementById("radiusTopslider").value = 1.62;
       document.getElementById("radiusBottom").value = 1.87;
@@ -1647,6 +1849,7 @@ $('.image-wrapper').mouseleave(function()
       document.getElementById("mouthWidth").value = 0.2;
       document.getElementById("mouthOffset").value = 1.61;
       trigger("input", "mouthOffset");
+
     }
 
 
@@ -1659,28 +1862,9 @@ $('.image-wrapper').mouseleave(function()
         
       };
 
-
-		// function onDocumentMouseMove(event) {
-
-  //       mouseX = ( event.clientX - windowHalfX );
-  //       mouseY = ( event.clientY - windowHalfY );
-
-  //     }
+      
 
 
-  //     function onDocumentWheel(event) {
-  //       event.preventDefault();
-  //       //mag = event.deltaY * 0.0008;
-  //     }
-
-	function render(){
-		// camera.position.x += ( mouseX - camera.position.x ) * .05;
-        // camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 600 ) - camera.position.y ) * .05, 50, 1000 );
-        // dirLight.position.x += ( mouseX - dirLight.position.x - 1000 ) * .05;
-    // camera.lookAt( scene.position );
-		renderer.render( scene, camera );
-    // console.log(renderer);
-	}
 
 
 	// STL export
