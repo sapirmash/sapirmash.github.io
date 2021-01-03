@@ -2,6 +2,15 @@
 <html lang="en">
   <head>
     <title></title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WZKTHFCL4B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-WZKTHFCL4B');
+    </script>
     <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet">
@@ -18,7 +27,6 @@
           Sorry, this website can't be viewed on your device.
           Please open it on your desktop for the full experience.
           </div>
-
             <header class="header" id="headerstart">
               <div id="index">Pottery.js</div>
               <div class= "infoclass" id="info">Info</div>
@@ -28,10 +36,12 @@
                  Pottery is one of the oldest human inventions, with first appearances more than 20,000 years ago.
                  This project makes the process of designing such objects accessible through a digital medium, using <a href="https://threejs.org/" style="color: #382826">Three.js</a> as a platform for 3D computer graphics. 
                  You can modify an existing design or create one from scratch and export your design to an STL file for 3D printing.
+
+                 Want to be featured? export your work of art to a link, then sent it <a href="mailto:mash.sapir@gmail.com">here</a>
                  <br>
                  <br>
                  <br>
-                 Made by Sapir Mashiach.
+                 Made by <a href="https://www.instagram.com/sapir__m/" style="color:#382826">Sapir Mashiach.</a>
                  </br>
                  </br>
                  </br>
@@ -500,6 +510,10 @@ $('.image-wrapper').mouseleave(function()
 
       function drawVaseFromParameters(parameters){
 
+      x_cylinder = 0;
+      y_cylinder = 20;
+      z_cylinder = 120;
+
       if (parameters['c']==='brown'){
         colorbrown();
       }
@@ -520,7 +534,6 @@ $('.image-wrapper').mouseleave(function()
         clay();
       }
 
-      
       document.getElementById("vasename").innerHTML = "";
       document.getElementById("radiusTopslider").value = parameters['t'];
       document.getElementById("radiusBottom").value = parameters['b'];
@@ -745,7 +758,7 @@ $('.image-wrapper').mouseleave(function()
 
           function getUrlWithParameters(){
 
-            var url = new URL(window.location.href); 
+            var url = new URL(window.location.href);
 
             var radiusTop = document.getElementById("radiusTopslider").value;
             url.searchParams.append('t', radiusTop); 
@@ -789,6 +802,7 @@ $('.image-wrapper').mouseleave(function()
             url.searchParams.append('lc', legCurve);
             var legOffset = document.getElementById("legOffset").value;
             url.searchParams.append('lo', legOffset);
+
 
             if ($('#brown').hasClass('selected')) {
               url.searchParams.append('c', 'brown');
@@ -1823,7 +1837,7 @@ $('.image-wrapper').mouseleave(function()
       clay();
       colorbrown();
       x_cylinder = 0;
-      y_cylinder = 40;
+      y_cylinder = 20;
       z_cylinder = 120;
       document.getElementById("vasename").innerHTML = "";
       document.getElementById("radiusTopslider").value = 1.62;
