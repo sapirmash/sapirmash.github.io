@@ -25,7 +25,7 @@
           <body>
             <div id="explainiphone">
           Sorry, this website can't be viewed on your device.
-          Please open it on your desktop for the full experience.
+          Please open it on your desktop.
           </div>
             <header class="header" id="headerstart">
               <div id="index">Pottery.js</div>
@@ -34,14 +34,20 @@
             <div id="about">
               <div class="desc">
                  Pottery is one of the oldest human inventions, with first appearances more than 20,000 years ago.
-                 This project makes the process of designing such objects accessible through a digital medium, using <a href="https://threejs.org/" style="color: #382826">Three.js</a> as a platform for 3D computer graphics. 
+                 This project makes the process of designing such objects accessible through a digital medium, using <a href="https://threejs.org/" style="color: #382826">Three.js</a>. 
                  You can modify an existing design or create one from scratch and export your design to an STL file for 3D printing.
-
-                 Want to be featured? export your work of art to a link, then sent it <a href="mailto:mash.sapir@gmail.com">here</a>
+<!-- 
+                 <br>
+                 <br>
+                 Want to be featured? export your work of art to a link, then send it <a href="mailto:mash.sapir@gmail.com" style="color: #382826">here</a>
+                 </br>
+                 </br> -->
                  <br>
                  <br>
                  <br>
-                 Made by <a href="https://www.instagram.com/sapir__m/" style="color:#382826">Sapir Mashiach.</a>
+                 <br>
+                 Made by <a href="https://www.instagram.com/sapir__m/" style="color:#382826">Sapir Mashiach</a>
+                 </br>
                  </br>
                  </br>
                  </br>
@@ -322,7 +328,7 @@
                         <div class="modal">
                         <div class="save-overlay">    
                         <div class="content-overlay">
-                            <button id="save">Download STL</button>
+                            <button id="save">Download.STL</button>
                             <button id="link">Copy Link</button>
                         </div>
                          <a href='#' class="save-overlay__close">
@@ -409,17 +415,6 @@ $('.image-wrapper').mouseleave(function()
   { $(this).addClass('figure');
        $(this).removeClass('hover')}
 );
-
-
-      // $('.accordion').click(function(e) {
-      //   e.preventDefault();
-      //   var currentIsActive = $(this).hasClass('is-active');
-      //   $(this).parent('.panel').find('> *').removeClass('is-active');
-      //   if(currentIsActive != 1) {
-      //     $(this).addClass('is-active');
-      //     $(this).next('.block').addClass('is-active');
-      //   }
-      // });
 </script>
 				 
 	<script type="module">		       
@@ -492,7 +487,7 @@ $('.image-wrapper').mouseleave(function()
 
 			registerEventHandlers();
 			init();
-
+      
        function render(){
         // camera.position.x += ( mouseX - camera.position.x ) * .05;
             // camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 600 ) - camera.position.y ) * .05, 50, 1000 );
@@ -1090,6 +1085,52 @@ $('.image-wrapper').mouseleave(function()
     				showVal(0);
         	}
 
+          const fitCameraToObject = function ( camera, object, offset, controls ) {
+
+    offset = offset || 1.25;
+
+    const boundingBox = new THREE.Box3();
+
+    // get bounding box of object - this will be used to setup controls and camera
+    boundingBox.setFromObject( object );
+
+    const center = boundingBox.getCenter();
+
+    const size = boundingBox.getSize();
+
+    // get the max side of the bounding box (fits to width OR height as needed )
+    const maxDim = Math.max( size.x, size.y, size.z );
+    const fov = camera.fov * ( Math.PI / 180 );
+    let cameraZ = Math.abs( maxDim / 4 * Math.tan( fov * 2 ) );
+
+    cameraZ *= offset; // zoom out a little so that objects don't fill the screen
+
+    camera.position.z = cameraZ;
+
+    const minZ = boundingBox.min.z;
+    const cameraToFarEdge = ( minZ < 0 ) ? -minZ + cameraZ : cameraZ - minZ;
+
+    camera.far = cameraToFarEdge * 3;
+    camera.updateProjectionMatrix();
+
+    if ( controls ) {
+
+      // set camera to rotate around center of loaded object
+      controls.target = center;
+
+      // prevent camera from zooming out far enough to create far plane cutoff
+      controls.maxDistance = cameraToFarEdge * 2;
+
+      controls.saveState();
+
+    } else {
+
+        camera.lookAt( center )
+
+   }
+
+}
+
         
 			function init() {
 
@@ -1113,6 +1154,9 @@ $('.image-wrapper').mouseleave(function()
     					camera.position.z = 2300;
 	        		camera.position.y = 700;
 
+              // camera.position.z = 2300;
+              // camera.position.y = 700;
+
 	        		controls = new OrbitControls( camera, renderer.domElement );
 	        		controls.minDistance = 2300;
     					controls.maxDistance = 200;
@@ -1121,6 +1165,8 @@ $('.image-wrapper').mouseleave(function()
               controls.enableRotate = true;
               controls.rotateSpeed = 1.0;
     					controls.update();
+
+
               
 			
         			//LIGHTS
@@ -1271,6 +1317,7 @@ $('.image-wrapper').mouseleave(function()
 				  cylinder5.position.z = z_cylinder;
 				  cylinder5.position.y = y_cylinder;
 				  cylinder5.scale.set(70,70,70);
+          // cylinder5.scale.set(7,7,7);
 
 
 					// cylinderGeomClean.vertices.forEach(v => {
@@ -1369,6 +1416,7 @@ $('.image-wrapper').mouseleave(function()
     // }
 		
 
+
 		function onMouseMove(event) {
 		  var mousePosition = new THREE.Vector3(0, 0, 0.5);
 		  mousePosition.x = 2 * (event.clientX / window.innerWidth) - 1;
@@ -1376,7 +1424,7 @@ $('.image-wrapper').mouseleave(function()
 		  mousePosition.unproject(camera);
 		  var raycaster = new THREE.Raycaster(camera.position, mousePosition.sub(camera.position).normalize());
 		  var intersects = raycaster.intersectObjects(scene.children);
-			controls.enabled = intersects.length > 0;
+			// controls.enabled = intersects.length > 0;
 
       if (changeCursor===true) {
 			if(intersects.length > 0) {
