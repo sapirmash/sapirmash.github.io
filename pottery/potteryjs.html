@@ -1297,13 +1297,13 @@ $('.image-wrapper').mouseleave(function()
 
 		  		var materials = [
 					new THREE.MeshPhysicalMaterial( {color: color, side: THREE.DoubleSide } ),
-					new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0 } ),
+					// new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0 } ),
 				  ];
 
 				  var materials_shiny = [
 					new THREE.MeshPhysicalMaterial( { color: color, clearcoat:1 , roughness: 0.8,
 								clearcoatRoughness: 0.1, reflectivity: 0, side: THREE.DoubleSide, envMap: refractionCube, envMapIntensity: 0.4} ),
-					new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0 } ),
+					// new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0 } ),
 					];
 
 					// var cylinder5 = new THREE.Mesh( cylinderGeom5, materials );
@@ -1404,6 +1404,9 @@ $('.image-wrapper').mouseleave(function()
           capBottomMesh.rotation.x = Math.PI / 2;
           cylinder5.add(capBottomMesh);
 
+            cylinderGeom5.computeVertexNormals();
+          cylinder5.verticesNeedUpdate = true;
+
         // var radiusTop_new;
         // var y_max = 0;
 
@@ -1438,8 +1441,7 @@ $('.image-wrapper').mouseleave(function()
         //   capTopMesh.rotation.x = Math.PI / 2;
         //   cylinder5.add(capTopMesh);
 
-        //   cylinderGeom5.computeVertexNormals();
-        //   cylinder5.verticesNeedUpdate = true;
+        
 		}
 
  
