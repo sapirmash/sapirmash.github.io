@@ -46,7 +46,7 @@
                  <br>
                  <br>
                  <br>
-                 Made by <a href="https://www.instagram.com/sapir__m/" style="color:#382826">Sapir Mashiach</a>
+                 Made by <a href="http://sapirmashiach.com/index.html" style="color:#382826">Sapir Mashiach</a>
                  </br>
                  </br>
                  </br>
@@ -448,6 +448,11 @@ $('.image-wrapper').mouseleave(function()
       var capBottomGeo;
       var capBottomMat;
       var capBottomMesh;
+
+      //topcap
+      var capTopGeo;
+      var capTopMat;
+      var capTopMesh;
 
       //new code
 			var cylinder5;
@@ -1293,14 +1298,12 @@ $('.image-wrapper').mouseleave(function()
 		  		var materials = [
 					new THREE.MeshPhysicalMaterial( {color: color, side: THREE.DoubleSide } ),
 					new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0 } ),
-					// new THREE.MeshPhysicalMaterial( {color: color, side: THREE.DoubleSide } ),
 				  ];
 
 				  var materials_shiny = [
 					new THREE.MeshPhysicalMaterial( { color: color, clearcoat:1 , roughness: 0.8,
 								clearcoatRoughness: 0.1, reflectivity: 0, side: THREE.DoubleSide, envMap: refractionCube, envMapIntensity: 0.4} ),
 					new THREE.MeshPhysicalMaterial( {color: 0xffffff, side: THREE.DoubleSide, transparent: true, opacity: 0 } ),
-					// new THREE.MeshPhysicalMaterial( {color: 'red', side: THREE.DoubleSide } ),
 					];
 
 					// var cylinder5 = new THREE.Mesh( cylinderGeom5, materials );
@@ -1366,10 +1369,9 @@ $('.image-wrapper').mouseleave(function()
 						cylinderGeom5.vertices.push(v);
 				})
 
-          
-
-          var radiusBottom_new;
-          var y_minimum = 0;
+        
+        var radiusBottom_new;
+        var y_minimum = 0;
 
         // Find the y value of the bottom points (lowest y)
         cylinderGeom5.vertices.forEach(v => {
@@ -1395,7 +1397,6 @@ $('.image-wrapper').mouseleave(function()
           }
         }
         
-
           capBottomGeo = new THREE.CircleGeometry(max_dist/2, 100);
           capBottomMat = new THREE.MeshPhysicalMaterial({color: color, side: THREE.DoubleSide});
           capBottomMesh = new THREE.Mesh( capBottomGeo, capBottomMat );
@@ -1403,17 +1404,45 @@ $('.image-wrapper').mouseleave(function()
           capBottomMesh.rotation.x = Math.PI / 2;
           cylinder5.add(capBottomMesh);
 
-        cylinderGeom5.computeVertexNormals();
-        cylinder5.verticesNeedUpdate = true;
+        // var radiusTop_new;
+        // var y_max = 0;
+
+        // // Find the y value of the bottom points (lowest y)
+        // cylinderGeom5.vertices.forEach(v => {
+        //     if (v.y>y_max){
+        //       y_max = v.y;
+        //     }
+        // });
+
+        // // Find all the points with that y value
+        // var top_vertices = [];
+        //     cylinderGeom5.vertices.forEach(v => {
+        //     if (v.y==y_max){
+        //       top_vertices.push(v);
+        //     }
+        // });
+
+        // // Compute the diameter of the bottom
+        // var maxTop_dist = 0;
+        // for(var j=0; j<top_vertices.length; j++){
+        //   var dist = top_vertices[0].distanceTo(top_vertices[j]);
+        //   if(dist > maxTop_dist){
+        //     maxTop_dist = dist;
+        //   }
+        // }
+        
+        //   capTopGeo = new THREE.CircleGeometry(maxTop_dist/2, 100);
+        //   capTopMat = new THREE.MeshPhysicalMaterial({color: color, side: THREE.DoubleSide});
+        //   capTopMesh = new THREE.Mesh( capTopGeo, capTopMat);
+        //   capTopMesh.position.y = height / 2;
+        //   capTopMesh.rotation.x = Math.PI / 2;
+        //   cylinder5.add(capTopMesh);
+
+        //   cylinderGeom5.computeVertexNormals();
+        //   cylinder5.verticesNeedUpdate = true;
 		}
 
-    // function getAbsolutePosition(mesh){
-    //   mesh.updateMatrixWorld();
-    //   const box = new THREE.Box3();
-    //   mesh.geometry.computeBoundingBox();
-    //   box.copy( mesh.geometry.boundingBox ).applyMatrix4( mesh.matrixWorld );
-    //   console.log(box);
-    // }
+ 
 		
 
 
@@ -1950,7 +1979,6 @@ $('.image-wrapper').mouseleave(function()
 			scene.traverse( function ( object ) {
 
 				if ( object instanceof THREE.Mesh ) {
-
 					var geometry = object.geometry;
 					var matrixWorld = object.matrixWorld;
 					var mesh = object;
@@ -2004,6 +2032,8 @@ $('.image-wrapper').mouseleave(function()
 									skinMatrices[1] = mesh.skeleton.bones[ boneIndices[1] ].matrixWorld;
 									skinMatrices[2] = mesh.skeleton.bones[ boneIndices[2] ].matrixWorld;
 									skinMatrices[3] = mesh.skeleton.bones[ boneIndices[3] ].matrixWorld;
+
+                  
 									
 									var finalVector = new THREE.Vector4();
 									for(var k = 0; k<4; k++) {
@@ -2014,6 +2044,7 @@ $('.image-wrapper').mouseleave(function()
 										//which is then transformed to the appropriate world space
 										.applyMatrix4(skinMatrices[k]);
 										finalVector.add(tempVector);
+
 									}
 									output += '\t\t\tvertex ' + finalVector.x + ' ' + finalVector.y + ' ' + finalVector.z + '\n';
 								}
