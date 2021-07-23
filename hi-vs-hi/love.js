@@ -169,16 +169,18 @@ document.addEventListener("click", function(event){
 //     }
 	
 // });
+
+
+window.addEventListener("deviceorientation", function(event){
+	// engine.world.gravity.x = event.gamma /30;
+	engine.world.gravity.y = event.beta/30;
+});
   
 Engine.run(engine);
 Render.run(renderer);
 
 
 
-window.addEventListener("deviceorientation", function(event){
-	engine.world.gravity.x = event.gamma /30;
-	engine.world.gravity.y = event.beta/30;
-})
 
 
 
