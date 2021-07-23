@@ -21,7 +21,8 @@ const renderer = Render.create({
 		height: h,
 		width: w,
 		wireframes: false,
-		background: "#FEE2EA",
+		// background: "#FEE2EA",
+		background: "green",
 		pixelRatio: window.devicePixelRatio
 	}
 });
