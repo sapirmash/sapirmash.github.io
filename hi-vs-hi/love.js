@@ -141,37 +141,8 @@ document.addEventListener("click", function(event){
 
 });
 
-// document.addEventListener("mousemove", function(event){
-// 	let mousex = event.clientX; // Gets Mouse X
-//   	let mousey = event.clientY; // Gets Mouse Y
-//     console.log([mousex, mousey]); // Prints data
 
-//     const hoverShapes = Query.point(initialShapes.bodies, mousex, mousey);
-
-//     if (mousex<(w/2)){
-
-//     	engine.world.gravity.x = -2;
-//     }
-
-//     else{
-
-//     	engine.world.gravity.x = 2;
-//     }
-
-//      if (mousey<(h/2)){
-
-//     	engine.world.gravity.y = -2;
-//     }
-
-//     else{
-
-//     	engine.world.gravity.y = 2;
-//     }
-	
-// });
-
-
-window.addEventListener("deviceorientation", function(event){
+document.addEventListener("deviceorientation", function(event){
 	// engine.world.gravity.x = event.gamma /30;
 	engine.world.gravity.y = event.beta/30;
 });
