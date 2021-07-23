@@ -80,13 +80,6 @@ const createShape = function(x,y){
 	});
 
 	}
-
-	
-
-	
-
-	
-
 }
 
 
@@ -142,19 +135,15 @@ document.addEventListener("click", function(event){
 });
 
 
-document.addEventListener("deviceorientation", function(event){
-	// engine.world.gravity.x = event.gamma /30;
+window.addEventListener("deviceorientation", function(event){
+	const shape = createShape(200,200);
+	 World.add(engine.world, shape);
+	engine.world.gravity.x = event.gamma /30;
 	engine.world.gravity.y = event.beta/30;
+
 });
   
 Engine.run(engine);
 Render.run(renderer);
-
-
-
-
-
-
-
 
 });
