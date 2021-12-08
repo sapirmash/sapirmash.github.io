@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+</head>
+<body>   
+</body>
+
+</html>
+
+<style type="text/css">
+  #canvas{
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #video{
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+
+<script type="text/javascript">
+
+let video;
+let poseNet;
+var cnv;
+let noseX = 0;
+let noseY = 0;
+let left_eyeX = 0;
+let left_eyeY = 0;
+let right_eyeX = 0;
+let right_eyeY = 0;
+let mouseY = 0;
+let mouseX = 0;
+let pics;
+
+var sensitivityX = 1;
+var sensitivityY = 1;
+var sensitivityZ = -1000;
+
+function setup(){
+  cnv = createCanvas(windowWidth, windowHeight, WEBGL);
+  cnv.id('canvas');
+  video = createCapture(VIDEO);
+  // video.id('video');
+  video.hide();
+  poseNet = ml5.poseNet(video, modelReady);
+  poseNet.on('pose', gotPoses);
+}
+
+
+function gotPoses(poses){
+  console.log(poses);
+  if (poses.length > 0) {
+    let nX = poses[0].pose.keypoints[0].position.x;
+    let nY = poses[0].pose.keypoints[0].position.y;
+
+    let leX = poses[0].pose.keypoints[1].position.x;
+    let leY = poses[0].pose.keypoints[1].position.y;
+
+    let reX = poses[0].pose.keypoints[2].position.x;
+    let reY = poses[0].pose.keypoints[2].position.y;
+
+    let leaX = poses[0].pose.keypoints[3].position.x;
+    let leaY = poses[0].pose.keypoints[3].position.y;
+
+    let reaX = poses[0].pose.keypoints[4].position.x;
+    let reaY = poses[0].pose.keypoints[4].position.y;
+
+    noseX = lerp(noseX, nX, 0.5);
+    noseY = lerp(noseY, nY, 0.5);
+
+    left_eyeX = lerp(left_eyeX, leX, 0.5);
+    left_eyeY = lerp(left_eyeY, leY, 0.5);
+
+    right_eyeX = lerp(right_eyeX, reX, 0.5);
+    right_eyeY = lerp(right_eyeY, reY, 0.5);
+
+    let d = dist(noseX, noseY, left_eyeX, left_eyeY);
+    let mX = poses[0].pose.keypoints[0].position.x;
+    let mY = poses[0].pose.keypoints[0].position.y + d;
+    mouseX = lerp(mouseX, mX, 0.5);
+    mouseY = lerp(mouseY, mY, 0.5);
+    
+  }
+}
+
+function modelReady(){
+  console.log('modelReady');
+}
+
+
+
+
+function draw(){
+
+   background('#000000');
+  // var nose = image(video,0,0, 200, 200, noseX - 50/2, noseY-50/2, 50, 50);
+  // var left_eye = image(video, 0,0, 300, 200, 200, left_eyeX - 50/2, left_eyeY-50/2, 50, 50);
+  // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
+  // var mouth = image(video, 0,0,0,200, 200, mouseX-50/2, mouseY-50/2, 50, 50);
+
+  var img_n = video.get(noseX-50/2,noseY-50/2,50,50);
+  var img_le = video.get(left_eyeX - 50/2,left_eyeY-50/2, 50, 50);
+  var img_re = video.get(right_eyeX - 50/2, right_eyeY - 50/2, 50, 50);
+  var img_m = video.get(mouseX - 50/2, mouseY - 50/2, 50, 50);
+  // // image(video, 0,0);
+  let d = dist(noseX, noseY, left_eyeX, left_eyeY);
+
+  // rotateX(frameCount * 0.01);
+  // rotateY(frameCount * 0.01);
+  rotateY(position);
+  
+  noStroke();
+  push();
+  texture(img_n);
+  translate(ran_noseX, ran_noseY);
+  box(100,200);
+  pop();
+
+  push();
+  translate(ran_eye1X, ran_eye1Y);
+  texture(img_le);
+  box(100);
+  pop();
+
+  push();
+  translate(ran_eye2X,ran_eye2Y);
+  texture(img_re);
+  box(100);
+  pop();
+
+  push();
+  translate(ran_mouthX, ran_mouthY);
+  texture(img_m);
+  box(200,80);
+  pop();
+
+  // ellipse(noseX, noseY, d);
+  // ellipse(left_eyeX, left_eyeY, d);
+  // ellipse(right_eyeX, right_eyeY, d);
+  // rectMode(CENTER);
+  // rect(mouseX, mouseY, d);
+
+}
+
+var ran_noseX;
+var ran_noseY;
+var ran_eye1X;
+var ran_eye1Y;
+var ran_eye2X;
+var ran_eye2Y;
+var ran_mouthX;
+var ran_mouthY;
+var position;
+
+function mouseDragged() {
+  orbitControl(sensitivityX, sensitivityY, sensitivityZ);
+}
+
+function mouseClicked() {
+
+
+  position = random(0.1, 0.5);
+  ran_noseX = random(-100, 700);
+  ran_noseY = random(0, 300);
+
+  ran_eye1X = random(50, -500);
+  ran_eye1Y = random(0, -200);
+
+  ran_eye2X = random(50, 600);
+  ran_eye2Y = random(0, -300);
+
+  ran_mouthX = random(50, -400);
+  ran_mouthY = random(0, 400);
+
+  // prevent default
+  return false;
+  cnv.clear();
+}
+
+
+// function mouseReleased() {
+//   return false;
+// }
+
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+
+
+
+
+
+
+// function error(){
+//   cnv.addEventListener('webglcontextlost', (event) => {
+//         cnv.reset();
+//       });
+// }
+
+
+
+// cnv = document.getElementById("myCanvas");
+// cnv.addEventListener("webglcontextlost", function(event) {
+//     event.preventDefault();
+// }, false);
+
+// cnv.addEventListener(
+//     "webglcontextrestored", setupWebGLStateAndResources, false);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// let faceapi;
+// let detections = [];
+
+// let video;
+// let cnv;
+// let angle = 0;
+
+// function setup() {
+//   cnv= createCanvas(1280, 720);
+//   cnv.id('canvas');
+//   video = createCapture(VIDEO);
+//   video.id('video');
+//   video.size(width,height);
+
+//   const faceOptions = {
+//     withLandmarks: true,
+//     withExpressions: true,
+//     withDescriptors: false,
+//     minConfidence: 0.5
+//   }
+
+//   faceapi = ml5.faceApi(video,faceOptions,faceReady);
+// }
+
+// function faceReady(){
+//   faceapi.detect(gotFaces);
+// }
+
+// function gotFaces(error, result){
+//   if (error) {
+//     console.log(error);
+//     return;
+//   }
+
+//   detections = result;
+//   console.log(detections);
+
+//   clear();
+//   drawBoxes(detections);
+//   drawLandmarks(detections);
+
+//   faceapi.detect(gotFaces);
+// }
+
+// function draw() {
+//  noStroke();
+//  texture(video);
+//  plane(1280, 720);
+
+//  angle += 0.03;
+// }
+
+// function drawBoxes(detections){
+
+//   if (detections.length >0) {
+//     for (var i = 0; i < detections.length; i++) {
+//       let x = detections[0].alignedRect._box._x;
+//       let y = detections[0].alignedRect._box._y;
+//       let rectWidth = detections[0].alignedRect._box._width;
+//       let rectHeight = detections[0].alignedRect._box.height;
+
+//       let {_x, _y, _width, _height} = detections[0].alignedRect._box;
+
+//       stroke(44, 169, 225);
+//       strokeWeight(1);
+//       noFill();
+//       rect(_x,_y,_width,_height);
+//     }
+//   }
+
+// }
+
+// function drawLandmarks(detections){
+//   if (detections.length > 0) {
+//     for (var i = 0; i < detections.length; i++) {
+//       let points = detections[i].landmarks.positions;
+
+//       for (var f = 0; f < points.length; f++) {
+//         stroke(44, 169, 255);
+//         strokeWeight(3);
+//         point(points[f]._x, points[f]._y);
+        
+//       }
+      
+//     }
+//   }
+// }
+</script>
