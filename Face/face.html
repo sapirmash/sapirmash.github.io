@@ -48,13 +48,30 @@ var sensitivityY = 1;
 var sensitivityZ = -1000;
 
 function setup(){
-  cnv = createCanvas(windowWidth, windowHeight, WEBGL);
+  cnv = createCanvas(375, 812, WEBGL);
   cnv.id('canvas');
   video = createCapture(VIDEO);
   // video.id('video');
   video.hide();
   poseNet = ml5.poseNet(video, modelReady);
   poseNet.on('pose', gotPoses);
+  background('#000000');
+  var canvas = document.getElementById("canvas");
+  if (canvas) {
+  canvas.addEventListener("webglcontextlost", function(event) {
+      event.preventDefault();
+  }, false);
+  }
+
+  if (canvas) {
+  canvas.addEventListener(
+      "webglcontextrestored", setupWebGLStateAndResources, false);
+  }
+}
+
+function setupWebGLStateAndResources(){
+  setup();
+  draw();
 }
 
 
@@ -99,11 +116,9 @@ function modelReady(){
 }
 
 
-
-
 function draw(){
 
-   background('#000000');
+  background('#000000');
   // var nose = image(video,0,0, 200, 200, noseX - 50/2, noseY-50/2, 50, 50);
   // var left_eye = image(video, 0,0, 300, 200, 200, left_eyeX - 50/2, left_eyeY-50/2, 50, 50);
   // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
@@ -124,25 +139,25 @@ function draw(){
   push();
   texture(img_n);
   translate(ran_noseX, ran_noseY);
-  box(100,200);
+  box(70,170);
   pop();
 
   push();
   translate(ran_eye1X, ran_eye1Y);
   texture(img_le);
-  box(100);
+  box(70);
   pop();
 
   push();
   translate(ran_eye2X,ran_eye2Y);
   texture(img_re);
-  box(100);
+  box(70);
   pop();
 
   push();
   translate(ran_mouthX, ran_mouthY);
   texture(img_m);
-  box(200,80);
+  box(170,50);
   pop();
 
   // ellipse(noseX, noseY, d);
@@ -171,17 +186,18 @@ function mouseClicked() {
 
 
   position = random(0.1, 0.5);
-  ran_noseX = random(-100, 700);
-  ran_noseY = random(0, 300);
+  // ran_noseX = random(-100, 700);
+  ran_noseX = random(-100, 200);
+  ran_noseY = random(-40, 300);
 
-  ran_eye1X = random(50, -500);
-  ran_eye1Y = random(0, -200);
+  ran_eye1X = random(50, -200);
+  ran_eye1Y = random(-100, 400);
 
-  ran_eye2X = random(50, 600);
-  ran_eye2Y = random(0, -300);
+  ran_eye2X = random(50, 200);
+  ran_eye2Y = random(-100, 400);
 
-  ran_mouthX = random(50, -400);
-  ran_mouthY = random(0, 400);
+  ran_mouthX = random(50, -150);
+  ran_mouthY = random(0, 200);
 
   // prevent default
   return false;
@@ -197,52 +213,6 @@ function mouseClicked() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
-
-
-
-
-
-
-
-// function error(){
-//   cnv.addEventListener('webglcontextlost', (event) => {
-//         cnv.reset();
-//       });
-// }
-
-
-
-// cnv = document.getElementById("myCanvas");
-// cnv.addEventListener("webglcontextlost", function(event) {
-//     event.preventDefault();
-// }, false);
-
-// cnv.addEventListener(
-//     "webglcontextrestored", setupWebGLStateAndResources, false);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
