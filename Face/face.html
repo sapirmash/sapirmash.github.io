@@ -56,7 +56,7 @@ let mouseX = 0;
 let pics;
 
 var sensitivityX = 1;
-var sensitivityY = 1;
+var sensitivityY = 200;
 var sensitivityZ = -1000;
 
 
@@ -145,11 +145,11 @@ function draw(){
   // var mouth = image(video, 0,0,0,200, 200, mouseX-50/2, mouseY-50/2, 50, 50);
 
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
-  var img_n = video.get(noseX-d/2,noseY-d/2,d+0.01,d+0.01);
+  var img_n = video.get(noseX-d/2,noseY-d/2,d+0.01, d+0.01);
  
   var img_le = video.get(left_eyeX - d/2,left_eyeY-d/2, d+0.01, d+0.01);
   var img_re = video.get(right_eyeX - d/2, right_eyeY - d/2, d+0.01, d+0.01);
-  var img_m = video.get(mouseX - 50/2, mouseY - 50/2, 50, 50);
+  var img_m = video.get(mouseX - d/2, mouseY - d/2, d+0.01, d+0.01);
   // // image(video, 0,0);
   
   // rotateX(frameCount * 0.01);
@@ -160,7 +160,7 @@ function draw(){
   push();
   texture(img_n);
   translate(ran_noseX, ran_noseY);
-  box(70,170);
+  box(60,120);
   pop();
 
   push();
@@ -178,7 +178,7 @@ function draw(){
   push();
   translate(ran_mouthX, ran_mouthY);
   texture(img_m);
-  box(170,50);
+  box(120,60);
   pop();
 
 
