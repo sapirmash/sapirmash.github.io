@@ -12,13 +12,22 @@
 </html>
 
 <style type="text/css">
+
+  html, body{
+    margin: 0;
+    height: 100%;
+  }
+
   #canvas{
     position: absolute;
-    z-index: 1;
+   /* z-index: 1;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    overflow: hidden;
+    overflow: hidden;*/
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   #video{
@@ -49,8 +58,9 @@ var sensitivityY = 1;
 var sensitivityZ = -1000;
 
 function setup(){
-  cnv = createCanvas(windowWidth, windowHeight, WEBGL);
+  cnv = createCanvas(displayWidth, displayHeight, WEBGL);
   cnv.id('canvas');
+  console.log(windowWidth, windowHeight);
   video = createCapture(VIDEO);
   // video.id('video');
   video.hide();
@@ -198,13 +208,13 @@ function mouseClicked() {
   ran_noseY = random(-170, 270);
 
   ran_eye1X = random(-120, 120);
-  ran_eye1Y = random(-200, 330);
+  ran_eye1Y = random(-250, 300);
 
   ran_eye2X = random(-120, 120);
-  ran_eye2Y = random(-200, 350);
+  ran_eye2Y = random(-250, 300);
 
   ran_mouthX = random(-70, 70);
-  ran_mouthY = random(-200, 370);
+  ran_mouthY = random(-220, 320);
 
   // prevent default
   return false;
