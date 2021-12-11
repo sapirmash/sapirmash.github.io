@@ -5,9 +5,19 @@
   <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@500&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
 </head>
-<body>   
+<body>
+
+<div class="discription">
+  <p>
+    Click and drag to find your best angle 
+  </p>
+</div>  
+
 </body>
 
 </html>
@@ -18,6 +28,34 @@
     margin: 0;
     padding: 0;
     /*height: 100%;*/
+  }
+
+  .discription{
+    background-color: rgb(0,0,0);
+    border: 0.8px solid white;
+    z-index: 1;
+    width: 200px;
+    height: 80px;
+    position: absolute;
+    border-radius: 50px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+    display: flex;
+    align-items: center; 
+  }
+
+  p{
+    font-size: 15px;
+    line-height: 18px;
+    text-align: center;
+    padding: 10px;
+    color: rgb(255,255,255);
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    font-family: 'Work Sans', sans-serif; 
   }
 
   #canvas{
@@ -60,10 +98,6 @@ var sensitivityY = 0;
 var sensitivityZ = -1000;
 
 
-$( document ).ready(function() {
-    
-});
-
 function setup(){
   cnv = createCanvas(displayWidth, displayHeight, WEBGL);
   cnv.id('canvas');
@@ -85,6 +119,7 @@ function setup(){
   canvas.addEventListener(
       "webglcontextrestored", setupWebGLStateAndResources, false);
   }
+
   mouseClicked();
 }
 
@@ -143,6 +178,7 @@ function draw(){
   // var left_eye = image(video, 0,0, 300, 200, 200, left_eyeX - 50/2, left_eyeY-50/2, 50, 50);
   // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
   // var mouth = image(video, 0,0,0,200, 200, mouseX-50/2, mouseY-50/2, 50, 50);
+  
 
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
   var img_n = video.get(noseX-d/2,noseY-d/2,d+0.01, d+0.01);
@@ -150,12 +186,9 @@ function draw(){
   var img_le = video.get(left_eyeX - d/2,left_eyeY-d/2, d+0.01, d+0.01);
   var img_re = video.get(right_eyeX - d/2, right_eyeY - d/2, d+0.01, d+0.01);
   var img_m = video.get(mouseX - d/2, mouseY - d/2, d+0.01, d+0.01);
-  // // image(video, 0,0);
-  
-  // rotateX(frameCount * 0.01);
-  // rotateY(frameCount * 0.01);
+
   rotateY(position);
-  
+
   noStroke();
   push();
   texture(img_n);
