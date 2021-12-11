@@ -18,6 +18,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    overflow: hidden;
   }
 
   #video{
@@ -48,7 +49,7 @@ var sensitivityY = 1;
 var sensitivityZ = -1000;
 
 function setup(){
-  cnv = createCanvas(375, 812, WEBGL);
+  cnv = createCanvas(windowWidth, windowHeight, WEBGL);
   cnv.id('canvas');
   video = createCapture(VIDEO);
   // video.id('video');
@@ -160,6 +161,9 @@ function draw(){
   box(170,50);
   pop();
 
+
+  // translate(-80, 180);
+  // box(170,50);
   // ellipse(noseX, noseY, d);
   // ellipse(left_eyeX, left_eyeY, d);
   // ellipse(right_eyeX, right_eyeY, d);
@@ -184,20 +188,23 @@ function mouseDragged() {
 
 function mouseClicked() {
 
+  // nose y = -170, 270
+  // mouth x = -80, 80
+  //x = -120, 120
 
   position = random(0.1, 0.5);
-  // ran_noseX = random(-100, 700);
-  ran_noseX = random(-100, 200);
-  ran_noseY = random(-40, 300);
 
-  ran_eye1X = random(50, -200);
-  ran_eye1Y = random(-100, 400);
+  ran_noseX = random(-100, 100);
+  ran_noseY = random(-170, 270);
 
-  ran_eye2X = random(50, 200);
-  ran_eye2Y = random(-100, 400);
+  ran_eye1X = random(-120, 120);
+  ran_eye1Y = random(-200, 330);
 
-  ran_mouthX = random(50, -150);
-  ran_mouthY = random(0, 200);
+  ran_eye2X = random(-120, 120);
+  ran_eye2Y = random(-200, 350);
+
+  ran_mouthX = random(-70, 70);
+  ran_mouthY = random(-200, 370);
 
   // prevent default
   return false;
