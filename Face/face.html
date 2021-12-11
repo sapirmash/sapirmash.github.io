@@ -67,7 +67,7 @@ function setup(){
   video.hide();
   poseNet = ml5.poseNet(video, modelReady);
   poseNet.on('pose', gotPoses);
-  background('#000000');
+  background('#ffffff');
   var canvas = document.getElementById("canvas");
   if (canvas) {
   canvas.addEventListener("webglcontextlost", function(event) {
@@ -131,14 +131,15 @@ function modelReady(){
 
 function draw(){
 
-  background('#000000');
+  background('#ffffff');
   // var nose = image(video,0,0, 200, 200, noseX - 50/2, noseY-50/2, 50, 50);
   // var left_eye = image(video, 0,0, 300, 200, 200, left_eyeX - 50/2, left_eyeY-50/2, 50, 50);
   // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
   // var mouth = image(video, 0,0,0,200, 200, mouseX-50/2, mouseY-50/2, 50, 50);
 
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
-  var img_n = video.get(noseX-d/2,noseY-d/2,d+10,d+10);
+  var img_n = video.get(noseX-d/2,noseY-d/2,d,d);
+
   var img_le = video.get(left_eyeX - 50/2,left_eyeY-50/2, 50, 50);
   var img_re = video.get(right_eyeX - 50/2, right_eyeY - 50/2, 50, 50);
   var img_m = video.get(mouseX - 50/2, mouseY - 50/2, 50, 50);
