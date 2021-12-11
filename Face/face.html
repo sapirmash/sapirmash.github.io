@@ -15,7 +15,8 @@
 
   html, body{
     margin: 0;
-    height: 100%;
+    padding: 0;
+    /*height: 100%;*/
   }
 
   #canvas{
@@ -60,7 +61,7 @@ var sensitivityZ = -1000;
 function setup(){
   cnv = createCanvas(displayWidth, displayHeight, WEBGL);
   cnv.id('canvas');
-  console.log(windowWidth, windowHeight);
+  console.log(displayWidth, displayHeight);
   video = createCapture(VIDEO);
   // video.id('video');
   video.hide();
@@ -228,7 +229,7 @@ function mouseClicked() {
 
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(displayWidth, displayHeight);
 }
 
 
