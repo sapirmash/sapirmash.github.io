@@ -61,7 +61,7 @@ var sensitivityZ = -1000;
 
 
 $( document ).ready(function() {
-    console.log( "ready!" );
+    
 });
 
 function setup(){
@@ -73,7 +73,7 @@ function setup(){
   video.hide();
   poseNet = ml5.poseNet(video, modelReady);
   poseNet.on('pose', gotPoses);
-  background('#ffffff');
+  background('#000000');
   var canvas = document.getElementById("canvas");
   if (canvas) {
   canvas.addEventListener("webglcontextlost", function(event) {
@@ -85,6 +85,7 @@ function setup(){
   canvas.addEventListener(
       "webglcontextrestored", setupWebGLStateAndResources, false);
   }
+  mouseClicked();
 }
 
 function setupWebGLStateAndResources(){
@@ -137,7 +138,7 @@ function modelReady(){
 
 function draw(){
 
-  background('#ffffff');
+  background('#000000');
   // var nose = image(video,0,0, 200, 200, noseX - 50/2, noseY-50/2, 50, 50);
   // var left_eye = image(video, 0,0, 300, 200, 200, left_eyeX - 50/2, left_eyeY-50/2, 50, 50);
   // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
@@ -145,9 +146,9 @@ function draw(){
 
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
   var img_n = video.get(noseX-d/2,noseY-d/2,d+0.01,d+0.01);
-  console.log(d);
-  var img_le = video.get(left_eyeX - 50/2,left_eyeY-50/2, 50, 50);
-  var img_re = video.get(right_eyeX - 50/2, right_eyeY - 50/2, 50, 50);
+ 
+  var img_le = video.get(left_eyeX - d/2,left_eyeY-d/2, d+0.01, d+0.01);
+  var img_re = video.get(right_eyeX - d/2, right_eyeY - d/2, d+0.01, d+0.01);
   var img_m = video.get(mouseX - 50/2, mouseY - 50/2, 50, 50);
   // // image(video, 0,0);
   
