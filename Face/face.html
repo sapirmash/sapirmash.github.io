@@ -13,10 +13,27 @@
 <body>
 
 <div id="discription">
-  <p>
+  <p class="intro">
     Click and drag to find your best angle 
   </p>
-</div>  
+</div> 
+
+<div id="frame">
+  <p class="desktop_view">
+    This website can only be viewed on a phone.
+  </p>
+</div> 
+
+<div id="about">
+  <div id="aboutText">
+    <p class="explain">
+    Selfie
+    <br></br>
+    This project explore 
+    </p>
+  </div>
+  <button class="questionButton" id="aboutButton">?</button>
+</div> 
 
 </body>
 
@@ -24,10 +41,90 @@
 
 <style type="text/css">
 
-  html, body{
+html, body{
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Work Sans', sans-serif;
     /*height: 100%;*/
+  }
+
+
+#frame{
+  display: none;
+}
+
+
+@media (min-width:801px) {
+
+  #frame{
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    background: #fff;
+  }
+
+  .desktop_view{
+    font-size: 50px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+}  
+
+.explain{
+  position: relative;
+  color: rgb(255,255,255);
+  padding: 20px;
+  top: 50px;
+  font-size: 26px;
+  line-height: 32px;
+}
+
+#aboutText{
+  position: absolute;
+  display: block;
+  z-index: 200;
+  background-color: rgba(0,0,0,0.7);
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: none;
+}  
+
+.questionButton{
+    width: 60px;
+    height: 60px;
+    top: 0px;
+    right: 0px;
+    font-size: 20px;
+    color: rgb(255,255,255);
+    font-family: 'Work Sans', sans-serif;
+}
+
+button{
+    position: absolute;
+    display: block;
+    z-index: 300;
+    border: none;
+    background-color: transparent;
   }
 
   #discription{
@@ -37,7 +134,6 @@
     width: 300px;
     height: 50px;
     position: absolute;
-    border-radius: 50px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
@@ -46,7 +142,7 @@
     align-items: center; 
   }
 
-  p{
+  .intro{
     font-size: 15px;
     line-height: 18px;
     text-align: center;
@@ -60,29 +156,25 @@
 
   #canvas{
     position: absolute;
-   /* z-index: 1;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden;*/
     display: block;
     width: 100% !important;
     height: 100% !important;
   }
 
-  #video{
+  /*#video{
     position: relative;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-  }
+  }*/
 </style>
 
 <script type="text/javascript">
 
 let video;
-let poseNet;
+
 var cnv;
+let poseNet;
 let noseX = 0;
 let noseY = 0;
 let left_eyeX = 0;
@@ -94,12 +186,24 @@ let mouseX = 0;
 let pics;
 
 var sensitivityX = 1;
-var sensitivityY = 0;
+var sensitivityY = 3;
 var sensitivityZ = -1000;
 
-$('body').click(function(){
-    $("#discription").fadeOut('slow');
-})
+
+
+$("#aboutButton").on("click", function(){
+  $("#aboutText").fadeToggle('fast');
+   $("#aboutButton").text(($("#aboutButton").text() == '?') ? '\u00D7' : '?').fadeIn();                 
+});
+
+// $("#aboutButton").click(function(){
+//     $('canvas').off("click");
+// }); 
+
+$('#discription').fadeOut('slow').delay(10000);
+
+
+if ($(window).width()<801) {
 
 function setup(){
   cnv = createCanvas(displayWidth, displayHeight, WEBGL);
@@ -111,6 +215,8 @@ function setup(){
   poseNet = ml5.poseNet(video, modelReady);
   poseNet.on('pose', gotPoses);
   background('#000000');
+
+  //
   var canvas = document.getElementById("canvas");
   if (canvas) {
   canvas.addEventListener("webglcontextlost", function(event) {
@@ -124,7 +230,9 @@ function setup(){
   }
 
   mouseClicked();
-}
+  
+  }
+
 
 function setupWebGLStateAndResources(){
   setup();
@@ -238,35 +346,41 @@ var ran_mouthX;
 var ran_mouthY;
 var position;
 
-function touchMoved() {
-  orbitControl(sensitivityX, sensitivityY, sensitivityZ);
+
+
+  function mouseClicked() {
+
+    // nose y = -170, 270
+    // mouth x = -80, 80
+    //x = -120, 120
+
+    position = random(0.1, 0.5);
+
+    ran_noseX = random(-100, 100);
+    ran_noseY = random(-170, 270);
+
+    ran_eye1X = random(-120, 120);
+    ran_eye1Y = random(-250, 300);
+
+    ran_eye2X = random(-120, 120);
+    ran_eye2Y = random(-250, 300);
+
+    ran_mouthX = random(-70, 70);
+    ran_mouthY = random(-220, 320);
+
+    // prevent default
+    return false;
+    cnv.clear();
+  }
+
+ 
+  function touchMoved() {
+    orbitControl(sensitivityX, sensitivityY, sensitivityZ);
+    return false;
+  }
+    
+
 }
-
-function mouseClicked() {
-
-  // nose y = -170, 270
-  // mouth x = -80, 80
-  //x = -120, 120
-
-  position = random(0.1, 0.5);
-
-  ran_noseX = random(-100, 100);
-  ran_noseY = random(-170, 270);
-
-  ran_eye1X = random(-120, 120);
-  ran_eye1Y = random(-250, 300);
-
-  ran_eye2X = random(-120, 120);
-  ran_eye2Y = random(-250, 300);
-
-  ran_mouthX = random(-70, 70);
-  ran_mouthY = random(-220, 320);
-
-  // prevent default
-  return false;
-  cnv.clear();
-}
-
 
 // function mouseReleased() {
 //   return false;
