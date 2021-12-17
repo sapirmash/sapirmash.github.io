@@ -10,11 +10,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@500&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
 </head>
-<body>
-
+<body id="body_ID">
+<script src="sketch.js"></script>
 <div id="discription">
   <p class="intro">
-    Click and drag to find your best angle 
+    Click or drag to find your best angle. 
   </p>
 </div> 
 
@@ -190,7 +190,6 @@ var sensitivityY = 3;
 var sensitivityZ = -1000;
 
 
-
 $("#aboutButton").on("click", function(){
   $("#aboutText").fadeToggle('fast');
    $("#aboutButton").text(($("#aboutButton").text() == '?') ? '\u00D7' : '?').fadeIn();                 
@@ -200,8 +199,16 @@ $("#aboutButton").on("click", function(){
 //     $('canvas').off("click");
 // }); 
 
-$('#discription').fadeOut('slow').delay(10000);
 
+$("body").on("click", function(){
+  $("#discription").fadeOut('fast');                 
+});
+// $('#discription').fadeOut('slow').delay(800);
+
+
+// $(document).ready(function(){
+//     $("#body_ID").trigger("click");
+// });
 
 if ($(window).width()<801) {
 
@@ -229,7 +236,9 @@ function setup(){
       "webglcontextrestored", setupWebGLStateAndResources, false);
   }
 
-  mouseClicked();
+  //
+
+  ChangePosition();
   
   }
 
@@ -325,7 +334,6 @@ function draw(){
   box(120,60);
   pop();
 
-
   // translate(-80, 180);
   // box(170,50);
   // ellipse(noseX, noseY, d);
@@ -347,13 +355,12 @@ var ran_mouthY;
 var position;
 
 
-
-  function mouseClicked() {
+function ChangePosition() {
 
     // nose y = -170, 270
     // mouth x = -80, 80
     //x = -120, 120
-
+    
     position = random(0.1, 0.5);
 
     ran_noseX = random(-100, 100);
@@ -367,24 +374,36 @@ var position;
 
     ran_mouthX = random(-70, 70);
     ran_mouthY = random(-220, 320);
-
+    
+   
     // prevent default
     return false;
-    cnv.clear();
+}
+
+var counter = 0;
+
+function mouseClicked(){
+  if (counter>0) {
+    ChangePosition();
   }
+
+  counter++;
+}
 
  
   function touchMoved() {
     orbitControl(sensitivityX, sensitivityY, sensitivityZ);
     return false;
   }
-    
+
+  // function handleMove(){
+  //   orbitControl(sensitivityX, sensitivityY, sensitivityZ);
+  //   return false;
+  // }
+
+  // window.document.body.addEventListener("touchstart", touchMoved(), false);
 
 }
-
-// function mouseReleased() {
-//   return false;
-// }
 
 
 function windowResized() {
