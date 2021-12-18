@@ -185,24 +185,46 @@ let mouseY = 0;
 let mouseX = 0;
 let pics;
 
+var ran_noseX;
+var ran_noseY;
+var ran_eye1X;
+var ran_eye1Y;
+var ran_eye2X;
+var ran_eye2Y;
+var ran_mouthX;
+var ran_mouthY;
+var position;
+
 var sensitivityX = 1;
 var sensitivityY = 3;
 var sensitivityZ = -1000;
 
+var counter = 0;
+
+var disable_refresh_position = false;
+var clicked_about = false;
+
+let loading = true;
+let test = new Date();
+let graphics;
+let text;
+var angle;
+
+
 
 $("#aboutButton").on("click", function(){
+  disable_refresh_position = !disable_refresh_position;
+  clicked_about = true;
   $("#aboutText").fadeToggle('fast');
-   $("#aboutButton").text(($("#aboutButton").text() == '?') ? '\u00D7' : '?').fadeIn();                 
+  $("#aboutButton").text(($("#aboutButton").text() == '?') ? '\u00D7' : '?').fadeIn();                 
 });
-
-// $("#aboutButton").click(function(){
-//     $('canvas').off("click");
-// }); 
+  
 
 
 $("body").on("click", function(){
   $("#discription").fadeOut('fast');                 
 });
+
 // $('#discription').fadeOut('slow').delay(800);
 
 
@@ -222,6 +244,13 @@ function setup(){
   poseNet = ml5.poseNet(video, modelReady);
   poseNet.on('pose', gotPoses);
   background('#000000');
+
+  text = createGraphics(300,300);
+  text.background(0);
+  text.fill(255);
+  text.textAlign(CENTER);
+  text.textSize(40);
+  text.text("loading", 150, 150);
 
   //
   var canvas = document.getElementById("canvas");
@@ -299,7 +328,15 @@ function draw(){
   // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
   // var mouth = image(video, 0,0,0,200, 200, mouseX-50/2, mouseY-50/2, 50, 50);
   
+  if (loading) {
+    texture(text);
+    noStroke();
+    rotateX(frameCount * 0.01);
+    rotateY(frameCount * 0.01);
+    plane(300,300);
+  }
 
+  else{
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
   var img_n = video.get(noseX-d/2,noseY-d/2,d+0.01, d+0.01);
  
@@ -333,7 +370,13 @@ function draw(){
   texture(img_m);
   box(120,60);
   pop();
+  
+  }
 
+
+  if(Date.now() - test > 10000){
+   afterLoad();
+  }
   // translate(-80, 180);
   // box(170,50);
   // ellipse(noseX, noseY, d);
@@ -343,16 +386,6 @@ function draw(){
   // rect(mouseX, mouseY, d);
 
 }
-
-var ran_noseX;
-var ran_noseY;
-var ran_eye1X;
-var ran_eye1Y;
-var ran_eye2X;
-var ran_eye2Y;
-var ran_mouthX;
-var ran_mouthY;
-var position;
 
 
 function ChangePosition() {
@@ -380,13 +413,17 @@ function ChangePosition() {
     return false;
 }
 
-var counter = 0;
+
+var afterLoad = function(){
+  loading = false;
+}
+
 
 function mouseClicked(){
-  if (counter>0) {
+  if (counter>0 && !disable_refresh_position && !clicked_about) {
     ChangePosition();
   }
-
+  clicked_about = false;
   counter++;
 }
 
@@ -396,12 +433,6 @@ function mouseClicked(){
     return false;
   }
 
-  // function handleMove(){
-  //   orbitControl(sensitivityX, sensitivityY, sensitivityZ);
-  //   return false;
-  // }
-
-  // window.document.body.addEventListener("touchstart", touchMoved(), false);
 
 }
 
