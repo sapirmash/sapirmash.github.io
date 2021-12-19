@@ -27,13 +27,19 @@
 <div id="about">
   <div id="aboutText">
     <p class="explain">
-    Selfie
+    Portrait
     <br></br>
-    This project explore 
+    This project explore a new way to create a portrait using 3D and face detection technology. 
+    You can play around with your face to create a portrait by clicking and draging until you find your best angle. 
+    Have fun!
+
+    Site by Sapir Mashiach
     </p>
   </div>
   <button class="questionButton" id="aboutButton">?</button>
 </div> 
+
+
 
 </body>
 
@@ -93,6 +99,8 @@ html, body{
   font-size: 26px;
   line-height: 32px;
 }
+
+
 
 #aboutText{
   position: absolute;
@@ -216,16 +224,16 @@ var fade;
 var fadeAmount = 1
 
 
-navigator.permissions.query({ name: "camera" }).then(res => {
-    if(res.state == "granted"){
-       setup();
-       draw();
-    }
+// navigator.permissions.query({ name: "camera" }).then(res => {
+//     if(res.state == "granted"){
+//        setup();
+//        draw();
+//     }
 
-    else{
-      return null;
-    }
-});
+//     else{
+//       return null;
+//     }
+// });
 
 
 $("#aboutButton").on("click", function(){
@@ -234,7 +242,6 @@ $("#aboutButton").on("click", function(){
   $("#aboutText").fadeToggle('fast');
   $("#aboutButton").text(($("#aboutButton").text() == '?') ? '\u00D7' : '?').fadeIn();                 
 });
-  
 
 
 $("body").on("click", function(){
@@ -248,6 +255,8 @@ setTimeout(function(){
 }, 12000);
 
 
+
+var removeBtn;
 if ($(window).width()<801) {
 
 function setup(){
@@ -255,7 +264,7 @@ function setup(){
   cnv.id('canvas');
   console.log(displayWidth, displayHeight);
   video = createCapture(VIDEO);
-  fade = 0
+  fade = 0;
   // video.id('video');
   video.hide();
   poseNet = ml5.poseNet(video, modelReady);
@@ -267,7 +276,16 @@ function setup(){
   text.fill(255);
   text.textAlign(CENTER);
   text.textSize(40);
-  text.text("loading", 150, 150);
+  text.text("loading...", 150, 150);
+
+//   removeBtn = createButton("Save Canvas");
+//   removeBtn.position(200, 200);
+//   removeBtn.mousePressed(saveToFile);
+
+//   function saveToFile() {
+//   // Save the current canvas to file as png
+//   saveCanvas(cnv, 'canvas', 'png')
+// }
 
   //
   var canvas = document.getElementById("canvas");
