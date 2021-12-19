@@ -117,6 +117,7 @@ html, body{
     font-size: 20px;
     color: rgb(255,255,255);
     font-family: 'Work Sans', sans-serif;
+    display: none;
 }
 
 button{
@@ -137,20 +138,21 @@ button{
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    justify-content: center;
-    display: flex;
-    align-items: center; 
+    /*justify-content: center;*/
+    display: none;
+    /*align-items: center; */
   }
 
   .intro{
     font-size: 15px;
     line-height: 18px;
     text-align: center;
-    padding: 10px;
+    padding: 15px;
     color: rgb(255,255,255);
     justify-content: center;
-    display: flex;
+    /*display: flex;*/
     align-items: center;
+    margin: auto;
     font-family: 'Work Sans', sans-serif; 
   }
 
@@ -210,6 +212,20 @@ let graphics;
 let text;
 var angle;
 
+var fade;
+var fadeAmount = 1
+
+
+navigator.permissions.query({ name: "camera" }).then(res => {
+    if(res.state == "granted"){
+       setup();
+       draw();
+    }
+
+    else{
+      return null;
+    }
+});
 
 
 $("#aboutButton").on("click", function(){
@@ -225,12 +241,12 @@ $("body").on("click", function(){
   $("#discription").fadeOut('fast');                 
 });
 
-// $('#discription').fadeOut('slow').delay(800);
 
+setTimeout(function(){
+   $('#discription').fadeIn('slow');
+   $("#aboutButton").fadeIn('slow');
+}, 12000);
 
-// $(document).ready(function(){
-//     $("#body_ID").trigger("click");
-// });
 
 if ($(window).width()<801) {
 
@@ -239,6 +255,7 @@ function setup(){
   cnv.id('canvas');
   console.log(displayWidth, displayHeight);
   video = createCapture(VIDEO);
+  fade = 0
   // video.id('video');
   video.hide();
   poseNet = ml5.poseNet(video, modelReady);
@@ -374,7 +391,7 @@ function draw(){
   }
 
 
-  if(Date.now() - test > 10000){
+  if(Date.now() - test > 12000){
    afterLoad();
   }
   // translate(-80, 180);
