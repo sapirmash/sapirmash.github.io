@@ -224,10 +224,13 @@ var fade;
 var fadeAmount = 1
 
 
-navigator.permissions.query({name:'camera'}).then(function(result) {
- if (result.state == 'granted') {
+// navigator.permissions.query({name:'camera'}).then(function(result) {
+//  if (result.state == 'granted') {
 
+   
+//  } 
 
+// });
 $("#aboutButton").on("click", function(){
   disable_refresh_position = !disable_refresh_position;
   clicked_about = true;
@@ -245,6 +248,10 @@ setTimeout(function(){
    $('#discription').fadeIn('slow');
    $("#aboutButton").fadeIn('slow');
 }, 12000);
+
+
+
+
 
 
 if ($(window).width()<801) {
@@ -354,9 +361,9 @@ function draw(){
   if (loading) {
     texture(text);
     noStroke();
-    rotateX(frameCount * 0.01);
-    rotateY(frameCount * 0.01);
-    plane(300,300);
+    rotateX(frameCount * 0.1);
+    rotateY(frameCount * 0.1);
+    plane(200,200);
   }
 
   else{
@@ -461,10 +468,6 @@ function mouseClicked(){
 
 }
 
-   
- } 
-
-});
 
 
 function windowResized() {
