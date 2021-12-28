@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener"></a>
+		</div>
+
+		<script type="x-shader/x-vertex" id="sem-vs">
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 e = normalize( vec3( modelViewMatrix * vec4( position, .5 ) ) );
+        vec3 n = normalize( normalMatrix * normal );
+
+        vec3 r = reflect( e, n );
+        float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );
+        vN = r.xy / m + .5;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
+
+      }
+
+    </script>
+
+    <script type="x-shader/x-vertex" id="sem-fs">
+
+      uniform sampler2D tMatCap;
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 base = texture2D( tMatCap, vN ).rgb;
+        gl_FragColor = vec4( base, 1.0 );
+
+      }
+
+    </script>
+
+
+		<script type="module">
+
+			import * as THREE from '/build/three.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+			import { Reflector } from '/examples/jsm/objects/Reflector.js';
+			import { RGBELoader } from '/examples/jsm/loaders/RGBELoader.js';
+			// import {Stats} from '/examples/jsm/libs/stats.module.js';
+			import { GUI } from '/examples/jsm/libs/dat.gui.module.js';
+			import { RectAreaLightUniformsLib } from '/examples/jsm/lights/RectAreaLightUniformsLib.js';
+
+			
+			// scene size
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+
+			var SHADOW_MAP_WIDTH = WIDTH, SHADOW_MAP_HEIGHT = HEIGHT;
+
+			// camera
+			var VIEW_ANGLE = 35;
+			var ASPECT = WIDTH / HEIGHT;
+			var NEAR = 1;
+			var FAR = 25000;
+
+			var camera, scene, renderer, light1, cube, cylinder, box, sphere, sky, cone, sphere2;
+			var halfSphere;
+			var half;
+
+			var mouseX = 0, mouseY = 0;
+
+			var y1=0;
+
+			var x1 = 0;
+  			var z1 =0;
+
+  			var new_texture;
+
+  			var windowHalfX = window.innerWidth / 2;
+      		var windowHalfY = window.innerHeight / 2;
+
+			//new code
+			var material_new;
+			var dirLight;
+
+			var count = 0, cubeCamera, cubeRenderTarget;
+
+			var wavecounter = 0;
+			var width2 = 200, height2 = 200, width_segments =1, height_segments = 100;
+			var plane;
+			var mesh2;
+
+				init();
+				animate();
+
+			////////////
+
+			function init() {
+
+			  		// scene
+					scene = new THREE.Scene();
+
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false )
+		            document.addEventListener( 'wheel', onDocumentWheel, false );
+
+					var container = document.getElementById( 'container' );
+
+					// renderer
+					renderer = new THREE.WebGLRenderer( { antialias: true } );
+					renderer.setPixelRatio( window.devicePixelRatio );
+					renderer.setSize( WIDTH, HEIGHT );
+					container.appendChild( renderer.domElement );
+					// renderer.setClearColor('#D6A99A');
+					renderer.setClearColor('#F0BDAD');
+					
+					// renderer.setClearColor('#E3B3A3');
+			
+					
+
+					renderer.shadowMap.enabled = true;
+	        		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+					// camera
+					camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+					camera.position.z = 2300;
+	        		camera.position.y = 1000;
+
+
+	        		var controls = new OrbitControls( camera, renderer.domElement );
+	        		controls.minDistance = 2300;
+    				controls.maxDistance = 100;
+    				controls.update();
+	      
+
+	        		var fogs = [
+			          0xBDE3F4,
+			          0x1A1F21,
+			          0xf2eedd
+			        ]
+
+	        		scene.fog = new THREE.Fog( 0xFFFFFF, 1, 25000 );
+
+        			//LIGHTS
+
+        		  	light1 = new THREE.SpotLight( 0xffffff, 0.3, 0, Math.PI / 2 );
+			        light1.position.set( 2000, 4000, -3000 );
+			        light1.target.position.set( 1, 1, 1 );
+
+			        light1.castShadow = true;
+
+			        light1.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 20, 10, 100, 20000 ) );
+			        light1.shadow.bias = 0.0001;
+			        light1.shadow.camera.near = NEAR;
+			        light1.shadow.camera.far = FAR;
+			        light1.shadow.camera.fov = 15;
+
+			        light1.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+			        light1.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+			        light1.shadow.camera.right    =  50000;
+			        light1.shadow.camera.left     = -50000;
+			        light1.shadow.camera.top      =  50000;
+			        light1.shadow.camera.bottom   = -50000;
+
+			        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8 );
+				    hemiLight.position.set( 100, 500, 0 );
+				    scene.add( hemiLight );
+
+				    dirLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+			        dirLight.position.set( -3000, 4000, 3000 );
+			 
+			        scene.add( dirLight );
+
+			        dirLight.castShadow = true;
+
+			        dirLight.shadow.mapSize.width = 3048;
+			        dirLight.shadow.mapSize.height = 3048;
+
+			        var d = 1500;
+
+			        dirLight.shadow.camera.left = -d;
+			        dirLight.shadow.camera.right = d;
+			        dirLight.shadow.camera.top = d;
+			        dirLight.shadow.camera.bottom = -d;
+			        dirLight.shadow.camera.near = 40;
+			        dirLight.shadow.camera.far = 10000;
+			        dirLight.shadow.bias = 0.00001;
+			        dirLight.shadow.darkness = 0.2;
+
+			     	// Cube_texture
+			    	var path = "examples/textures/cube/skyboxsun25deg/";
+		        	var format = '.jpg';
+		        	var urls = [
+		            path + 'px' + format, path + 'nx' + format,
+		            path + 'py' + format, path + 'ny' + format,
+		            path + 'pz' + format, path + 'nz' + format
+		          ];
+
+
+					var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+				   var refractionCube = new THREE.CubeTextureLoader().load( urls );
+			       refractionCube.mapping = THREE.SphericalReflectionMapping;
+			       refractionCube.format = THREE.RGBFormat;
+
+			       reflectionCube.mapping = THREE.SphericalReflectionMapping;
+
+		  			// scene.background = refractionCube;
+
+
+				 var iridescent = new THREE.ShaderMaterial( {
+
+		          uniforms: { 
+		            tMatCap: {type: 't', value: new_texture },
+		          },
+          
+		          vertexShader: document.getElementById( 'sem-vs' ).textContent,
+		          fragmentShader: document.getElementById( 'sem-fs' ).textContent,
+		          flatShading: THREE.SmoothShading
+		          
+		        } );
+
+
+					//new code
+
+					var options = {
+						generateMipmaps: true,
+						minFilter: THREE.LinearMipmapLinearFilter,
+						magFilter: THREE.LinearFilter
+					};
+
+
+					var textureLoader = new THREE.TextureLoader();
+					var textureLoader2 = new THREE.TextureLoader();
+					var textureLoader3 = new THREE.TextureLoader();
+
+					var new_texture = textureLoader.load( 'examples/textures/cube/skyboxsun25deg/ny.JPG' );
+					new_texture.mapping = THREE.UVMapping;
+					new_texture.repeat.set( 50 ,50);
+					new_texture.wrapS = new_texture.wrapT = THREE.RepeatWrapping;
+					new_texture.magFilter = THREE.LinearFilter;
+					new_texture.anisotropy = renderer.getMaxAnisotropy();
+					
+
+					 const params = {
+						color: '#DBA9A2', 
+						// color: '#F0BDAD', 
+						transmission: 0.10,
+						envMapIntensity: 0.5,
+						lightIntensity: 0.4,
+						exposure: 1
+					};
+
+					//floor
+					var geometry = new THREE.BoxBufferGeometry( 2050, 1600, 20);
+					var material = new THREE.MeshPhongMaterial({ 
+					color:"#A84B31",
+					// color:'#DB684B' 
+					side:THREE.front
+					});
+					cube = new THREE.Mesh( geometry, material );
+					scene.add(cube);
+					cube.position.y = -700;
+					cube.position.z = -1260;
+					cube.rotation.x = Math.PI/2;
+
+					cube.position.x = -10;
+					
+					cube.receiveShadow = true;
+					cube.castShadow = true;
+
+
+					//mirror
+					var geometry = new THREE.SphereBufferGeometry( 120, 120, 30);
+					var verticalMirror = new Reflector( geometry, {
+						clipBias: 0.003,
+						textureWidth: WIDTH * window.devicePixelRatio,
+						textureHeight: HEIGHT * window.devicePixelRatio,
+						color: 0x889999,
+						side:THREE.BothSide,
+						recursion: 1
+					} );
+					verticalMirror.position.x = -690;
+					verticalMirror.position.y = -570;
+					// verticalMirror.position.z = -1300;
+					verticalMirror.position.z = -1300;
+					// scene.add( verticalMirror );
+					verticalMirror.receiveShadow = true;
+					verticalMirror.castShadow = true;
+
+
+
+					// ball shape 
+					var geometry = new THREE.SphereBufferGeometry( 140, 140, 30 );
+					var material = new THREE.MeshPhysicalMaterial({
+					color: params.color,
+					metalness: 0,
+					// roughness: 0.5,
+					clearcoat: 1,
+					reflectivity: 1,
+					alphaMap: new_texture,
+					alphaTest: 0.6,
+					envMap: reflectionCube,
+					envMapIntensity: params.envMapIntensity,
+					depthWrite: false,
+					transmission: params.transmission, // use material.transmission for glass materials
+					opacity: 1, // set material.opacity to 1 when material.transmission is non-zero
+					transparent: true
+					} );
+					sphere = new THREE.Mesh( geometry, material );
+					scene.add(sphere);
+					sphere.position.x = -690;
+					sphere.position.y = -550;
+					sphere.position.z = -1450;
+					sphere.receiveShadow = true;
+					sphere.castShadow = true;
+
+
+
+
+					var geometryball = new THREE.SphereBufferGeometry( 50, 50, 30 );
+					var materialball = new THREE.MeshPhysicalMaterial({
+					color: '#F0BDAD',
+					} );
+					sphere2 = new THREE.Mesh( geometryball, materialball );
+					scene.add(sphere2);
+					sphere2.position.x = 490;
+					sphere2.position.y = -75;
+					sphere2.position.z = -1250;
+					sphere2.receiveShadow = true;
+					sphere2.castShadow = true;
+
+
+					
+
+
+                var brokeShape = new THREE.Shape();
+                brokeShape.moveTo( 100 , 0 );
+                //middle bottom left
+                brokeShape.lineTo( 100, -200 );
+                //middle top left
+                brokeShape.lineTo( 200, -200);
+                //middle top right
+                brokeShape.lineTo( 200, -400);
+                //right top left
+                brokeShape.lineTo( 300, -400);
+                //right top right
+                brokeShape.lineTo( 300, -600);
+                brokeShape.lineTo( 400, -600);
+                brokeShape.lineTo( 400, -800);
+                brokeShape.lineTo( 500, -800);
+                brokeShape.lineTo( 500, -1000);
+
+                brokeShape.lineTo( 600, -1000);
+                brokeShape.lineTo( 600, -1200);
+
+                brokeShape.lineTo( 700, -1200);
+                brokeShape.lineTo( 700, -1400);
+
+                brokeShape.lineTo( 800, -1400);
+                brokeShape.lineTo( 800, -1600);
+
+                brokeShape.lineTo( -100, -1600);
+                //bottom right
+                brokeShape.lineTo( -100, -600);
+                //bottom left
+                brokeShape.lineTo( -100, 0);
+
+                var extrudeSettings = { amount: 250, bevelEnabled: false, material: 0, extrudeMaterial: 0 };
+                var geometry = new THREE.ExtrudeGeometry( brokeShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						color: '#CC7356', 
+					});
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.position.x = -360;
+                mesh.position.y = -630;
+                mesh.position.z = -850;
+                mesh.rotation.z =Math.PI/2;
+                scene.add(mesh);
+                mesh.scale.set(0.65,0.65,0.65);
+                mesh.receiveShadow = true;
+				mesh.castShadow = true;
+
+
+                var brokeShape1 = new THREE.Shape();
+                brokeShape1.moveTo( 300 , 0 );
+                //middle bottom left
+                brokeShape1.lineTo( 300, -200 );
+                //middle top left
+                brokeShape1.lineTo( 400, -200);
+                //middle top right
+                brokeShape1.lineTo( 400, -400);
+                //right top left
+                brokeShape1.lineTo( 500, -400);
+                //right top right
+                brokeShape1.lineTo( 500, -600);
+                brokeShape1.lineTo( 600, -600);
+                brokeShape1.lineTo( 600, -800);
+                brokeShape1.lineTo( 700, -800);
+                brokeShape1.lineTo( 700, -1000);
+
+                brokeShape1.lineTo( 800, -1000);
+                brokeShape1.lineTo( 800, -1200);
+
+                brokeShape1.lineTo( 900, -1200);
+                brokeShape1.lineTo( 900, -1400);
+
+                brokeShape1.lineTo( 1000, -1400);
+                brokeShape1.lineTo( 1000, -1600);
+
+                brokeShape1.lineTo( 1100, -1600);
+                brokeShape1.lineTo( 1100, -1800);
+
+                brokeShape1.lineTo( 1200, -1800);
+                brokeShape1.lineTo( 1200, -2000);
+
+                brokeShape1.lineTo( 1300, -2000);
+                brokeShape1.lineTo( 1300, -2200);
+
+                brokeShape1.lineTo( -300, -2200);
+
+                //new lines to createthe dor
+                brokeShape1.lineTo( -300, -2100);
+
+                brokeShape1.lineTo( 800, -2100);
+
+                brokeShape1.lineTo( 800, -1600);
+
+                brokeShape1.lineTo( -300, -1600);
+                /////////
+
+                //bottom right
+                brokeShape1.lineTo( -300, -600);
+                //bottom left
+                brokeShape1.lineTo( -300, 0);
+
+
+                var extrudeSettings1 = { amount: 250, bevelEnabled: false, material: 0, extrudeMaterial: 0 };
+                var geometry1 = new THREE.ExtrudeGeometry( brokeShape1, extrudeSettings1 );
+                var material1 = new THREE.MeshPhongMaterial ({ 
+						color: '#B3654B', 
+					});
+                var mesh1 = new THREE.Mesh( geometry1, material1 );
+                mesh1.position.x = 680;
+                mesh1.position.y = -592;
+                mesh1.position.z = -880;
+                mesh1.rotation.z =Math.PI/2;
+                mesh1.rotation.y= Math.PI;    
+                scene.add(mesh1);
+		        mesh1.scale.set(0.65,0.65,0.65);
+		        mesh1.receiveShadow = true;
+				mesh1.castShadow = true;
+
+		
+
+				var stairs = new THREE.Shape();
+                stairs.moveTo( 700 , 0 );
+                //middle bottom left
+                stairs.lineTo( 700, -200 );
+                //middle top left
+                stairs.lineTo( 800, -200);
+                //middle top right
+                stairs.lineTo( 800, -400);
+                //right top left
+                stairs.lineTo( 900, -400);
+                //right top right
+                stairs.lineTo( 900, -600);
+                stairs.lineTo( 1000, -600);
+                stairs.lineTo( 1000, -800);
+                stairs.lineTo( 1100, -800);
+                stairs.lineTo( 1100, -1000);
+
+                stairs.lineTo( 1200, -1000);
+                stairs.lineTo( 1200, -1200);
+
+                stairs.lineTo( 1300, -1200);
+                stairs.lineTo( 1300, -1400);
+
+                stairs.lineTo( 1400, -1400);
+                stairs.lineTo( 1400, -1600);
+
+                stairs.lineTo( -700, -1600);
+                //bottom right
+                stairs.lineTo( -700, -600);
+                //bottom left
+                stairs.lineTo( -700, 0);
+
+                var extrudeSettings3 = { amount: 250, bevelEnabled: false, material: 0, extrudeMaterial: 0 };
+                var geometry3 = new THREE.ExtrudeGeometry( stairs, extrudeSettings3 );
+                var material3 = new THREE.MeshPhongMaterial ({ 
+						color: '#995640', 
+					});
+                var mesh3 = new THREE.Mesh( geometry3, material3 );
+                mesh3.position.x = -360;
+                mesh3.position.y = -120;
+                mesh3.position.z = -1350;
+                mesh3.rotation.z =Math.PI/2;
+                // scene.add(mesh3);
+                mesh3.scale.set(0.7,0.7,0.7);
+                mesh3.receiveShadow = true;
+				mesh3.castShadow = true;
+
+
+				var shape = new THREE.Shape();
+
+				shape.moveTo( 900 , -1400 );
+				shape.lineTo( 900, -1000);
+				shape.lineTo( 300, -1000);
+				shape.lineTo( 300, -1400);
+                stairs.holes.push( shape );
+				
+                var extrudeSettings3 = { amount: 250, bevelEnabled: false};
+                var geometry3 = new THREE.ExtrudeGeometry( stairs, extrudeSettings3 );
+                var material3 = new THREE.MeshPhongMaterial ({ 
+						color:"#995640",
+					});
+                var w = new THREE.Mesh( geometry3, material3 );
+                w.position.x = -350;
+                w.position.y = -320;
+                w.position.z = -1350;
+                w.rotation.z = Math.PI/2;
+                scene.add(w);
+                w.scale.set(0.65,0.65,0.65);
+                w.receiveShadow = true;
+				w.castShadow = true;
+
+
+		        //arch
+                var c = 260;
+                //new shape 
+				var boxShape = new THREE.Shape();
+                boxShape.moveTo( 980, 0 );
+                //bottom right
+                boxShape.lineTo( 580, 0);
+                //bottom right inner
+                boxShape.lineTo( 430, 0);
+                //top right inner
+                boxShape.lineTo( 430, 550);
+                //top left inner
+                boxShape.lineTo( 435, 1100);
+
+                boxShape.lineTo( -125, 1100);
+
+                boxShape.lineTo( -120, 550);
+                //bottom left inner
+                boxShape.lineTo( -120, 0);
+                //bottom left
+                boxShape.lineTo( -250, 0 );
+                //top left
+                boxShape.lineTo( -250, 1572);
+                //top right
+                boxShape.lineTo( 2000, 1572);
+                //bottom right
+                boxShape.lineTo( 2000, 0);
+             	
+                var extrudeSettings = { amount: 200, bevelEnabled: false, material: 0, extrudeMaterial: 0, curveSegments:80 };
+                var geometry = new THREE.ExtrudeGeometry( boxShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						color: '#995640',
+						// color: '#DABB9F',
+					});
+                var mesh2 = new THREE.Mesh( geometry, material );
+                mesh2.position.x = -600;
+                mesh2.position.y = -560;
+                mesh2.position.z = -1030;
+                // mesh2.rotation.y= Math.PI/-2;              
+                // scene.add(mesh2);
+                mesh2.scale.set(0.7,0.7,0.7);
+
+
+                //narrow door
+        
+                ///////
+                boxShape.moveTo( 800, 0 );
+                //bottom right
+                boxShape.lineTo( 800, 0);
+                //bottom right inner
+                boxShape.lineTo( 630, 0);
+                //top right inner
+                boxShape.lineTo( 630, 550);
+                //top left inner
+                boxShape.lineTo( 635, 1000);
+
+                boxShape.lineTo( -285, 1000);
+
+                boxShape.lineTo( -280, 550);
+                //bottom left inner
+                boxShape.lineTo( -280, 0);
+                //bottom left
+                boxShape.lineTo( -450, 0 );
+                //top left
+                boxShape.lineTo( -450, 1200);
+                //top right
+                boxShape.lineTo( 800, 1200);
+                //bottom right
+                boxShape.lineTo( 800, 0);
+
+                //arch
+                var c = 260;
+                //new shape 
+				var boxShape = new THREE.Shape();
+                boxShape.moveTo( 580, 0 );
+                //bottom right
+                boxShape.lineTo( 580, 0);
+                //bottom right inner
+                boxShape.lineTo( 430, 0);
+                //top right inner
+                boxShape.lineTo( 430, 550);
+                //top left inner
+                // boxShape.lineTo( -80, 600);
+                boxShape.bezierCurveTo( 175+c, 1000, 175-c, 1000, -80, 550);
+                //bottom left inner
+                boxShape.lineTo( -80, 0);
+                //bottom left
+                boxShape.lineTo( -250, 0 );
+                //top left
+                boxShape.lineTo( -250, 1000);
+                //top right
+                boxShape.lineTo( 590, 1000);
+                //bottom right
+                boxShape.lineTo( 590, 0);
+             
+                var extrudeSettings = { amount: 120, bevelEnabled: false, material: 0, extrudeMaterial: 0, curveSegments:80 };
+                var geometry = new THREE.ExtrudeGeometry( boxShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						color: '#66261B',
+						// color: '#DABB9F',
+					});
+                var mesh2 = new THREE.Mesh( geometry, material );
+                mesh2.position.x = 35;
+                mesh2.position.y = -545;
+                mesh2.position.z = -980;
+                // mesh2.rotation.y= Math.PI/-2;              
+                // scene.add(mesh2);
+
+      	
+}
+
+		
+		function animate(){
+
+		// box.position.x = Math.sin(y1)*40+30;
+		// cone.rotation.z += 0.02;
+
+		// sphere.position.z -= Math.sin(z1) * Math.PI * 0.6;
+		// sphere.position.x += Math.sin(z1) * Math.PI * 0.9;
+		// half.position.y += 0.5;
+		y1 += 0.04;
+		x1 += 0.01;
+  		z1 += 0.03;
+
+		
+		requestAnimationFrame(animate);
+		render();
+	}
+	
+	function onDocumentMouseMove(event) {
+
+        mouseX = ( event.clientX - windowHalfX );
+        mouseY = ( event.clientY - windowHalfY );
+
+      }
+
+
+      function onDocumentWheel(event) {
+        event.preventDefault();
+        //mag = event.deltaY * 0.0008;
+      }
+
+       window.onresize = function(event) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+      };  
+
+	
+	function render(){
+
+		
+
+		camera.position.x += ( mouseX - camera.position.x ) * .05;
+        camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 800 ) - camera.position.y ) * .05, 50, 1000 );
+
+        dirLight.position.x += ( mouseX - dirLight.position.x - 1000 ) * .05;
+
+        camera.lookAt( scene.position );
+		// plane.verticesNeedUpdate = true;
+		renderer.render( scene, camera );
+	}
+
+
+		
+
+		</script>
+	</body>
+</html>

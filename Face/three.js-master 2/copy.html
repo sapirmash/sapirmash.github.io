@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body>
+		<!-- <script src="https://threejs.org/build/three.min.js"></script> -->
+
+		<div id="container"></div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener"></a>
+		</div>
+
+		<script type="x-shader/x-vertex" id="vertexShader">
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 e = normalize( vec3( modelViewMatrix * vec4( position, .5 ) ) );
+        vec3 n = normalize( normalMatrix * normal );
+
+        vec3 r = reflect( e, n );
+        float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );
+        vN = r.xy / m + .5;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
+
+      }
+
+    </script>
+
+    <script type="x-shader/x-vertex" id="fragmentShader">
+
+      uniform sampler2D tMatCap;
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 base = texture2D( tMatCap, vN ).rgb;
+        gl_FragColor = vec4( base, 1.0 );
+
+      }
+
+    </script>
+
+
+		<script type="module">
+
+			import * as THREE from '/build/three.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+			import { Reflector } from '/examples/jsm/objects/Reflector.js';
+			import { RGBELoader } from '/examples/jsm/loaders/RGBELoader.js';
+
+			import { GUI } from '/examples/jsm/libs/dat.gui.module.js';
+
+			
+			// scene size
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+
+			var SHADOW_MAP_WIDTH = WIDTH, SHADOW_MAP_HEIGHT = HEIGHT;
+
+			// camera
+			var VIEW_ANGLE = 35;
+			var ASPECT = WIDTH / HEIGHT;
+			var NEAR = 1;
+			var FAR = 25000;
+
+			var camera, scene, renderer, light1, cube, cylinder, box, sphere, material;
+
+			var cubeCamera;
+
+			var mouseX = 0, mouseY = 0;
+
+			var y1=0;
+
+
+			init();
+			// animate();
+
+			function init() {
+
+		  		// scene
+				scene = new THREE.Scene();
+
+				var container = document.getElementById( 'container' );
+
+				// renderer
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( WIDTH, HEIGHT );
+				container.appendChild( renderer.domElement );
+				renderer. setClearColor('#DEBDAF');
+
+				renderer.shadowMap.enabled = true;
+        		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+				// camera
+				camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+				// camera.position.set( 0, 75, 160 );
+				camera.position.z = 2000;
+        		camera.position.y = 200;
+        		// camera.position.x += ( mouseX - camera.position.x ) * .05;
+        		// camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 600 ) - camera.position.y ) * .05, 50, 500 );
+       			// camera.lookAt( scene.position );
+
+    //    			var options = {
+				// 	generateMipmaps: true,
+				// 	minFilter: THREE.LinearMipmapLinearFilter,
+				// 	magFilter: THREE.LinearFilter
+				// };
+
+
+        		var fogs = [
+		          0xBDE3F4,
+		          0x1A1F21,
+		          0xf2eedd
+		        ]
+
+        		scene.fog = new THREE.Fog( 0xFFFFFF, 1, 25000 );
+
+        		//LIGHTS
+
+        		  	light1 = new THREE.SpotLight( 0xffffff, 0.3, 0, Math.PI / 2 );
+			        light1.position.set( 2000, 4000, -3000 );
+			        light1.target.position.set( 1, 1, 1 );
+
+			        light1.castShadow = true;
+
+			        light1.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 20, 10, 100, 20000 ) );
+			        light1.shadow.bias = 0.0001;
+			        light1.shadow.camera.near = NEAR;
+			        light1.shadow.camera.far = FAR;
+			        light1.shadow.camera.fov = 15;
+
+			        light1.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+			        light1.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+			        light1.shadow.camera.right    =  50000;
+			        light1.shadow.camera.left     = -50000;
+			        light1.shadow.camera.top      =  50000;
+			        light1.shadow.camera.bottom   = -50000;
+
+			        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8 );
+				    hemiLight.position.set( 100, 500, 0 );
+				    scene.add( hemiLight );
+
+				    var dirLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+			        //dirLight.color.setHSL( 0.1, 1, 0.95 );
+			        dirLight.position.set( -3000, 4000, 3000 );
+			        //dirLight.position.multiplyScalar( 50 );
+			        scene.add( dirLight );
+
+			        dirLight.castShadow = true;
+
+			        dirLight.shadow.mapSize.width = 3048;
+			        dirLight.shadow.mapSize.height = 3048;
+
+			        var d = 1500;
+
+			        dirLight.shadow.camera.left = -d;
+			        dirLight.shadow.camera.right = d;
+			        dirLight.shadow.camera.top = d;
+			        dirLight.shadow.camera.bottom = -d;
+			        dirLight.shadow.camera.near = 40;
+			        dirLight.shadow.camera.far = 10000;
+			        dirLight.shadow.bias = 0.00001;
+			        dirLight.shadow.darkness = 0.2;
+
+			     
+			    var path = "examples/textures/cube/skyboxsun25deg/";
+		        var format = '.jpg';
+		        var urls = [
+		            path + 'px' + format, path + 'nx' + format,
+		            path + 'py' + format, path + 'ny' + format,
+		            path + 'pz' + format, path + 'nz' + format
+		          ];
+
+		  //    var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+		
+
+				// var shader = THREE.ShaderLib["cube"];
+		  //       shader.uniforms["tCube"].value = textureCube;
+
+		  //       var material = new THREE.ShaderMaterial({
+
+		  //           fragmentShader: shader.fragmentShader,
+		  //           vertexShader: shader.vertexShader,
+		  //           uniforms: shader.uniforms,
+		  //           depthWrite: false,
+		  //           side: THREE.DoubleSide
+
+		  //       });
+
+
+
+
+		  		var refractionCube = new THREE.CubeTextureLoader().load( urls );
+		        refractionCube.mapping = THREE.CubeRefractionMapping;;
+		        refractionCube.format = THREE.RGBFormat;
+
+		        // Create cube camera
+
+		  // 		var cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 256, { format: THREE.RGBFormat, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter } );
+				// cubeCamera = new THREE.CubeCamera( 1, 1000, cubeRenderTarget );
+				// scene.add( cubeCamera );
+
+
+				//floor Shape
+					var geometry = new THREE.BoxGeometry( 800, 800, 20);
+					var material = new THREE.MeshLambertMaterial({ 
+						color: '#FFC0B2',		
+						side:THREE.front,
+						envMap: refractionCube
+						// color: 0xffffff,
+						// envMap: cubeRenderTarget.texture,
+						// side: THREE.DoubleSide
+					});
+					cube = new THREE.Mesh( geometry, material );
+					scene.add(cube);
+					
+					cube.rotation.y = 0;
+					cube.rotation.x = Math.PI/2;
+					cube.rotation.z = Math.PI/4;
+
+					cube.position.x = 0;
+					cube.receiveShadow = true;
+					cube.castShadow = true;
+
+					
+				// Cylinder shape 
+					var geometry = new THREE.CylinderGeometry( 15, 15, 400, 32 );
+					var material = new THREE.MeshPhysicalMaterial({
+						color: 0xef9393,
+						emissive: 0xce7f7f,
+						metalness: 1,
+						roughness: 0.5,
+						clearcoat: 0.3,
+						reflectivity: 1,
+						side:THREE.DoubleSide,
+						envMap: refractionCube
+					} );
+					cylinder = new THREE.Mesh( geometry, material );
+					
+					cylinder.position.x = 200;
+					cylinder.receiveShadow = true;
+					scene.add( cylinder );
+					cylinder.castShadow = true;
+
+					
+				// ball shape 
+					var geometry = new THREE.SphereGeometry( 35, 35, 30 );
+					var material = new THREE.MeshPhysicalMaterial({
+						color: '#ffe9ec',
+						emissive: 0xdd6767,
+						metalness: 0.5,
+						roughness: 0,
+						clearcoat: 1,
+						reflectivity: 0.3,
+						side:THREE.back
+					} );
+					sphere = new THREE.Mesh( geometry, material );
+					scene.add( sphere);
+					sphere.position.x = 50;
+					sphere.position.y = 48;
+					sphere.position.z = 20;
+					sphere.receiveShadow = true;
+					sphere.castShadow = true;
+
+
+					var geometry = new THREE.SphereGeometry( 35, 35, 30 );
+					var material = new THREE.MeshPhysicalMaterial({
+						color: '#ffe9ec',
+						emissive: 0xdd6767,
+						metalness: 0.5,
+						roughness: 0,
+						clearcoat: 1,
+						reflectivity: 1,
+						side:THREE.back
+					} );
+					sphere = new THREE.Mesh( geometry, material );
+					scene.add( sphere);
+					sphere.position.x = 50;
+					sphere.position.y = 48;
+					sphere.position.z = 20;
+					sphere.receiveShadow = true;
+					sphere.castShadow = true;
+
+					
+				//box Shape
+					var geometry = new THREE.BoxGeometry( 150, 300, 10);
+					var material = new THREE.MeshLambertMaterial ({ 
+						color: 0xffee00,
+						// emissive:0xffe7e7,
+						// envMap: refractionCube, 
+						combine: THREE.MixOperation, 
+						reflectivity: 0.8,
+						side:THREE.DoubleSide,
+						refractionRatio: .95,
+						envMap: refractionCube
+					});
+					box = new THREE.Mesh( geometry, material );
+					scene.add(box);
+					
+					box.rotation.y = Math.PI/6;
+					box.rotation.z = -10;
+
+					box.position.x = -120;
+					box.position.z = 400;
+					box.position.y = 300;
+					box.receiveShadow = true;
+					box.castShadow = true;
+			}
+
+		function animate(){
+	
+		cylinder.position.y = Math.sin(y1)*20+300;
+		box.rotation.y += 0.01;
+		y1 += 0.02;		
+		
+		requestAnimationFrame(animate);
+		render();
+	}
+	
+	
+	function render(){
+		// cube.visible = false;
+		// cubeCamera.position.copy(cube.position);
+		// cubeCamera.updateCubeMap(renderer, scene);
+		// cube.visible = true;
+	
+		renderer.render( scene, camera );
+	}
+
+
+
+	// 				var geometry = new THREE.BoxGeometry( 120, 300, 20);
+	// 				var groundMirror = new Reflector( geometry, {
+	// 				clipBias: 0.3,
+	// 				textureWidth: WIDTH * window.devicePixelRatio,
+	// 				textureHeight: HEIGHT * window.devicePixelRatio,
+	// 				color: 0x889999
+	// 				} );
+
+
+	// 				groundMirror.rotation.y = Math.PI/6;
+	// 				groundMirror.rotation.z = -10;
+
+	// 				groundMirror.position.x = -100;
+	// 				groundMirror.position.z = 400;
+	// 				groundMirror.position.y = 300;
+	// 				scene.add( groundMirror );
+
+		</script>
+	</body>
+</html>
