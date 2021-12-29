@@ -47,9 +47,9 @@
   <button class="questionButton" id="aboutButton">?</button>
 </div> 
 
-<div id="download" onclick="download_image()">
+<div >
 <button calss="downloadButton">
-<a download="myImage.jpg"  href="">Download</a>
+<a id="download" onclick="download_image()" download="myImage.jpg"  href="">Download</a>
 </button>
 </div>
 
@@ -508,7 +508,6 @@ function ChangePosition(name) {
 }
 
 function onMouseClick() {
-  
   // ChangePosition();
   if (counter>0 && !disable_refresh_position && !clicked_about) {
   	// getRandomArbitrary();
