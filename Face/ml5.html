@@ -210,8 +210,7 @@ $("#button_loader").click(function(){
 if( buttonclicked!= true ) { 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
-    video: true,
-    facingMode: 'user'
+    video: { facingMode: "user" }
   }).then(function(stream) {
     video.srcObject = stream;
     video.play();
