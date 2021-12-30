@@ -210,7 +210,8 @@ $("#button_loader").click(function(){
 if( buttonclicked!= true ) { 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
-    video: true
+    video: true,
+    facingMode: 'user'
   }).then(function(stream) {
     video.srcObject = stream;
     video.play();
@@ -221,7 +222,7 @@ $("#loading-screen").fadeOut('slow');
 else{ 
     alert("Button was clicked before"); 
 } 
-}); 
+});  
 
 	
  // Create a webcam capture
