@@ -12,10 +12,10 @@
 
 <body id="body_ID">
 
-<section id="loading-screen">
+<!-- <section id="loading-screen">
 	<div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div>
 	<button id="button_loader">Continue</button>
-</section>
+</section> -->
   
   <div id="container"></div>
 
@@ -228,24 +228,24 @@ if ($(window).width()<801) {
 // });
 
 
-var buttonclicked; 
-$("#button_loader").click(function(){ 
-if( buttonclicked!= true ) { 
-if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-          const constraints = { video: { width: 640, height: 480, facingMode: 'user' } };
-          navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
-            // apply the stream to the video element used in the texture
-            video.srcObject = stream;
-            video.play();
-          } ).catch( function ( error ) {
-            console.error( 'Unable to access the camera/webcam.', error );
-          } );
-        } else {
-          console.error( 'MediaDevices interface not available.' );
-        }  
-$("#loading-screen").fadeOut('slow');      
-}
-});
+// var buttonclicked; 
+// $("#button_loader").click(function(){ 
+// if( buttonclicked!= true ) { 
+// if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+//           const constraints = { video: { width: 640, height: 480, facingMode: 'user' } };
+//           navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
+//             // apply the stream to the video element used in the texture
+//             video.srcObject = stream;
+//             video.play();
+//           } ).catch( function ( error ) {
+//             console.error( 'Unable to access the camera/webcam.', error );
+//           } );
+//         } else {
+//           console.error( 'MediaDevices interface not available.' );
+//         }  
+// $("#loading-screen").fadeOut('slow');      
+// }
+// });
 
 
 
@@ -254,14 +254,16 @@ $("#loading-screen").fadeOut('slow');
 
 	
  // Create a webcam capture
-// if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-//   navigator.mediaDevices.getUserMedia({
-//     video: true
-//   }).then(function(stream) {
-//     video.srcObject = stream;
-//     video.play();
-//   });
-// } 
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({
+    video: {  
+    facingMode: 'user',
+  }
+  }).then(function(stream) {
+    video.srcObject = stream;
+    video.play();
+  });
+} 
 
 
 init();
