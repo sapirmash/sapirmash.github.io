@@ -23,10 +23,10 @@
   
   <div id="container"></div>
 
-  <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
-  <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
-  <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
-  <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
+  <canvas id="canvas04" width="50" height="50" style="display: none"></canvas>
+  <canvas id="canvas01" width="50" height="50" style="display: none"></canvas>
+  <canvas id="canvas02" width="50" height="50" style="display: none"></canvas>
+  <canvas id="Mycanvas" width="50" height="50" style="display: none"></canvas>
   <video id="video" width="640" height="480" autoplay style="display: none"></video>
 
 
@@ -574,7 +574,7 @@ function render() {
   material03.map.needsUpdate = true;
 
   camera.position.x += (mouseX - camera.position.x) * .05;
-  dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
+  // dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
 
   camera.lookAt(scene.position);
   renderer.render(scene, camera);
