@@ -23,10 +23,10 @@
   
   <div id="container"></div>
 
-  <canvas id="canvas04" width="50" height="50" style="display: none"></canvas>
-  <canvas id="canvas01" width="50" height="50" style="display: none"></canvas>
-  <canvas id="canvas02" width="50" height="50" style="display: none"></canvas>
-  <canvas id="Mycanvas" width="50" height="50" style="display: none"></canvas>
+  <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
+  <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
+  <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
+  <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
   <video id="video" width="640" height="480" autoplay style="display: none"></video>
 
 
@@ -453,7 +453,7 @@ function init() {
   cube02.position.y = -30;
   cube02.position.z = 0;
   cube02.rotation.y = getRandomArbitrary(0.1, 0.5);
-  scene.add(cube02);
+  // scene.add(cube02);
 
 
   var geometry02 = new THREE.BoxGeometry(50, 50, 50);
@@ -465,7 +465,7 @@ function init() {
   cube03.position.y = 80;
   cube03.position.z = 0;
   cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
-  scene.add(cube03);
+  // scene.add(cube03);
 
   var geometry03 = new THREE.BoxGeometry(90, 30, 30);
   material03 = new THREE.MeshBasicMaterial({
@@ -476,7 +476,7 @@ function init() {
   cube04.position.y = 100;
   cube04.position.z = 0;
   cube04.rotation.y = getRandomArbitrary(0.1, 0.5);
-  scene.add(cube04);
+  // scene.add(cube04);
 
 
 }
@@ -492,34 +492,34 @@ function ChangePosition() {
   var boxes_distance04 = 0;
   var boxes_distance05 = 0;
   var boxes_distance06 = 0;
-  do {
+  // do {
 	  cube01.rotation.y = getRandomArbitrary(0.1, 0.5);
-	  cube02.rotation.y = getRandomArbitrary(0.1, 0.5);
-	  cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
-	  cube04.rotation.y = getRandomArbitrary(0.1, 0.5);
+	  // cube02.rotation.y = getRandomArbitrary(0.1, 0.5);
+	  // cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
+	  // cube04.rotation.y = getRandomArbitrary(0.1, 0.5);
 
 	  cube01.position.x = getRandomArbitrary(-55, 55);
 	  cube01.position.y = getRandomArbitrary(-140, 140);
 
-	  cube02.position.x = getRandomArbitrary(-50, 50);
-	  cube02.position.y = getRandomArbitrary(-150, 150);
+	  // cube02.position.x = getRandomArbitrary(-50, 50);
+	  // cube02.position.y = getRandomArbitrary(-150, 150);
 
-	  cube03.position.x = getRandomArbitrary(-50, 50);
-	  cube03.position.y = getRandomArbitrary(-150, 150);
+	  // cube03.position.x = getRandomArbitrary(-50, 50);
+	  // cube03.position.y = getRandomArbitrary(-150, 150);
 
-	  cube04.position.x = getRandomArbitrary(-45, 45);
-	  cube04.position.y = getRandomArbitrary(-155, 155);
+	  // cube04.position.x = getRandomArbitrary(-45, 45);
+	  // cube04.position.y = getRandomArbitrary(-155, 155);
 
-	  boxes_distance = dist(cube01.position.x, cube01.position.y,  cube02.position.x, cube02.position.y);
-	  boxes_distance02 = dist(cube02.position.x, cube02.position.y,  cube03.position.x, cube03.position.y);
-	  boxes_distance03 = dist(cube01.position.x, cube01.position.y,  cube03.position.x, cube03.position.y);
-	  boxes_distance04 = dist(cube03.position.x, cube03.position.y,  cube04.position.x, cube04.position.y);
-	  boxes_distance05 = dist(cube02.position.x, cube02.position.y,  cube04.position.x, cube04.position.y);
-	  boxes_distance06 = dist(cube01.position.x, cube01.position.y,  cube04.position.x, cube04.position.y);
-  }
-  while(boxes_distance < 100 || boxes_distance02 < 100 || boxes_distance03 < 100 || boxes_distance04 < 100 || boxes_distance05 < 100 || boxes_distance06 < 100)
+	  // boxes_distance = dist(cube01.position.x, cube01.position.y,  cube02.position.x, cube02.position.y);
+	  // boxes_distance02 = dist(cube02.position.x, cube02.position.y,  cube03.position.x, cube03.position.y);
+	  // boxes_distance03 = dist(cube01.position.x, cube01.position.y,  cube03.position.x, cube03.position.y);
+	  // boxes_distance04 = dist(cube03.position.x, cube03.position.y,  cube04.position.x, cube04.position.y);
+	  // boxes_distance05 = dist(cube02.position.x, cube02.position.y,  cube04.position.x, cube04.position.y);
+	  // boxes_distance06 = dist(cube01.position.x, cube01.position.y,  cube04.position.x, cube04.position.y);
+  // }
+  // while(boxes_distance < 100 || boxes_distance02 < 100 || boxes_distance03 < 100 || boxes_distance04 < 100 || boxes_distance05 < 100 || boxes_distance06 < 100)
   // prevent default
-  return false;
+  // return false;
 }
 
 function getOffset(el) {
@@ -569,9 +569,9 @@ function animate() {
 
 function render() {
   material.map.needsUpdate = true;
-  material01.map.needsUpdate = true;
-  material02.map.needsUpdate = true;
-  material03.map.needsUpdate = true;
+  // material01.map.needsUpdate = true;
+  // material02.map.needsUpdate = true;
+  // material03.map.needsUpdate = true;
 
   camera.position.x += (mouseX - camera.position.x) * .05;
   // dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
