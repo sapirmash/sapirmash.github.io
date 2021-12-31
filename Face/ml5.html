@@ -342,7 +342,7 @@ function init() {
   controls.update();
 
 
-  video = document.getElementById("video");
+
   const loadingManager = new THREE.LoadingManager( () => {
 	
 		const loadingScreen = document.getElementById( 'loading-screen' );
@@ -405,12 +405,12 @@ function init() {
   dirLight.shadow.bias = 0.00001;
   dirLight.shadow.darkness = 0.2;
 
-
+  video = document.getElementById("video");
   if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
           var constraints = {
              video: {
-                facingMode: "user"
-             }
+                facingMode: { exact: 'user' }
+             },
           };
           navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
             // apply the stream to the video element used in the texture
