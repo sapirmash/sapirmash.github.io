@@ -6,7 +6,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
    <link rel="stylesheet" href="selfie.css">
 </head>
@@ -252,7 +251,7 @@ if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
 } 
 
 
-const options = { flipHorizontal: true, minConfidence: 0.5 }
+// const options = { flipHorizontal: true, minConfidence: 0.5 }
 
 init();
 animate();
@@ -260,7 +259,7 @@ animate();
 
 
 // Create a new poseNet method with a single detection
-poseNet = ml5.poseNet(video, options, modelReady);
+poseNet = ml5.poseNet(video, modelReady);
 poseNet.on("pose", gotPoses);
 
 
