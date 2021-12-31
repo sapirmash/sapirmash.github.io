@@ -7,6 +7,10 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  
+  <script src="/build/three.min.js"></script>
+  <script src="/examples/js/controls/OrbitControls.js"></script>
+
   <link rel="stylesheet" href="selfie.css">
 </head>
 
@@ -69,22 +73,23 @@
 </body>
 
 
-<script type="module">
-  
+<script type="text/javascript">
+// type="module"
 
-import * as THREE from '/Face/build/three.module.js';
-import { OrbitControls } from '/Face/examples/jsm/controls/OrbitControls.js';
-import { Reflector } from '/Face/examples/jsm/objects/Reflector.js';
-import { RGBELoader } from '/Face/examples/jsm/loaders/RGBELoader.js';
-import { GUI } from '/Face/examples/jsm/libs/dat.gui.module.js';
-import { RectAreaLightUniformsLib } from '/Face/examples/jsm/lights/RectAreaLightUniformsLib.js';
-import { ColladaLoader } from '/Face/examples/jsm/loaders/ColladaLoader.js';		
+
+// import * as THREE from '/Face/build/three.module.js';
+// import { OrbitControls } from '/Face/examples/jsm/controls/OrbitControls.js';
+// import { Reflector } from '/Face/examples/jsm/objects/Reflector.js';
+// import { RGBELoader } from '/Face/examples/jsm/loaders/RGBELoader.js';
+// import { GUI } from '/Face/examples/jsm/libs/dat.gui.module.js';
+// import { RectAreaLightUniformsLib } from '/Face/examples/jsm/lights/RectAreaLightUniformsLib.js';
+// import { ColladaLoader } from '/Face/examples/jsm/loaders/ColladaLoader.js';		
+
 // scene size
 var WIDTH = window.innerWidth;
 var HEIGHT = window.innerHeight;
 
-var SHADOW_MAP_WIDTH = WIDTH,
-  SHADOW_MAP_HEIGHT = HEIGHT;
+var SHADOW_MAP_WIDTH = WIDTH, SHADOW_MAP_HEIGHT = HEIGHT;
 
 // camera
 var VIEW_ANGLE = 35;
@@ -345,7 +350,7 @@ function init() {
   camera.position.z = 281;
   camera.position.y = 0;
 
-  var controls = new OrbitControls(camera, renderer.domElement);
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.minDistance = 600;
   controls.maxDistance = 600;
   controls.enablePan = false;
