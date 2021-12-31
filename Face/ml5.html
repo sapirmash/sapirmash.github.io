@@ -134,6 +134,7 @@ var ran_eye2Y;
 var ran_mouthX;
 var ran_mouthY;
 var position;
+var poseNet;
 
 var counter = 0;
 var disable_refresh_position = false;
@@ -232,10 +233,7 @@ if ($(window).width()<801) {
 //     video.play();
 //   });
 // } 
-
-
-
-  if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
           var constraints = {
              video: {
                 facingMode:  'user'
@@ -258,7 +256,7 @@ animate();
 
 
 // Create a new poseNet method with a single detection
-const poseNet = ml5.poseNet(video, modelReady);
+poseNet = ml5.poseNet(video, modelReady);
 poseNet.on("pose", gotPoses);
 
 
