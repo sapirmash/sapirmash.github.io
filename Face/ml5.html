@@ -46,19 +46,13 @@
     <br></br>
     is an experimental project that explores a new way to create a selfie using 3D rendering and face detection technologies. 
     You can play around by clicking and dragging until you find your best angle. 
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br></br>
-    <br>
-    <br>
+    </p>
+    <p class="credits">
     Technologies:
     <br>
     Three.js & ml5js (PoseNet)
     <br></br>
-    Desgin and coding:
+    Design and coding:
     <br>
     Sapir Mashiach
     </p>
@@ -248,22 +242,37 @@ if ($(window).width()<801) {
 // });
 
 
-
+if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+          var constraints = {
+             video: {
+                facingMode: "environment"
+             }
+          };
+          navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
+            // apply the stream to the video element used in the texture
+            video.srcObject = stream;
+            video.play();
+          } ).catch( function ( error ) {
+            console.error( 'Unable to access the camera/webcam.', error );
+          } );
+} else {
+          console.error( 'MediaDevices interface not available.' );
+}  
 
         
 
 	
  // Create a webcam capture
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({
-    video: {  
-    facingMode: 'user',
-  }
-  }).then(function(stream) {
-    video.srcObject = stream;
-    video.play();
-  });
-} 
+// if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+//   navigator.mediaDevices.getUserMedia({
+//     video: {  
+//     facingMode: 'user',
+//   }
+//   }).then(function(stream) {
+//     video.srcObject = stream;
+//     video.play();
+//   });
+// } 
 
 
 init();
