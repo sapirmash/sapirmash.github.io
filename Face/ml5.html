@@ -222,7 +222,22 @@ if ($(window).width()<801) {
 // });
 
 
- 
+  if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
+          var constraints = {
+             video: {
+                facingMode: { exact: 'user' }
+             },
+          };
+          navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
+            // apply the stream to the video element used in the texture
+            video.srcObject = stream;
+            video.play();
+          } ).catch( function ( error ) {
+            console.error( 'Unable to access the camera/webcam.', error );
+          } );
+} else {
+          console.error( 'MediaDevices interface not available.' );
+}  
 
         
 
@@ -404,25 +419,6 @@ function init() {
   dirLight.shadow.camera.far = 10000;
   dirLight.shadow.bias = 0.00001;
   dirLight.shadow.darkness = 0.2;
-
-  video = document.getElementById("video");
-  if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-          var constraints = {
-             video: {
-                facingMode: { exact: 'user' }
-             },
-          };
-          navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
-            // apply the stream to the video element used in the texture
-            video.srcObject = stream;
-            video.play();
-          } ).catch( function ( error ) {
-            console.error( 'Unable to access the camera/webcam.', error );
-          } );
-} else {
-          console.error( 'MediaDevices interface not available.' );
-} 
-
 
   var nose_texture = new THREE.CanvasTexture(nose_canvas);
   var eye_texture = new THREE.CanvasTexture(eye_canvas);
