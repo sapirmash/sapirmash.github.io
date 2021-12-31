@@ -245,7 +245,7 @@ if ($(window).width()<801) {
 if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
           var constraints = {
              video: {
-                facingMode: "environment"
+                facingMode: "user"
              }
           };
           navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
