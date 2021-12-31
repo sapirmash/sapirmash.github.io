@@ -234,19 +234,11 @@ if ($(window).width()<801) {
 // } 
 
 
-init();
-animate();
-// ChangePosition();
-
-
-// Create a new poseNet method with a single detection
-const poseNet = ml5.poseNet(video, modelReady);
-poseNet.on("pose", gotPoses);
 
   if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
           var constraints = {
              video: {
-                facingMode: { exact: 'user' }
+                facingMode:  'user'
              },
           };
           navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
@@ -259,6 +251,16 @@ poseNet.on("pose", gotPoses);
 } else {
           console.error( 'MediaDevices interface not available.' );
 } 
+
+init();
+animate();
+// ChangePosition();
+
+
+// Create a new poseNet method with a single detection
+const poseNet = ml5.poseNet(video, modelReady);
+poseNet.on("pose", gotPoses);
+
 
 // Get the linear interpolation between two value
 function lerp(value1, value2, amount) {
