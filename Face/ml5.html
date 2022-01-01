@@ -31,7 +31,7 @@
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video id="video" width="640" height="480" autoplay style="display: none"></video>
+  <video id="video" width="640" height="480" style="display: none"></video>
 
 
   <div id="discription">
@@ -444,7 +444,8 @@ function init() {
   dirLight.shadow.darkness = 0.2;
 
   var nose_texture = new THREE.CanvasTexture(nose_canvas);
-  nose_texture.mapping = THREE.UVMapping; 
+  nose_texture.mapping = THREE.UVMapping;
+  nose_texture.needsUpdate = true; 
   var eye_texture = new THREE.CanvasTexture(eye_canvas);
   var eye2_texture = new THREE.CanvasTexture(eye2_canvas);
   var mouth_texture = new THREE.CanvasTexture(mouth_canvas);
@@ -562,6 +563,7 @@ function onMouseClick(e) {
   }
 
   clicked_about = false;
+  material.map.needsUpdate = true;
   // counter++;
 }
 
