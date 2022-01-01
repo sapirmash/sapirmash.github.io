@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" Set-Cookie: flavor=choco; SameSite=None; Secure>
 
 <head>
   <title></title>
@@ -12,8 +12,8 @@
   <script src="https://sapirmash.github.io/Face/examples/js/controls/OrbitControls.js"></script>
 
 
-  <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script> -->
-  <!-- <script src="https://unpkg.com/@tensorflow-models/posenet@1.0.3/dist/posenet.min.js"></script> -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+  <script src="https://unpkg.com/@tensorflow-models/posenet@1.0.3/dist/posenet.min.js"></script> -->
 
   <link rel="stylesheet" href="selfie.css">
 </head>
@@ -340,7 +340,7 @@ function gotPoses(results) {
 
 function modelReady() {
   console.log("model ready");
-  // poseNet.multiPose(video);
+  poseNet.multiPose(video);
 }
 
 
@@ -469,7 +469,7 @@ function init() {
   cube02.position.y = -30;
   cube02.position.z = 0;
   cube02.rotation.y = getRandomArbitrary(0.1, 0.5);
-  scene.add(cube02);
+  // scene.add(cube02);
 
 
   var geometry02 = new THREE.BoxGeometry(50, 50, 50);
@@ -481,7 +481,7 @@ function init() {
   cube03.position.y = 80;
   cube03.position.z = 0;
   cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
-  scene.add(cube03);
+  // scene.add(cube03);
 
   var geometry03 = new THREE.BoxGeometry(90, 30, 30);
   material03 = new THREE.MeshBasicMaterial({
@@ -492,7 +492,7 @@ function init() {
   cube04.position.y = 100;
   cube04.position.z = 0;
   cube04.rotation.y = getRandomArbitrary(0.1, 0.5);
-  scene.add(cube04);
+  // scene.add(cube04);
 
 
 }
@@ -508,23 +508,23 @@ function ChangePosition() {
   var boxes_distance04 = 0;
   var boxes_distance05 = 0;
   var boxes_distance06 = 0;
-  do {
+  // do {
 	  cube01.rotation.y = getRandomArbitrary(0.1, 0.5);
-	  cube02.rotation.y = getRandomArbitrary(0.1, 0.5);
-	  cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
-	  cube04.rotation.y = getRandomArbitrary(0.1, 0.5);
+	  // cube02.rotation.y = getRandomArbitrary(0.1, 0.5);
+	  // cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
+	  // cube04.rotation.y = getRandomArbitrary(0.1, 0.5);
 
 	  cube01.position.x = getRandomArbitrary(-55, 55);
 	  cube01.position.y = getRandomArbitrary(-140, 140);
 
-	  cube02.position.x = getRandomArbitrary(-50, 50);
-	  cube02.position.y = getRandomArbitrary(-150, 150);
+	  // cube02.position.x = getRandomArbitrary(-50, 50);
+	  // cube02.position.y = getRandomArbitrary(-150, 150);
 
-	  cube03.position.x = getRandomArbitrary(-50, 50);
-	  cube03.position.y = getRandomArbitrary(-150, 150);
+	  // cube03.position.x = getRandomArbitrary(-50, 50);
+	  // cube03.position.y = getRandomArbitrary(-150, 150);
 
-	  cube04.position.x = getRandomArbitrary(-45, 45);
-	  cube04.position.y = getRandomArbitrary(-155, 155);
+	  // cube04.position.x = getRandomArbitrary(-45, 45);
+	  // cube04.position.y = getRandomArbitrary(-155, 155);
 
 	  boxes_distance = dist(cube01.position.x, cube01.position.y,  cube02.position.x, cube02.position.y);
 	  boxes_distance02 = dist(cube02.position.x, cube02.position.y,  cube03.position.x, cube03.position.y);
@@ -532,10 +532,10 @@ function ChangePosition() {
 	  boxes_distance04 = dist(cube03.position.x, cube03.position.y,  cube04.position.x, cube04.position.y);
 	  boxes_distance05 = dist(cube02.position.x, cube02.position.y,  cube04.position.x, cube04.position.y);
 	  boxes_distance06 = dist(cube01.position.x, cube01.position.y,  cube04.position.x, cube04.position.y);
-  }
-  while(boxes_distance < 100 || boxes_distance02 < 100 || boxes_distance03 < 100 || boxes_distance04 < 100 || boxes_distance05 < 100 || boxes_distance06 < 100)
+  // }
+  // while(boxes_distance < 100 || boxes_distance02 < 100 || boxes_distance03 < 100 || boxes_distance04 < 100 || boxes_distance05 < 100 || boxes_distance06 < 100)
   // prevent default
-  return false;
+  // return false;
 }
 
 function getOffset(el) {
@@ -572,15 +572,14 @@ window.onresize = function(event) {
 
 function animate() {
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
-  ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
-  ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
-  ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
-  ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
 
-  material.map.needsUpdate = true;
-  material01.map.needsUpdate = true;
-  material02.map.needsUpdate = true;
-  material03.map.needsUpdate = true;
+  ctx.drawImage(video, 0, 0, 100, 100, 0, 0, 300, 300);
+
+
+  // ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
+  // ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
+  // ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
+  // ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
   requestAnimationFrame(animate);
   render();
 }
@@ -589,6 +588,10 @@ function animate() {
 
 function render() {
 
+  material.map.needsUpdate = true;
+  // material01.map.needsUpdate = true;
+  // material02.map.needsUpdate = true;
+  // material03.map.needsUpdate = true;
 
   camera.position.x += (mouseX - camera.position.x) * .05;
   dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
