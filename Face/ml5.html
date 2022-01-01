@@ -5,15 +5,15 @@
   <title></title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  <!-- <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script> -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   
   <script src="https://sapirmash.github.io/Face/build/three.min.js"></script>
   <script src="https://sapirmash.github.io/Face/examples/js/controls/OrbitControls.js"></script>
 
 
-  <!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
-  <script src="https://unpkg.com/@tensorflow-models/posenet@1.0.3/dist/posenet.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+  <script src="https://unpkg.com/@tensorflow-models/posenet@1.0.3/dist/posenet.min.js"></script>
 
   <link rel="stylesheet" href="selfie.css">
 </head>
@@ -281,8 +281,8 @@ animate();
 
 
 // Create a new poseNet method with a single detection
-poseNet = ml5.poseNet(video, modelReady);
-poseNet.on("pose", gotPoses);
+// poseNet = ml5.poseNet(video, modelReady);
+// poseNet.on("pose", gotPoses);
 
 
 // Get the linear interpolation between two value
@@ -340,7 +340,7 @@ function gotPoses(results) {
 
 function modelReady() {
   console.log("model ready");
-  poseNet.multiPose(video);
+  // poseNet.multiPose(video);
 }
 
 
