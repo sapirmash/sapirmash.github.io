@@ -32,7 +32,7 @@
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
   <video autoplay muted playsinline id="video" width="
-828" height="1792" style="opacity:0;z-index:-1000 height:0; width: 0;"></video>
+640" height="480" style="opacity:0;z-index:-1000 height:0; width: 0;"></video>
 
 
   <div id="discription">
@@ -154,6 +154,12 @@ var clicked_dis = false;
 var download_mouseIsOver = false;
 
 var video = document.getElementById("video");
+const videoWidth = 640;
+const videoHeight = 480;
+video.width = videoWidth;
+video.height = videoHeight;
+// const stats = new _stats2.default();
+
 
 var nose_canvas = document.getElementById("canvas04");
 var ctx = nose_canvas.getContext("2d");
@@ -233,12 +239,30 @@ animate();
 //     alert("Button was clicked before"); 
 // } 
 // });
-	
+
+function isAndroid() {
+  return (/Android/i.test(navigator.userAgent)
+  );
+}
+
+function isiOS() {
+  return (/iPhone|iPad|iPod/i.test(navigator.userAgent)
+  );
+}
+
+function isMobile() {
+  return isAndroid() || isiOS();
+}
+
+ const mobile = isMobile();	
  // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
-    facingMode: 'user',
+     
+      facingMode: 'user',
+      width: mobile ? undefined : videoWidth,
+      height: mobile ? undefined : videoHeight
     // frameRate: {ideal: 5, max: 10}
   }
   }).then(function(stream) {
