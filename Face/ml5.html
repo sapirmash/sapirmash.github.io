@@ -5,7 +5,7 @@
   <title></title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <!-- <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script> -->
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   
   <script src="https://sapirmash.github.io/Face/build/three.min.js"></script>
@@ -280,8 +280,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
 
 // Create a new poseNet method with a single detection
-// poseNet = ml5.poseNet(video, modelReady);
-// poseNet.on("pose", gotPoses);
+poseNet = ml5.poseNet(video, modelReady);
+poseNet.on("pose", gotPoses);
 
 
 // Get the linear interpolation between two value
@@ -339,7 +339,7 @@ function gotPoses(results) {
 
 function modelReady() {
   console.log("model ready");
-  // poseNet.multiPose(video);
+  poseNet.multiPose(video);
 }
 
 
@@ -579,15 +579,16 @@ window.onresize = function(event) {
 function animate() {
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
 
-  ctx.drawImage(video, 0, 0, 100, 100, 0, 0, 300, 300);
+  // ctx.drawImage(video, 0, 0, 100, 100, 0, 0, 300, 300);
   // cube01.position.needsUpdate = true;
-  cube01.geometry.normalsNeedUpdate = true;
-  cube01.geometry.verticesNeedUpdate = true; 
-  material.map.needsUpdate = true;
-  // ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
+ 
+  ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   // ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   // ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
   // ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
+  cube01.geometry.normalsNeedUpdate = true;
+  cube01.geometry.verticesNeedUpdate = true; 
+  material.map.needsUpdate = true;
   requestAnimationFrame(animate);
   render();
 }
