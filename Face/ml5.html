@@ -167,34 +167,6 @@ var mouth_canvas = document.getElementById("canvas02");
 var ctx03 = mouth_canvas.getContext("2d");
 
 
-var first = true;
-
-function onMouseClick(e) {
-
-  if (first == true) {
-    init();
-    animate();
-    first = false;
-  }
-  var download_x = getOffset(document.getElementById("download")).left;
-  var download_y = getOffset(document.getElementById("download")).top;
-  var info_x = getOffset(document.getElementById("aboutButton")).left;
-  var info_y = getOffset(document.getElementById("aboutButton")).top;
-  var click_x = e.pageX;
-  var click_y = e.pageY;
-  var download_clicked = Math.abs(click_x - download_x) < 35 && Math.abs(click_y - download_y) < 25;
-  var info_clicked = Math.abs(click_x - info_x) < 35 && Math.abs(click_y - info_y) < 25;
-  
-  if (!disable_refresh_position && !clicked_about && !download_clicked && !info_clicked) {
-    ChangePosition();
-  }
-  
-  clicked_about = false;
-  material.map.needsUpdate = true;
-  // counter++;
-}
-
-document.addEventListener( 'pointerdown', onMouseClick, false );
 // The detected positions will be inside an array
 let poses = [];
 
@@ -237,8 +209,8 @@ $("#discription").on('touchstart mousedown', function(){
 
 if ($(window).width()<801) {
 
-// init();
-// animate();
+init();
+animate();
 // var buttonclicked; 
 // $("#button_loader").click(function(){ 
 // if( buttonclicked!= true ) { 
@@ -266,6 +238,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
     facingMode: 'user',
+    frameRate: {ideal: 5, max: 10}
   }
   }).then(function(stream) {
     video.srcObject = stream;
@@ -417,7 +390,7 @@ function init() {
 		
 	} );
 
-  // document.addEventListener( 'pointerdown', onMouseClick, false );
+  document.addEventListener( 'pointerdown', onMouseClick, false );
 
   var fogs = [
     0xBDE3F4,
@@ -575,6 +548,27 @@ function getOffset(el) {
 }
 
 
+
+function onMouseClick(e) {
+
+
+  var download_x = getOffset(document.getElementById("download")).left;
+  var download_y = getOffset(document.getElementById("download")).top;
+  var info_x = getOffset(document.getElementById("aboutButton")).left;
+  var info_y = getOffset(document.getElementById("aboutButton")).top;
+  var click_x = e.pageX;
+  var click_y = e.pageY;
+  var download_clicked = Math.abs(click_x - download_x) < 35 && Math.abs(click_y - download_y) < 25;
+  var info_clicked = Math.abs(click_x - info_x) < 35 && Math.abs(click_y - info_y) < 25;
+  
+  if (!disable_refresh_position && !clicked_about && !download_clicked && !info_clicked) {
+    ChangePosition();
+  }
+  
+  clicked_about = false;
+  material.map.needsUpdate = true;
+  // counter++;
+}
 
 window.onresize = function(event) {
   camera.aspect = window.innerWidth / window.innerHeight;
