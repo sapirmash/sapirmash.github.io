@@ -31,7 +31,8 @@
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0;z-index:-1000"></video>
+  <video autoplay muted playsinline id="video" width="
+828" height="1792" style="opacity:0;z-index:-1000 height:0; width: 0;"></video>
 
 
   <div id="discription">
@@ -576,15 +577,13 @@ window.onresize = function(event) {
 };
 
 function animate() {
-  let d = dist(noseX, noseY, left_eyeX, left_eyeY);
-
-  // ctx.drawImage(video, 0, 0, 100, 100, 0, 0, 300, 300);
-  // cube01.position.needsUpdate = true;
- 
+  let d = dist(noseX, noseY, left_eyeX, left_eyeY); 
   ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
   ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
+
+
   cube01.geometry.normalsNeedUpdate = true;
   cube01.geometry.verticesNeedUpdate = true; 
   material.map.needsUpdate = true;
