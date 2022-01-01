@@ -365,7 +365,6 @@ function init() {
 
   // camera
   camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-
   camera.position.z = 281;
   camera.position.y = 0;
 
@@ -445,6 +444,7 @@ function init() {
   dirLight.shadow.darkness = 0.2;
 
   var nose_texture = new THREE.CanvasTexture(nose_canvas);
+  nose_texture.mapping = THREE.UVMapping; 
   var eye_texture = new THREE.CanvasTexture(eye_canvas);
   var eye2_texture = new THREE.CanvasTexture(eye2_canvas);
   var mouth_texture = new THREE.CanvasTexture(mouth_canvas);
@@ -575,7 +575,9 @@ function animate() {
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
 
   ctx.drawImage(video, 0, 0, 100, 100, 0, 0, 300, 300);
-  cube01.position.needsUpdate = true;
+  // cube01.position.needsUpdate = true;
+  cube01.geometry.normalsNeedUpdate = true;
+  cube01.geometry.verticesNeedUpdate = true; 
   material.map.needsUpdate = true;
   // ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   // ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
@@ -589,16 +591,16 @@ function animate() {
 
 function render() {
 
-  
+  // material.map.needsUpdate = true;
   // material01.map.needsUpdate = true;
   // material02.map.needsUpdate = true;
   // material03.map.needsUpdate = true;
 
-  camera.position.x += (mouseX - camera.position.x) * .05;
-  dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
+  // camera.position.x += (mouseX - camera.position.x) * .05;
+  // dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
 
   camera.lookAt(scene.position);
-  camera.updateProjectionMatrix();
+  // camera.updateProjectionMatrix();
   renderer.render(scene, camera);
 }			
 }			
