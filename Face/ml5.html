@@ -31,7 +31,7 @@
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video id="video" width="640" height="480" style="display: none"></video>
+  <video id="video" width="640" height="480" autoplay style="display: none"></video>
 
 
   <div id="discription">
@@ -197,7 +197,6 @@ $("#discription").on('touchstart mousedown', function(){
   $("#discription").fadeOut('fast');                
 });
 
-
 // setTimeout(function(){
 //    $('#loading-screen').fadeOut('fast');
 // }, 1900);
@@ -210,6 +209,8 @@ $("#discription").on('touchstart mousedown', function(){
 
 if ($(window).width()<801) {
 
+// init();
+// animate();
 // var buttonclicked; 
 // $("#button_loader").click(function(){ 
 // if( buttonclicked!= true ) { 
@@ -263,9 +264,6 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
 // const options = { flipHorizontal: true, minConfidence: 0.5 }
 
-init();
-animate();
-// ChangePosition();
 
 // const net = posenet.load();
 
@@ -548,7 +546,15 @@ function getOffset(el) {
   };
 }
 
+var first = true;
+
 function onMouseClick(e) {
+
+  if (first == true) {
+    init();
+    animate();
+    first = false;
+  }
   var download_x = getOffset(document.getElementById("download")).left;
   var download_y = getOffset(document.getElementById("download")).top;
   var info_x = getOffset(document.getElementById("aboutButton")).left;
@@ -561,7 +567,7 @@ function onMouseClick(e) {
   if (!disable_refresh_position && !clicked_about && !download_clicked && !info_clicked) {
     ChangePosition();
   }
-
+  
   clicked_about = false;
   material.map.needsUpdate = true;
   // counter++;
