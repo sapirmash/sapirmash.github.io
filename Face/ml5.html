@@ -274,7 +274,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
 function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
-  ctx_try.drawImage(video, 0, 0, 640, 480);
+  let d = dist(noseX, noseY, left_eyeX, left_eyeY);
+  ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints();
   window.requestAnimationFrame(drawCameraIntoCanvas);
@@ -360,6 +361,7 @@ function modelReady() {
   poseNet.multiPose(video);
 }
 
+
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
   // Loop through all the poses detected
@@ -376,10 +378,6 @@ function drawKeypoints() {
     }
   }
 }
-
-
-
-
 
 // three.js code
 function init() {
