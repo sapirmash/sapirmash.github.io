@@ -26,13 +26,13 @@
 </section> -->
   
   <div id="container"></div>
-  <canvas id="canvas" width="480" height="640"></canvas>
+  <canvas id="canvas" width="640" height="480"></canvas>
   <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
-<video autoplay muted playsinline id="video" width="480" height="640" style="display: none"></video>
+<video autoplay muted playsinline id="video" width="640" height="480" style="display: none"></video>
 
 
   <div id="discription">
@@ -275,7 +275,11 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
-  ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
+
+  // void ctx.drawImage(image=video, sx=noseX - d / 2, sy=noseY - d / 2, sWidth =d + 0.01, sHeight=d + 0.01, dx = 0, dy =0, dWidth=300, dHeight=300);
+
+  // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
+  ctx_try.drawImage(video, 0, 0, 640, 480);
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints();
   window.requestAnimationFrame(drawCameraIntoCanvas);
@@ -283,20 +287,7 @@ function drawCameraIntoCanvas() {
 // Loop over the drawCameraIntoCanvas function
 drawCameraIntoCanvas();
 
-// var options = {
-//   architecture: 'MobileNetV1',
-//   imageScaleFactor: 0.3,
-//   outputStride: 16,
-//   flipHorizontal: false,
-//   minConfidence: 0.5,
-//   maxPoseDetections: 5,
-//   scoreThreshold: 0.5,
-//   nmsRadius: 20,
-//   detectionType: 'multiple',
-//   inputResolution: 513,
-//   multiplier: 0.75,
-//   quantBytes: 2,
-// };
+  
 
 // Create a new poseNet method with a single detection
 poseNet = ml5.poseNet(video, modelReady);
