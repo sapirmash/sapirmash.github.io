@@ -33,7 +33,7 @@
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
-<video autoplay muted playsinline id="video" width="2048" style="display: none"></video>
+<video autoplay muted playsinline id="video" width="640" style="display: none"></video>
 
 
   <div id="discription">
@@ -271,9 +271,7 @@ function isMobile() {
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
-      facingMode: 'user',
-      width: 2048,
-      height: 1536
+      facingMode: 'user'
       // width: mobile ? undefined : videoWidth,
       // height: mobile ? undefined : videoHeight
   }
@@ -296,7 +294,7 @@ function drawCameraIntoCanvas() {
   
 
   if (first_time && video.videoWidth > 0) {
-    scale = 2048 / video.videoWidth;
+    scale = 640 / video.videoWidth;
     
     video.height = video.videoHeight;
     w = video.videoWidth * scale;
