@@ -271,9 +271,9 @@ function isMobile() {
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
-      facingMode: 'user',
-      width: mobile ? undefined : videoWidth,
-      height: mobile ? undefined : videoHeight
+      facingMode: 'user'
+      // width: mobile ? undefined : videoWidth,
+      // height: mobile ? undefined : videoHeight
   }
   }).then(function(stream) {
     video.srcObject = stream;
@@ -289,7 +289,7 @@ function drawCameraIntoCanvas() {
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
     // void ctx.drawImage(image=video, sx=noseX - d / 2, sy=noseY - d / 2, sWidth =d + 0.01, sHeight=d + 0.01, dx = 0, dy =0, dWidth=300, dHeight=300);
 
-  // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
+  
   // ctx_try.drawImage(video, 0, 0, 640, 480);
   
 
@@ -308,6 +308,7 @@ function drawCameraIntoCanvas() {
 
   if(!first_time){
     ctx_try.drawImage(video, 0 ,0, w, h);
+    // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
 
 
