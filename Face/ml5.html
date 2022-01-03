@@ -26,13 +26,13 @@
 </section> -->
   
   <div id="container"></div>
-
+  <canvas id="canvas" width="640" height="480"></canvas>
   <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video autoplay muted playsinline id="video" width="
-640" height="480" style="opacity:0;"></video>
+<!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
+<video autoplay muted playsinline id="video" width="640" height="480" style="display: none"></video>
 
 
   <div id="discription">
@@ -158,7 +158,8 @@ const videoWidth = 640;
 const videoHeight = 480;
 video.width = videoWidth;
 video.height = videoHeight;
-// const stats = new _stats2.default();
+var canvas = document.getElementById("canvas");
+var ctx_try = canvas.getContext("2d");
 
 
 var nose_canvas = document.getElementById("canvas04");
@@ -214,6 +215,7 @@ $("#discription").on('touchstart mousedown', function(){
 //    $("#aboutButton").fadeIn('slow');
 // }, 1900);
 
+
 if ($(window).width()<801) {
 
 init();
@@ -259,34 +261,25 @@ function isMobile() {
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
-     
       facingMode: 'user',
       width: mobile ? undefined : videoWidth,
       height: mobile ? undefined : videoHeight
-    // frameRate: {ideal: 5, max: 10}
   }
   }).then(function(stream) {
     video.srcObject = stream;
     video.play();
   });
 } 
-// if ( navigator.mediaDevices && navigator.mediaDevices.getUserMedia ) {
-//           var constraints = {
-//              video: {
-//                 facingMode:  'user'
-//              },
-//           };
-//           navigator.mediaDevices.getUserMedia( constraints ).then( function ( stream ) {
-//             // apply the stream to the video element used in the texture
-//             video.srcObject = stream;
-//             video.play();
-//           } ).catch( function ( error ) {
-//             console.error( 'Unable to access the camera/webcam.', error );
-//           } );
-// } else {
-//           console.error( 'MediaDevices interface not available.' );
-// } 
 
+function drawCameraIntoCanvas() {
+  // Draw the video element into the canvas
+  ctx_try.drawImage(video, 0, 0, 640, 480);
+  // We can call both functions to draw all keypoints and the skeletons
+  drawKeypoints();
+  window.requestAnimationFrame(drawCameraIntoCanvas);
+}
+// Loop over the drawCameraIntoCanvas function
+drawCameraIntoCanvas();
 
 // var options = {
 //   architecture: 'MobileNetV1',
@@ -363,8 +356,28 @@ function gotPoses(results) {
 
 function modelReady() {
   console.log("model ready");
-  // poseNet.multiPose(video);
+  poseNet.multiPose(video);
 }
+
+// A function to draw ellipses over the detected keypoints
+function drawKeypoints() {
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i += 1) {
+    // For each pose detected, loop through all the keypoints
+    for (let j = 0; j < poses[i].pose.keypoints.length; j += 1) {
+      let keypoint = poses[i].pose.keypoints[j];
+      // Only draw an ellipse is the pose probability is bigger than 0.2
+      if (keypoint.score > 0.2) {
+        ctx_try.beginPath();
+        ctx_try.arc(keypoint.position.x, keypoint.position.y, 10, 0, 2 * Math.PI);
+        ctx_try.stroke();
+      }
+    }
+  }
+}
+
+
+
 
 
 // three.js code
@@ -609,10 +622,10 @@ function animate() {
   // ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
 
 
-  cube01.geometry.normalsNeedUpdate = true;
-  cube01.geometry.verticesNeedUpdate = true; 
-  material.map.needsUpdate = true;
-  material01.map.needsUpdate = true;
+  // cube01.geometry.normalsNeedUpdate = true;
+  // cube01.geometry.verticesNeedUpdate = true; 
+  // material.map.needsUpdate = true;
+  // material01.map.needsUpdate = true;
   // material02.map.needsUpdate = true;
   // material03.map.needsUpdate = true;
   requestAnimationFrame(animate);
@@ -623,10 +636,10 @@ function animate() {
 
 function render() {
 
-  // material.map.needsUpdate = true;
-  // material01.map.needsUpdate = true;
-  // material02.map.needsUpdate = true;
-  // material03.map.needsUpdate = true;
+  material.map.needsUpdate = true;
+  material01.map.needsUpdate = true;
+  material02.map.needsUpdate = true;
+  material03.map.needsUpdate = true;
 
   // camera.position.x += (mouseX - camera.position.x) * .05;
   // dirLight.position.x += (mouseX - dirLight.position.x - 1000) * .05;
