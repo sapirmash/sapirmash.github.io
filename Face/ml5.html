@@ -271,9 +271,7 @@ function isMobile() {
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
-      width:1920,
-      height:1080,
-      facingMode: 'user'
+      facingMode: 'environment'
       // width: mobile ? undefined : videoWidth,
       // height: mobile ? undefined : videoHeight
   }
