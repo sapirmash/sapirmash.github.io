@@ -33,8 +33,9 @@
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
-<video autoplay muted playsinline id="video" width="640" style="display: none"></video>
-
+<div class="video_container" style="height: 0px; position: relative; padding-top: 75%;">
+<video autoplay muted playsinline id="video" style="display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"></video>
+</div>
 
   <div id="discription">
     <p class="intro">
@@ -294,11 +295,12 @@ function drawCameraIntoCanvas() {
   
 
   if (first_time && video.videoWidth > 0) {
-    scale = 640 / video.videoWidth;
+    // scale = 640 / video.videoWidth;
     
     video.height = video.videoHeight;
-    w = video.videoWidth * scale;
-    h = video.videoHeight * scale;
+    video.width = video.videoWidth;
+    w = video.videoWidth;
+    h = video.videoHeight;
 
     canvas.width = w;
     canvas.height = h;  
