@@ -322,9 +322,9 @@ function drawCameraIntoCanvas() {
   if (first_time && video.videoWidth > 0) {
     // scale = 640 / video.videoWidth;
     
-    video.width = video.videoWidth;
     video.height = video.videoHeight;
-    
+    video.width = video.videoWidth;
+
     w = video.videoWidth;
     h = video.videoHeight;
 
@@ -335,7 +335,7 @@ function drawCameraIntoCanvas() {
   
 
   if(!first_time){
-    ctx_try.drawImage(video, 0 ,0, video.videoWidth, video.videoHeight, 0, 0, w, h);
+    ctx_try.drawImage(video, 0 ,0);
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
 
