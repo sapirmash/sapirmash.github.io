@@ -27,17 +27,17 @@
 </section> -->
   
   <div id="container"></div>
-  <canvas id="canvas" style=" width: 100% !important;
-    height: auto!important;"></canvas>
+  
+  <canvas id="canvas" style="width: 100%; height: auto;"></canvas>
 
   <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
-<!-- <div class="video_container" style="--aspect-ratio: 16 / 9;"> -->
+
 <video autoplay muted playsinline id="video"></video>
-<!-- </div> -->
+
 
   <div id="discription">
     <p class="intro">
@@ -83,22 +83,12 @@
 
 <style type="text/css">
   .video_container{
- /*   height: 0px; 
-    position: 
-    relative; 
-    padding-top: 75%;*/
   }
 
-  #video{
-    /*display: none; */
+  /*#video{
     width: 100% !important;
     height: auto!important;
-   /* height: 100%; 
-    position: absolute; 
-    top: 0; 
-    left: 0;*/
-    /*object-fit: contain;*/
-  }
+  }*/
 </style>
 
 <script type="text/javascript">
@@ -185,13 +175,6 @@ var w;
 var h;
 var first_time = true;
 
- 
-// const videoWidth = 640;
-// const videoHeight = 480;
-// video.width = videoWidth;
-// video.height = videoHeight;
-
-
 
 var nose_canvas = document.getElementById("canvas04");
 var ctx = nose_canvas.getContext("2d");
@@ -246,38 +229,6 @@ $("#discription").on('touchstart mousedown', function(){
 //    $("#aboutButton").fadeIn('slow');
 // }, 1900);
 
-
-if ($(window).width()<801) {
-
-// init();
-// animate();
-
-
-// var buttonclicked; 
-// $("#button_loader").click(function(){ 
-// if( buttonclicked!= true ) { 
-// if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-//   navigator.mediaDevices.getUserMedia({
-//     video: {
-//     width: 640,
-//     height: 480,
-//     facingMode: 'user',
-//   }
-//   }).then(function(stream) {
-//     video.srcObject = stream;
-//     video.play();
-//   });
-// }
-// $("#loading-screen").fadeOut('slow');      
-// }
-// else{ 
-//     alert("Button was clicked before"); 
-// } 
-// });
-
-
-
-
 function isAndroid() {
   return (/Android/i.test(navigator.userAgent)
   );
@@ -292,32 +243,29 @@ function isMobile() {
   return isAndroid() || isiOS();
 }
 
- const mobile = isMobile();	
- // Create a webcam capture
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({
-    video: {  
-      facingMode: 'user',
-      // width: mobile ? undefined : videoWidth,
-      // height: mobile ? undefined : videoHeight
+// A function to draw ellipses over the detected keypoints
+function drawKeypoints() {
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i += 1) {
+    // For each pose detected, loop through all the keypoints
+    for (let j = 0; j < poses[i].pose.keypoints.length; j += 1) {
+      let keypoint = poses[i].pose.keypoints[j];
+      // Only draw an ellipse is the pose probability is bigger than 0.2
+      if (keypoint.score > 0.2) {
+        ctx_try.beginPath();
+        ctx_try.arc(keypoint.position.x, keypoint.position.y, 10, 0, 2 * Math.PI);
+        ctx_try.stroke();
+      }
+    }
   }
-  }).then(function(stream) {
-    video.srcObject = stream;
-    video.play();
-  });
-} 
-
-console.log(mobile);
-   
+}
 
 function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
-  let d = dist(noseX, noseY, left_eyeX, left_eyeY);
-    // void ctx.drawImage(image=video, sx=noseX - d / 2, sy=noseY - d / 2, sWidth =d + 0.01, sHeight=d + 0.01, dx = 0, dy =0, dWidth=300, dHeight=300);
-
-  
+  let d = dist(noseX, noseY, left_eyeX, left_eyeY);  
   // ctx_try.drawImage(video, 0, 0, 640, 480);
-  
+  document.getElementById("video").style.width = "100%";
+  document.getElementById("video").style.height = "auto";
 
   if (first_time && video.videoWidth > 0) {
     // scale = 640 / video.videoWidth;
@@ -335,14 +283,10 @@ function drawCameraIntoCanvas() {
   
 
   if(!first_time){
-    ctx_try.drawImage(video, 0 ,0, video.videoWidth, video.videoHeight,0 ,0,w ,h);
+    ctx_try.drawImage(video, 0 ,0 , w ,h);
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
 
-
-  
-  
-  
 
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints();
@@ -352,22 +296,6 @@ function drawCameraIntoCanvas() {
   // console.log(w);
   // console.log(h);
 }
-
-
-
-
-
-
-// Loop over the drawCameraIntoCanvas function
-drawCameraIntoCanvas();
-
-
-
-// Create a new poseNet method with a single detection
-poseNet = ml5.poseNet(video, modelReady);
-poseNet.on("pose", gotPoses);
-
-
 
 // Get the linear interpolation between two value
 function lerp(value1, value2, amount) {
@@ -424,26 +352,66 @@ function gotPoses(results) {
 
 function modelReady() {
   console.log("model ready");
-  poseNet.multiPose(video);
+  // poseNet.multiPose(video);
 }
 
+// main entry point
+if ($(window).width() < 801) {
 
-// A function to draw ellipses over the detected keypoints
-function drawKeypoints() {
-  // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i += 1) {
-    // For each pose detected, loop through all the keypoints
-    for (let j = 0; j < poses[i].pose.keypoints.length; j += 1) {
-      let keypoint = poses[i].pose.keypoints[j];
-      // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.2) {
-        ctx_try.beginPath();
-        ctx_try.arc(keypoint.position.x, keypoint.position.y, 10, 0, 2 * Math.PI);
-        ctx_try.stroke();
-      }
-    }
+// init();
+// animate();
+
+
+// var buttonclicked; 
+// $("#button_loader").click(function(){ 
+// if( buttonclicked!= true ) { 
+// if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+//   navigator.mediaDevices.getUserMedia({
+//     video: {
+//     width: 640,
+//     height: 480,
+//     facingMode: 'user',
+//   }
+//   }).then(function(stream) {
+//     video.srcObject = stream;
+//     video.play();
+//   });
+// }
+// $("#loading-screen").fadeOut('slow');      
+// }
+// else{ 
+//     alert("Button was clicked before"); 
+// } 
+// });
+
+
+const mobile = isMobile();	
+// Create a webcam capture
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({
+    video: {  
+      facingMode: 'user',
+      // width: mobile ? undefined : videoWidth,
+      // height: mobile ? undefined : videoHeight
   }
-}
+  }).then(function(stream) {
+    video.srcObject = stream;
+    video.play();
+  });
+} 
+
+console.log(mobile);
+
+// Loop over the drawCameraIntoCanvas function
+drawCameraIntoCanvas();
+
+// Create a new poseNet method with a single detection
+poseNet = ml5.poseNet(video, modelReady);
+poseNet.on("pose", gotPoses);
+
+// end of main
+
+
 
 // three.js code
 function init() {
@@ -712,7 +680,9 @@ function render() {
   camera.lookAt(scene.position);
   // camera.updateProjectionMatrix();
   renderer.render(scene, camera);
-}			
+}		
+
+
 }			
 </script>		
 </html>		
