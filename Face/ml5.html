@@ -15,7 +15,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
   <script src="https://unpkg.com/@tensorflow-models/posenet@1.0.3/dist/posenet.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ismobilejs@1/dist/isMobile.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.min.js"></script>
   <link rel="stylesheet" href="selfie.css">
 </head>
 
@@ -27,7 +27,7 @@
 </section> -->
   
   <div id="container"></div>
-  <canvas id="canvas" style="width: 100% !important;
+  <canvas id="canvas" style=" width: 100% !important;
     height: auto!important;"></canvas>
 
   <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
@@ -35,9 +35,9 @@
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
-<div class="video_container" style="--aspect-ratio: 16 / 9;">
+<!-- <div class="video_container" style="--aspect-ratio: 16 / 9;"> -->
 <video autoplay muted playsinline id="video"></video>
-</div>
+<!-- </div> -->
 
   <div id="discription">
     <p class="intro">
@@ -252,6 +252,7 @@ if ($(window).width()<801) {
 // init();
 // animate();
 
+
 // var buttonclicked; 
 // $("#button_loader").click(function(){ 
 // if( buttonclicked!= true ) { 
@@ -333,7 +334,7 @@ function drawCameraIntoCanvas() {
   
 
   if(!first_time){
-    ctx_try.drawImage(video, 0 ,0, w, h);
+    ctx_try.drawImage(video, 0 ,0);
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
 
