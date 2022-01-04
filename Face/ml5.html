@@ -268,8 +268,8 @@ function drawCameraIntoCanvas() {
 
   if (first_time && video.videoWidth > 0) {
     // scale = 640 / video.videoWidth;
-    document.getElementById("video").style.width = "100%";
-    document.getElementById("video").style.height = "auto";
+    video.width = document.getElementById("video").style.width = "100%";
+    video.height = document.getElementById("video").style.height = "auto";
     video.height = video.videoHeight;
     video.width = video.videoWidth;
 
