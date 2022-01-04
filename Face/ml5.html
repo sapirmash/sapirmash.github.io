@@ -255,8 +255,8 @@ function drawKeypoints() {
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
 
-        RatioX = canvas.width/video.width;
-        RatioY = canvas.height/video.height;
+        RatioX = video.width/canvas.width;
+        RatioY = video.height/canvas.height;
 
         ctx_try.beginPath();
         ctx_try.arc(keypoint.position.x * RatioX, keypoint.position.y*RatioY, 10, 0, 2 * Math.PI);
@@ -287,19 +287,23 @@ function drawCameraIntoCanvas() {
     video.height = video.videoHeight;
     video.width = video.videoWidth;
 
-    w = video.videoWidth;
-    h = video.videoHeight;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
 
-    canvas.width = w;
-    canvas.height = h;  
+    // w = video.videoWidth;
+    // h = video.videoHeight;
+
+    // canvas.width = w;
+    // canvas.height = h;  
     first_time = false;
   }
   
 
   if(!first_time){
     // this option is not streching the video on the canvas.
-     
+
     ctx_try.drawImage(video, 0 ,0);
+
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
 
