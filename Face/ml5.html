@@ -35,7 +35,7 @@
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
 <div class="video_container" style="--aspect-ratio: 16 / 9;">
-<video autoplay muted playsinline id="video" style="-moz-transform: scaleX(-1); -o-transform:scaleX(-1); -webkit-transform:scaleX(-1); transform: scaleX(-1);"></video>
+<video autoplay muted playsinline id="video"></video>
 </div>
 
   <div id="discription">
@@ -89,9 +89,9 @@
   }
 
   #video{
-    display: none; 
-    width: 100%;
-    height: auto; 
+    /*display: none; */
+    width: 100% !important;
+    height: auto!important;
    /* height: 100%; 
     position: absolute; 
     top: 0; 
@@ -273,6 +273,9 @@ if ($(window).width()<801) {
 // } 
 // });
 
+
+
+
 function isAndroid() {
   return (/Android/i.test(navigator.userAgent)
   );
@@ -293,8 +296,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
       facingMode: 'user',
-      width: mobile ? undefined : videoWidth,
-      height: mobile ? undefined : videoHeight
+      // width: mobile ? undefined : videoWidth,
+      // height: mobile ? undefined : videoHeight
   }
   }).then(function(stream) {
     video.srcObject = stream;
