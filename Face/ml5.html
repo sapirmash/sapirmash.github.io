@@ -335,7 +335,7 @@ function drawCameraIntoCanvas() {
   
 
   if(!first_time){
-    ctx_try.drawImage(video, 0 ,0);
+    ctx_try.drawImage(video, 0 ,0, video.videoWidth, video.videoHeight,0 ,0,w ,h);
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
 
@@ -347,10 +347,10 @@ function drawCameraIntoCanvas() {
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints();
   window.requestAnimationFrame(drawCameraIntoCanvas);
-  console.log(video.videoWidth);
-  console.log(video.videoHeight);
-  console.log(w);
-  console.log(h);
+  console.log(canvas.width);
+  console.log(canvas.height);
+  // console.log(w);
+  // console.log(h);
 }
 
 
