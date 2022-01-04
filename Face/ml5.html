@@ -174,8 +174,9 @@ var scale;
 var w;
 var h;
 var first_time = true;
-var vRatio;
-
+// var vRatio;
+var RatioX;
+var RatioY;
 
 var nose_canvas = document.getElementById("canvas04");
 var ctx = nose_canvas.getContext("2d");
@@ -253,8 +254,12 @@ function drawKeypoints() {
       let keypoint = poses[i].pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
+
+        RatioX = canvas.width/video.width;
+        RatioY = canvas.height/video.height;
+
         ctx_try.beginPath();
-        ctx_try.arc(keypoint.position.x, keypoint.position.y, 10, 0, 2 * Math.PI);
+        ctx_try.arc(keypoint.position.x * RatioX, keypoint.position.y*RatioY, 10, 0, 2 * Math.PI);
         ctx_try.stroke();
       }
     }
@@ -272,8 +277,13 @@ function drawCameraIntoCanvas() {
     // scale = 640 / video.videoWidth;
     video.style.width = "100%";
     video.style.height = "auto";
+
     canvas.style.width = "100%";
     canvas.style.height = "auto";
+
+    RatioX = canvas.width/video.width;
+    RatioY = canvas.height/video.height;
+
     video.height = video.videoHeight;
     video.width = video.videoWidth;
 
@@ -287,6 +297,8 @@ function drawCameraIntoCanvas() {
   
 
   if(!first_time){
+    // this option is not streching the video on the canvas.
+     
     ctx_try.drawImage(video, 0 ,0);
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
