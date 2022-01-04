@@ -264,12 +264,12 @@ function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);  
   // ctx_try.drawImage(video, 0, 0, 640, 480);
-  document.getElementById("video").style.width = "100%";
-  document.getElementById("video").style.height = "auto";
+  
 
   if (first_time && video.videoWidth > 0) {
     // scale = 640 / video.videoWidth;
-    
+    document.getElementById("video").style.width = "100%";
+    document.getElementById("video").style.height = "auto";
     video.height = video.videoHeight;
     video.width = video.videoWidth;
 
