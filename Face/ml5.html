@@ -34,7 +34,7 @@
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
 <div class="video_container">
-<video autoplay muted playsinline id="video" ></video>
+<video autoplay muted playsinline id="video" style="-moz-transform: scaleX(-1); -o-transform:scaleX(-1); -webkit-transform:scaleX(-1); transform: scaleX(-1);"></video>
 </div>
 
   <div id="discription">
@@ -94,6 +94,7 @@
     position: absolute; 
     top: 0; 
     left: 0;
+    object-fit: contain;
   }
 </style>
 
