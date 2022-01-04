@@ -14,6 +14,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
   <script src="https://unpkg.com/@tensorflow-models/posenet@1.0.3/dist/posenet.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ismobilejs@1/dist/isMobile.min.js"></script>
 
   <link rel="stylesheet" href="selfie.css">
 </head>
@@ -33,9 +34,9 @@
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
-<div class="video_container">
+<!-- <div class="video_container"> -->
 <video autoplay muted playsinline id="video" style="-moz-transform: scaleX(-1); -o-transform:scaleX(-1); -webkit-transform:scaleX(-1); transform: scaleX(-1);"></video>
-</div>
+<!-- </div> -->
 
   <div id="discription">
     <p class="intro">
@@ -81,19 +82,19 @@
 
 <style type="text/css">
   .video_container{
-    height: 0px; 
+ /*   height: 0px; 
     position: 
     relative; 
-    padding-top: 75%;
+    padding-top: 75%;*/
   }
 
   #video{
     display: none; 
     width: 100%; 
-    height: 100%; 
+   /* height: 100%; 
     position: absolute; 
     top: 0; 
-    left: 0;
+    left: 0;*/
     object-fit: contain;
   }
 </style>
@@ -290,9 +291,9 @@ function isMobile() {
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
     video: {  
-      facingMode: 'user'
-      // width: mobile ? undefined : videoWidth,
-      // height: mobile ? undefined : videoHeight
+      facingMode: 'user',
+      width: mobile ? undefined : videoWidth,
+      height: mobile ? undefined : videoHeight
   }
   }).then(function(stream) {
     video.srcObject = stream;
@@ -300,7 +301,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   });
 } 
 
-
+console.log(mobile);
    
 
 function drawCameraIntoCanvas() {
