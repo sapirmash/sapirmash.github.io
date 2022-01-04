@@ -259,7 +259,7 @@ function drawKeypoints() {
         RatioY = video.height/canvas.height;
 
         ctx_try.beginPath();
-        ctx_try.arc(keypoint.position.x * RatioX, keypoint.position.y*RatioY, 10, 0, 2 * Math.PI);
+        ctx_try.arc(keypoint.position.x, keypoint.position.y, 10, 0, 2 * Math.PI);
         ctx_try.stroke();
       }
     }
@@ -302,7 +302,7 @@ function drawCameraIntoCanvas() {
   if(!first_time){
     // this option is not streching the video on the canvas.
 
-    ctx_try.drawImage(video, 0 ,0);
+    ctx_try.drawImage(video, 0 ,0 , canvas.width, canvas.height);
 
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   } 
