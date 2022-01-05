@@ -28,7 +28,7 @@
   
   <div id="container"></div>
   
-  <canvas id="canvas"></canvas>
+  <canvas id="canvas" width="640" height="480"></canvas>
 
   <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
@@ -36,7 +36,7 @@
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
 <!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
 
-<video autoplay muted playsinline id="video"></video>
+<video autoplay muted playsinline id="video" width="640" height="480"></video>
 
 
   <div id="discription">
@@ -266,46 +266,75 @@ function drawKeypoints() {
   }
 }
 
+
+function resizeCanvas() {
+
+    
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
+
+    var width = video.width;
+    var height = video.height;
+
+    var maxWidth = canvas.width;
+    var maxHeight = canvas.height;
+
+    var aspect = maxWidth / width;
+
+    if (height*aspect>maxHeight) {
+      aspect = maxHeight/height;
+    }
+
+    $("#video").width(width*aspect);
+    $("#video").height(height*aspect);
+
+    // Redraw everything after resizing the window
+    drawCameraIntoCanvas();
+    drawKeypoints();
+  }
+resizeCanvas();
+
+
 function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);  
   // ctx_try.drawImage(video, 0, 0, 640, 480);
   
 
-  if (first_time && video.videoWidth > 0) {
+  // if (first_time && video.videoWidth > 0) {
 
-    // scale = 640 / video.videoWidth;
-    video.style.width = "100%";
-    video.style.height = "auto";
+  //   // scale = 640 / video.videoWidth;
+  //   video.style.width = "100%";
+  //   video.style.height = "auto";
 
-    canvas.style.width = "100%";
-    canvas.style.height = "auto";
+  //   canvas.style.width = "100%";
+  //   canvas.style.height = "auto";
 
-    RatioX = canvas.width/video.width;
-    RatioY = canvas.height/video.height;
+  //   RatioX = canvas.width/video.width;
+  //   RatioY = canvas.height/video.height;
 
-    video.height = video.videoHeight;
-    video.width = video.videoWidth;
+  //   video.height = video.videoHeight;
+  //   video.width = video.videoWidth;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+  //   canvas.width = video.videoWidth;
+  //   canvas.height = video.videoHeight;
 
-    // w = video.videoWidth;
-    // h = video.videoHeight;
+  //   // w = video.videoWidth;
+  //   // h = video.videoHeight;
 
-    // canvas.width = w;
-    // canvas.height = h;  
-    first_time = false;
-  }
+  //   // canvas.width = w;
+  //   // canvas.height = h;  
+  //   first_time = false;
+  // }
   
 
-  if(!first_time){
+  // if(!first_time){
     // this option is not streching the video on the canvas.
 
-    ctx_try.drawImage(video, 0 ,0 , video.videoWidth, video.videoHeight);
+    ctx_try.drawImage(video, 0 ,0 , canvas.width, canvas.height);
 
     // ctx_try.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
-  } 
+  // } 
 
 
   // We can call both functions to draw all keypoints and the skeletons
@@ -316,6 +345,7 @@ function drawCameraIntoCanvas() {
   // console.log(w);
   // console.log(h);
 }
+
 
 // Get the linear interpolation between two value
 function lerp(value1, value2, amount) {
