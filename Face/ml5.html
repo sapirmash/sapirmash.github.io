@@ -269,9 +269,6 @@ function drawKeypoints() {
 
 function resizeCanvas() {
 
-    
-    // canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
 
     var width = video.width;
     var height = video.height;
@@ -287,6 +284,9 @@ function resizeCanvas() {
 
     $("#video").width(width*aspect);
     $("#video").height(height*aspect);
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Redraw everything after resizing the window
     drawCameraIntoCanvas();
