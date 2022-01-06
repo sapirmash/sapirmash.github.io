@@ -271,29 +271,21 @@ function drawKeypoints() {
 }
 
 
-// function resizeCanvas() {
+function resizeCanvas() {
 
-//     // video.width = window.innerWidth;
-//     // video.height = window.innerHeight;
 
-//     canvas.width = window.innerWidth;
-//     canvas.height = window.innerHeight;
-// }
-// resizeCanvas();
+    // var scale = window.devicePixelRatio;
+    // canvas.width = Math.floor(canvas.width * scale);
+    // canvas.height = Math.floor(canvas.height * scale); 
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
 
-function resize_canvas(){
-            // canvas = document.getElementById("canvas");
-            if (canvas.width  < window.innerWidth)
-            {
-                canvas.width  = window.innerWidth;
-            }
-
-            if (canvas.height < window.innerHeight)
-            {
-                canvas.height = window.innerHeight;
-            }
+    // video.width = window.innerWidth;
+    // video.height = window.innerHeight;
 }
 
+
+resizeCanvas();
 
 function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
@@ -439,11 +431,12 @@ const mobile = isMobile();
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
-    video: {  
-      facingMode: 'user',
-      // width: mobile ? undefined : videoWidth,
-      // height: mobile ? undefined : videoHeight
-  }
+    video: true
+  //   video: {  
+  //     facingMode: 'user',
+  //     // width: mobile ? undefined : videoWidth,
+  //     // height: mobile ? undefined : videoHeight
+  // }
   }).then(function(stream) {
     video.srcObject = stream;
     video.play();
