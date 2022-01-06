@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="selfie.css">
 </head>
 
-<body id="body_ID">
+<body id="body_ID" onresize="resize_canvas()">
 
 <!-- <section id="loading-screen">
 	<div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div>
@@ -82,15 +82,17 @@
 </body>
 
 <style type="text/css">
-  canvas{
-    width: 100% !important;
-    height: auto !important;
-  }
 
-  video{
+
+  /*canvas{*/
+    /*width: 100% !important;*/
+ /*   height: auto !important;
+  }*/
+
+ /* video{
     width: 100% !important;
     height: auto !important;
-  }
+  }*/
 </style>
 
 <script type="text/javascript">
@@ -271,13 +273,26 @@ function drawKeypoints() {
 
 // function resizeCanvas() {
 
-//     video.width = window.innerWidth;
-//     video.height = window.innerHeight;
+//     // video.width = window.innerWidth;
+//     // video.height = window.innerHeight;
 
 //     canvas.width = window.innerWidth;
 //     canvas.height = window.innerHeight;
 // }
 // resizeCanvas();
+
+function resize_canvas(){
+            // canvas = document.getElementById("canvas");
+            if (canvas.width  < window.innerWidth)
+            {
+                canvas.width  = window.innerWidth;
+            }
+
+            if (canvas.height < window.innerHeight)
+            {
+                canvas.height = window.innerHeight;
+            }
+}
 
 
 function drawCameraIntoCanvas() {
