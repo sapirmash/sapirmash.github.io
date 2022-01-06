@@ -284,6 +284,23 @@ function resizeCanvas() {
     // video.height = window.innerHeight;
 }
 
+function videoDimensions(video) {
+  // Ratio of the video's intrisic dimensions
+  var videoRatio = video.videoWidth / video.videoHeight;
+  // The width and height of the video element
+  var width = video.offsetWidth, height = video.offsetHeight;
+  // The ratio of the element's width to its height
+  var elementRatio = width/height;
+  // If the video element is short and wide
+  if(elementRatio > videoRatio) width = height * videoRatio;
+  // It must be tall and thin, or exactly equal to the original ratio
+  else height = width / videoRatio;
+  return {
+    width: width,
+    height: height
+  };
+}
+
 
 resizeCanvas();
 var print_counter = 0;
@@ -325,15 +342,24 @@ function drawCameraIntoCanvas() {
 
     ctx_try.drawImage(video, 0 ,0 , video.videoWidth, video.videoHeight);
     print_counter++;
+
+    var real_video_size = videoDimensions(video);
     if(counter%1000 == 0){
+      console.log("**********************");      
       console.log("video.videoWidth: " + video.videoWidth);
       console.log("video.videoHeight: " + video.videoHeight);
       console.log("video.width: " + video.width);
       console.log("video.height: " + video.height);
+      console.log("video.offsetWidth: " + video.offsetWidth);
+      console.log("video.offsetHeight: " + video.offsetHeight);
       console.log("canvas.width: " + canvas.width);
       console.log("canvas.height: " + canvas.height);
       console.log("canvas.clientWidth: " + canvas.clientWidth);
       console.log("canvas.clientHeight: " + canvas.clientHeight);
+      console.log("real width: " + real_video_size.width);
+      console.log("real height: " + real_video_size.height);
+      console.log("**********************");
+
     }
     // ctx_try.drawImage(video, 0 ,0 , canvas.width, canvas.height);
 
