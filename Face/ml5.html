@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="selfie.css">
 </head>
 
-<body id="body_ID" onresize="resize_canvas()">
+<body id="body_ID">
 
 <!-- <section id="loading-screen">
 	<div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div>
@@ -28,15 +28,15 @@
   
   <div id="container"></div>
   
-  <canvas id="canvas" width="480" height="640"></canvas>
+  <!-- <canvas id="canvas" width="480" height="640"></canvas> -->
 
-  <canvas id="canvas04" width="300" height="300"></canvas>
+  <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <!-- <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0;"></video> -->
+  <video autoplay muted playsinline id="video" width="480" height="640" style="opacity:0;"></video>
 
-  <video autoplay muted playsinline id="video" width="480" height="640"></video>
+  <!-- <video autoplay muted playsinline id="video" width="480" height="640"></video> -->
 
 
   <div id="discription">
@@ -80,20 +80,6 @@
 </div>
 
 </body>
-
-<style type="text/css">
-
-
-  /*canvas{*/
-    /*width: 100% !important;*/
- /*   height: auto !important;
-  }*/
-
- /* video{
-    width: 100% !important;
-    height: auto !important;
-  }*/
-</style>
 
 <script type="text/javascript">
 // type="module"
@@ -171,8 +157,8 @@ var clicked_dis = false;
 var download_mouseIsOver = false;
 
 var video = document.getElementById("video");
-var canvas = document.getElementById("canvas");
-var ctx_try = canvas.getContext("2d");
+// var canvas = document.getElementById("canvas");
+// var ctx_try = canvas.getContext("2d");
 
 var scale;
 var w;
@@ -271,18 +257,6 @@ function drawKeypoints() {
 }
 
 
-function resizeCanvas() {
-
-
-    // var scale = window.devicePixelRatio;
-    // canvas.width = Math.floor(canvas.width * scale);
-    // canvas.height = Math.floor(canvas.height * scale); 
-    // canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
-
-    // video.width = window.innerWidth;
-    // video.height = window.innerHeight;
-}
 
 function videoDimensions(video) {
   // Ratio of the video's intrisic dimensions
@@ -301,81 +275,33 @@ function videoDimensions(video) {
   };
 }
 
+// var print_counter = 0;
+// function drawCameraIntoCanvas() {
+//   // Draw the video element into the canvas
+//     print_counter++;
 
-resizeCanvas();
-var print_counter = 0;
-function drawCameraIntoCanvas() {
-  // Draw the video element into the canvas
-  let d = dist(noseX, noseY, left_eyeX, left_eyeY);  
-  // ctx_try.drawImage(video, 0, 0, 640, 480);
-  
+//     var real_video_size = videoDimensions(video);
+//     if(counter%1000 == 0){
+//       console.log("**********************");      
+//       console.log("video.videoWidth: " + video.videoWidth);
+//       console.log("video.videoHeight: " + video.videoHeight);
+//       console.log("video.width: " + video.width);
+//       console.log("video.height: " + video.height);
+//       console.log("video.offsetWidth: " + video.offsetWidth);
+//       console.log("video.offsetHeight: " + video.offsetHeight);
+//       console.log("canvas.width: " + canvas.width);
+//       console.log("canvas.height: " + canvas.height);
+//       console.log("canvas.clientWidth: " + canvas.clientWidth);
+//       console.log("canvas.clientHeight: " + canvas.clientHeight);
+//       console.log("real width: " + real_video_size.width);
+//       console.log("real height: " + real_video_size.height);
+//       console.log("**********************");
+//     }
+//     ctx_try.drawImage(video, 0 ,0 , canvas.width, canvas.height);
 
-  // if (first_time && video.videoWidth > 0) {
-
-  //   // scale = 640 / video.videoWidth;
-  //   video.style.width = "100%";
-  //   video.style.height = "auto";
-
-  //   canvas.style.width = "100%";
-  //   canvas.style.height = "auto";
-
-  //   RatioX = canvas.width/video.width;
-  //   RatioY = canvas.height/video.height;
-
-  //   video.height = video.videoHeight;
-  //   video.width = video.videoWidth;
-
-  //   canvas.width = video.videoWidth;
-  //   canvas.height = video.videoHeight;
-
-  //   // w = video.videoWidth;
-  //   // h = video.videoHeight;
-
-  //   // canvas.width = w;
-  //   // canvas.height = h;  
-  //   first_time = false;
-  // }
-  
-
-  // if(!first_time){
-    // this option is not streching the video on the canvas.
-
-    ctx_try.drawImage(video, 0 ,0 , video.videoWidth, video.videoHeight);
-    ctx_try.drawImage(video,noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
-    print_counter++;
-
-    var real_video_size = videoDimensions(video);
-    if(counter%1000 == 0){
-      console.log("**********************");      
-      console.log("video.videoWidth: " + video.videoWidth);
-      console.log("video.videoHeight: " + video.videoHeight);
-      console.log("video.width: " + video.width);
-      console.log("video.height: " + video.height);
-      console.log("video.offsetWidth: " + video.offsetWidth);
-      console.log("video.offsetHeight: " + video.offsetHeight);
-      console.log("canvas.width: " + canvas.width);
-      console.log("canvas.height: " + canvas.height);
-      console.log("canvas.clientWidth: " + canvas.clientWidth);
-      console.log("canvas.clientHeight: " + canvas.clientHeight);
-      console.log("real width: " + real_video_size.width);
-      console.log("real height: " + real_video_size.height);
-      console.log("**********************");
-
-    }
-    ctx_try.drawImage(video, 0 ,0 , canvas.width, canvas.height);
-
-    ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
-  // } 
-
-
-  // We can call both functions to draw all keypoints and the skeletons
-  drawKeypoints();
-  window.requestAnimationFrame(drawCameraIntoCanvas);
-  // console.log(canvas.width);
-  // console.log(canvas.height);
-  // console.log(w);
-  // console.log(h);
-}
+//   drawKeypoints();
+//   window.requestAnimationFrame(drawCameraIntoCanvas);
+// }
 
 
 // Get the linear interpolation between two value
@@ -439,8 +365,8 @@ function modelReady() {
 // main entry point
 if ($(window).width() < 801) {
 
-// init();
-// animate();
+init();
+animate();
 
 
 // var buttonclicked; 
@@ -470,12 +396,12 @@ const mobile = isMobile();
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
-    video: true
-  //   video: {  
-  //     facingMode: 'user',
-  //     // width: mobile ? undefined : videoWidth,
-  //     // height: mobile ? undefined : videoHeight
-  // }
+    // video: true
+    video: {  
+      facingMode: 'user',
+      // width: mobile ? undefined : videoWidth,
+      // height: mobile ? undefined : videoHeight
+  }
   }).then(function(stream) {
     video.srcObject = stream;
     video.play();
@@ -485,7 +411,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
 
 // Loop over the drawCameraIntoCanvas function
-drawCameraIntoCanvas();
+// drawCameraIntoCanvas();
 
 // Create a new poseNet method with a single detection
 poseNet = ml5.poseNet(video, modelReady);
@@ -733,8 +659,8 @@ function animate() {
   console.log(d); 
   ctx.drawImage(video, noseX - d / 2, noseY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
-  // ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
-  // ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
+  ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
+  ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
 
 
   // cube01.geometry.normalsNeedUpdate = true;
