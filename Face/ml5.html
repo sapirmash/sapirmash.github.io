@@ -34,7 +34,7 @@
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video>
+  <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0;"></video>
 
 <!-- <video autoplay muted playsinline id="video" width="640" height="480"></video> -->
 
@@ -84,7 +84,12 @@
 <style type="text/css">
   canvas{
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+  }
+
+  video{
+    width: 100% !important;
+    height: auto !important;
   }
 </style>
 
@@ -264,15 +269,15 @@ function drawKeypoints() {
 }
 
 
-function resizeCanvas() {
+// function resizeCanvas() {
 
-    video.width = window.innerWidth;
-    video.height = window.innerHeight;
+//     video.width = window.innerWidth;
+//     video.height = window.innerHeight;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resizeCanvas();
+//     canvas.width = window.innerWidth;
+//     canvas.height = window.innerHeight;
+// }
+// resizeCanvas();
 
 
 function drawCameraIntoCanvas() {
