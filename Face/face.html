@@ -171,12 +171,12 @@ button{
     height: 100% !important;
   }
 
-  #video{
+  /*#video{
     position: relative;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-  }
+  }*/
 </style>
 
 <script type="text/javascript">
@@ -251,9 +251,6 @@ setTimeout(function(){
 
 
 
-
-
-
 if ($(window).width()<801) {
 
 function setup(){
@@ -261,8 +258,8 @@ function setup(){
   cnv.id('canvas');
   console.log(displayWidth, displayHeight);
   video = createCapture(VIDEO);
-  video.id('video');
-  // video.hide();
+  // video.id('video');
+  video.hide();
   poseNet = ml5.poseNet(video, modelReady);
   poseNet.on('pose', gotPoses);
   background('#000000');
@@ -358,15 +355,15 @@ function draw(){
   // var right_eye = image(video, 0,0, 300, 200, 200, right_eyeX - 50/2, right_eyeY-50/2, 50, 50);
   // var mouth = image(video, 0,0,0,200, 200, mouseX-50/2, mouseY-50/2, 50, 50);
   
-  // if (loading) {
-  //   texture(text);
-  //   noStroke();
-  //   rotateX(frameCount * 0.1);
-  //   rotateY(frameCount * 0.1);
-  //   plane(200,200);
-  // }
+  if (loading) {
+    texture(text);
+    noStroke();
+    rotateX(frameCount * 0.1);
+    rotateY(frameCount * 0.1);
+    plane(200,200);
+  }
 
-  // else{
+  else{
   let d = dist(noseX, noseY, left_eyeX, left_eyeY);
   var img_n = video.get(noseX-d/2,noseY-d/2,d+0.01, d+0.01);
  
@@ -376,39 +373,39 @@ function draw(){
 
   rotateY(position);
 
-  // noStroke();
-  // push();
-  // texture(img_n);
-  // translate(ran_noseX, ran_noseY);
-  // box(60,120);
-  // pop();
+  noStroke();
+  push();
+  texture(img_n);
+  translate(ran_noseX, ran_noseY);
+  box(60,120);
+  pop();
 
-  // push();
-  // translate(ran_eye1X, ran_eye1Y);
-  // texture(img_le);
-  // box(70);
-  // pop();
+  push();
+  translate(ran_eye1X, ran_eye1Y);
+  texture(img_le);
+  box(70);
+  pop();
 
-  // push();
-  // translate(ran_eye2X,ran_eye2Y);
-  // texture(img_re);
-  // box(70);
-  // pop();
+  push();
+  translate(ran_eye2X,ran_eye2Y);
+  texture(img_re);
+  box(70);
+  pop();
 
-  // push();
-  // translate(ran_mouthX, ran_mouthY);
-  // texture(img_m);
-  // box(120,60);
-  // pop();
+  push();
+  translate(ran_mouthX, ran_mouthY);
+  texture(img_m);
+  box(120,60);
+  pop();
   
-  // }
+  }
 
 
-  // if(Date.now() - test > 12000){
+  if(Date.now() - test > 12000){
     
-  //   afterLoad();
+    afterLoad();
 
-  // }
+  }
   // translate(-80, 180);
   // box(170,50);
   // ellipse(noseX, noseY, d);

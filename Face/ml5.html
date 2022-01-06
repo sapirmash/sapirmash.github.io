@@ -28,16 +28,15 @@
   
   <div id="container"></div>
   
-  <canvas id="canvas" width="640" height="480" style="width: 100% !important;
-    height: 100% !important;"></canvas>
+  <canvas id="canvas" width="640" height="480"></canvas>
 
   <canvas id="canvas04" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-<!--   <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video> -->
+  <video autoplay muted playsinline id="video" width="640" height="480" style="opacity:0; width: 0; height: 0;"></video>
 
-<video autoplay muted playsinline id="video" width="640" height="480"></video>
+<!-- <video autoplay muted playsinline id="video" width="640" height="480"></video> -->
 
 
   <div id="discription">
@@ -83,13 +82,10 @@
 </body>
 
 <style type="text/css">
-  .video_container{
-  }
-
-  /*#video{
+  canvas{
     width: 100% !important;
-    height: auto!important;
-  }*/
+    height: 100% !important;
+  }
 </style>
 
 <script type="text/javascript">
@@ -268,32 +264,12 @@ function drawKeypoints() {
 }
 
 
-function resizeCanvas() {
+// function resizeCanvas() {
 
-
-    var width = video.width;
-    var height = video.height;
-
-    var maxWidth = canvas.width;
-    var maxHeight = canvas.height;
-
-    var aspect = maxWidth / width;
-
-    if (height*aspect>maxHeight) {
-      aspect = maxHeight/height;
-    }
-
-    $("#video").width(width*aspect);
-    $("#video").height(height*aspect);
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Redraw everything after resizing the window
-    drawCameraIntoCanvas();
-    drawKeypoints();
-  }
-resizeCanvas();
+//     canvas.width = window.innerWidth;
+//     canvas.height = window.innerHeight;
+// }
+// resizeCanvas();
 
 
 function drawCameraIntoCanvas() {
