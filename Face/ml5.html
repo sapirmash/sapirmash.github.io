@@ -264,12 +264,15 @@ function drawKeypoints() {
 }
 
 
-// function resizeCanvas() {
+function resizeCanvas() {
 
-//     canvas.width = window.innerWidth;
-//     canvas.height = window.innerHeight;
-// }
-// resizeCanvas();
+    video.width = window.innerWidth;
+    video.height = window.innerHeight;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
 
 
 function drawCameraIntoCanvas() {
