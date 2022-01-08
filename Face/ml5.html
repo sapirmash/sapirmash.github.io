@@ -394,19 +394,6 @@ animate();
 
 // const mobile = isMobile();
 
-// Create a webcam capture
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({
-    // video: true
-    video: {  
-      facingMode: 'user',
-  }
-  }).then(function(stream) {
-    video.srcObject = stream;
-    video.play();
-  });
-} 
-
 //detect if the user accept or denied the camera 
 navigator.permissions.query({
    name: 'camera'
@@ -425,6 +412,21 @@ navigator.permissions.query({
    }
   console.log("camera permission state is " + permissionStatus.state); 
 });
+
+// Create a webcam capture
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({
+    // video: true
+    video: {  
+      facingMode: 'user',
+  }
+  }).then(function(stream) {
+    video.srcObject = stream;
+    video.play();
+  });
+} 
+
+
 
 
 // Loop over the drawCameraIntoCanvas function
