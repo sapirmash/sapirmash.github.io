@@ -105,7 +105,7 @@ var ASPECT = WIDTH / HEIGHT;
 var NEAR = 1;
 var FAR = 2000;
 
-var camera, scene, renderer, light1;
+var camera, scene, renderer, light1, controls;
 var mouseX = 0, mouseY = 0;
 
 var new_texture;
@@ -457,7 +457,7 @@ function init() {
   camera.position.z = 281;
   camera.position.y = 0;
 
-  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.minDistance = 600;
   controls.maxDistance = 600;
   controls.enablePan = false;
@@ -466,7 +466,7 @@ function init() {
   controls.rotateSpeed = 1.0;
   // controls.maxPolarAngle = Math.PI / 2;
   // controls.minPolarAngle = Math.PI / 2.2;
-  controls.update();
+  
 
 
 
@@ -682,6 +682,7 @@ function animate() {
   // material03.map.needsUpdate = true;
   requestAnimationFrame(animate);
   render();
+  controls.update();
 }
 
 
