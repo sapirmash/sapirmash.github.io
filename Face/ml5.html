@@ -395,27 +395,27 @@ animate();
 // const mobile = isMobile();
 
 //detect if the user accept or denied the camera 
-navigator.permissions.query({
-   name: 'camera'
-}).then(function(permissionStatus) {
-  // state change
-  permissionStatus.onchange = function() {
-    console.log('camera permission state has changed to ', this.state);
-    if (this.state === 'granted') {
-      $("#loading-screen").show('fast');
-  }
+// navigator.permissions.query({
+//    name: 'camera'
+// }).then(function(permissionStatus) {
+//   // state change
+//   permissionStatus.onchange = function() {
+//     console.log('camera permission state has changed to ', this.state);
+//     if (this.state === 'granted') {
+//       $("#loading-screen").show('fast');
+//   }
     
-  };
+//   };
    
-// current state (before prompt)
-   if (permissionStatus.state === 'granted') {
-    $("#loading-screen").show('fast');
-   } else if (permissionStatus.state === 'prompt') {
-      //there's no peristent permission registered, will be showing the prompt
-   } else if (permissionStatus.state === 'denied') {
-   }
-  console.log("camera permission state is " + permissionStatus.state); 
-});
+// // current state (before prompt)
+//    if (permissionStatus.state === 'granted') {
+//     $("#loading-screen").show('fast');
+//    } else if (permissionStatus.state === 'prompt') {
+//       //there's no peristent permission registered, will be showing the prompt
+//    } else if (permissionStatus.state === 'denied') {
+//    }
+//   console.log("camera permission state is " + permissionStatus.state); 
+// });
 
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -423,7 +423,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     // video: true
     video: {  
       facingMode: 'user',
-  }
+    }
   }).then(function(stream) {
     video.srcObject = stream;
     video.play();
