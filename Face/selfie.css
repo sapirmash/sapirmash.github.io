@@ -152,6 +152,16 @@ html, body{
   line-height: 26px;
 }
 
+.credits{
+  position: fixed;
+  color: rgb(255,255,255);
+  padding: 10px 10px 10px 10px;
+  margin: 0px;
+  bottom: 0;
+  font-size: 22px;
+  line-height: 26px;
+}
+
 #aboutText{
   position: absolute;
   display: block;
