@@ -34,7 +34,7 @@
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video autoplay muted playsinline id="video" width="480" height="640" style="opacity:0; width:0;"></video>
+  <video autoplay muted playsinline id="video" width="480" height="640" style="opacity:0; width:0; height: auto;"></video>
 
   <!-- <video autoplay muted playsinline id="video" width="480" height="640"></video> -->
 
@@ -400,7 +400,7 @@ navigator.permissions.query({
 }).then(function(result) {
    // alert(result.state);
    if (result.state === 'granted') {
-      $("#loading-screen").show();
+      // $("#loading-screen").show();
    } else if (result.state === 'prompt') {
       //there's no peristent permission registered, will be showing the prompt
    } else if (result.state === 'denied') {
