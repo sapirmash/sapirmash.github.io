@@ -84,7 +84,6 @@
 <script type="text/javascript">
 // type="module"
 
-
 // import * as THREE from '/Face/build/three.module.js';
 // import { OrbitControls } from '/Face/examples/jsm/controls/OrbitControls.js';
 // import { Reflector } from '/Face/examples/jsm/objects/Reflector.js';
@@ -395,19 +394,19 @@ animate();
 const mobile = isMobile();
 //detect if the user accept or denied the camera 
 
-navigator.permissions.query({
-   name: 'camera'
-}).then(function(result) {
-   // alert(result.state);
-   if (result.state === 'granted') {
-      // $("#loading-screen").show();
-   } else if (result.state === 'prompt') {
-      //there's no peristent permission registered, will be showing the prompt
-   } else if (result.state === 'denied') {
-      return null;
-   }
-  console.log(result); 
-});
+// navigator.permissions.query({
+//    name: 'camera'
+// }).then(function(result) {
+//    // alert(result.state);
+//    if (result.state === 'granted') {
+//       // $("#loading-screen").show();
+//    } else if (result.state === 'prompt') {
+//       //there's no peristent permission registered, will be showing the prompt
+//    } else if (result.state === 'denied') {
+//       return null;
+//    }
+//   console.log(result); 
+// });
 
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -465,21 +464,16 @@ function init() {
   controls.enableZoom = false;
   controls.enableRotate = true;
   controls.rotateSpeed = 1.0;
-  // controls.maxPolarAngle = Math.PI / 2;
-  // controls.minPolarAngle = Math.PI / 2.2;
-  
 
-
-
-  const loadingManager = new THREE.LoadingManager( () => {
+const loadingManager = new THREE.LoadingManager( () => {
 	
-		const loadingScreen = document.getElementById( 'loading-screen' );
-		loadingScreen.classList.add( 'fade-out' );
+	const loadingScreen = document.getElementById( 'loading-screen' );
+	loadingScreen.classList.add( 'fade-out' );
 		
-		// optional: remove loader from DOM via event listener
-		loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
+	// optional: remove loader from DOM via event listener
+	loadingScreen.addEventListener( 'transitionend', onTransitionEnd );
 		
-	} );
+});
 
   document.addEventListener( 'pointerdown', onMouseClick, false );
 
