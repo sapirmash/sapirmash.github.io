@@ -3,6 +3,7 @@ html, body{
     padding: 0;
     -webkit-font-smoothing: antialiased;
     font-family: 'PleasureStandardTrial-Regular';
+    background-color: #000000;
     /*height: 100%;*/
   }
 
@@ -186,7 +187,7 @@ html, body{
     font-size: 16px;
     color: rgb(255,255,255);
     font-family: 'PleasureStandardTrial-Regular';
-    /*display: none;*/
+    display: none;
 }
 
 .downloadButton{
@@ -197,6 +198,7 @@ html, body{
     font-size: 16px;
     color: rgb(255,255,255);
     font-family: 'PleasureStandardTrial-Regular';
+    display: none;
 }
 
 #download_div{

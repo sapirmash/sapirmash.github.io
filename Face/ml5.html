@@ -21,12 +21,12 @@
 
 <body id="body_ID">
 
-<section id="loading-screen">
+<section id="loading-screen" style="display: none;">
 	<div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div>
 	<button id="button_loader">Continue</button>
 </section>
   
-  <div id="container"></div>
+  <div id="container" style="display: none;"></div>
   
   <!-- <canvas id="canvas" width="480" height="640"></canvas> -->
 
@@ -216,10 +216,10 @@ $("#discription").on('touchstart mousedown', function(){
 // }, 1900);
 
 
-setTimeout(function(){
-   $('#discription').fadeIn('slow');
-   $("#aboutButton").fadeIn('slow');
-}, 1900);
+// setTimeout(function(){
+//    $('#discription').fadeIn('slow');
+//    $("#aboutButton").fadeIn('slow');
+// }, 1900);
 
 function isAndroid() {
   return (/Android/i.test(navigator.userAgent)
@@ -398,9 +398,9 @@ const mobile = isMobile();
 navigator.permissions.query({
    name: 'camera'
 }).then(function(result) {
-   alert(result.state);
+   // alert(result.state);
    if (result.state === 'granted') {
-      // $("#loading-screen").show();
+      $("#loading-screen").show();
    } else if (result.state === 'prompt') {
       //there's no peristent permission registered, will be showing the prompt
    } else if (result.state === 'denied') {
