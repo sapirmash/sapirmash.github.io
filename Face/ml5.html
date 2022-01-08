@@ -398,6 +398,7 @@ const mobile = isMobile();
 navigator.permissions.query({
    name: 'camera'
 }).then(function(result) {
+   alert(result.state);
    if (result.state === 'granted') {
       $("#loading-screen").show();
    } else if (result.state === 'prompt') {
@@ -407,7 +408,7 @@ navigator.permissions.query({
    }
   console.log(result); 
 });
-	
+
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
