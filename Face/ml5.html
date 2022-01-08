@@ -10,6 +10,8 @@
   
   <script src="https://sapirmash.github.io/Face/build/three.min.js"></script>
   <script src="https://sapirmash.github.io/Face/examples/js/controls/OrbitControls.js"></script>
+  <!-- <script src="https://sapirmash.github.io/Face/src/geometries/TextGeometry.js"></script> -->
+  <!-- <script src="https://sapirmash.github.io/Face/src/loaders/FontLoader.js"></script> -->
 
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
@@ -34,7 +36,7 @@
   <canvas id="canvas01" width="300" height="300" style="display: none"></canvas>
   <canvas id="canvas02" width="300" height="300" style="display: none"></canvas>
   <canvas id="Mycanvas" width="300" height="300" style="display: none"></canvas>
-  <video autoplay muted playsinline id="video" width="480" height="640" style="opacity:0; width:0; height: auto;"></video>
+  <video autoplay muted playsinline id="video" width="480" height="640" style="opacity:0; width:0; height:auto;"></video>
 
   <!-- <video autoplay muted playsinline id="video" width="480" height="640"></video> -->
 
@@ -367,7 +369,6 @@ if ($(window).width() < 801) {
 init();
 animate();
 
-
 // var buttonclicked; 
 // $("#button_loader").click(function(){ 
 // if( buttonclicked!= true ) { 
@@ -394,19 +395,6 @@ animate();
 const mobile = isMobile();
 //detect if the user accept or denied the camera 
 
-// navigator.permissions.query({
-//    name: 'camera'
-// }).then(function(result) {
-//    // alert(result.state);
-//    if (result.state === 'granted') {
-//       // $("#loading-screen").show();
-//    } else if (result.state === 'prompt') {
-//       //there's no peristent permission registered, will be showing the prompt
-//    } else if (result.state === 'denied') {
-//       return null;
-//    }
-//   console.log(result); 
-// });
 
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -420,6 +408,20 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     video.play();
   });
 } 
+
+navigator.permissions.query({
+   name: 'camera'
+}).then(function(result) {
+   // alert(result.state);
+   if (result.state === 'granted') {
+      $("#loading-screen").show('fast');
+   } else if (result.state === 'prompt') {
+      //there's no peristent permission registered, will be showing the prompt
+   } else if (result.state === 'denied') {
+      return null;
+   }
+  console.log(result); 
+});
 
 
 // Loop over the drawCameraIntoCanvas function
@@ -465,6 +467,7 @@ function init() {
   controls.enableRotate = true;
   controls.rotateSpeed = 1.0;
 
+ 
 const loadingManager = new THREE.LoadingManager( () => {
 	
 	const loadingScreen = document.getElementById( 'loading-screen' );
