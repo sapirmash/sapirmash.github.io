@@ -408,18 +408,18 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   });
 } 
 
-navigator.permissions.query({
-   name: 'camera'
-}).then(function(result) {
-   if (result.state === 'granted') {
-      $("#loading-screen").show();
-   } else if (result.state === 'prompt') {
-      //there's no peristent permission registered, will be showing the prompt
-   } else if (result.state === 'denied') {
-      return null;
-   }
-  console.log(result); 
-});
+// navigator.permissions.query({
+//    name: 'camera'
+// }).then(function(result) {
+//    if (result.state === 'granted') {
+//       $("#loading-screen").show();
+//    } else if (result.state === 'prompt') {
+//       //there's no peristent permission registered, will be showing the prompt
+//    } else if (result.state === 'denied') {
+//       return null;
+//    }
+//   console.log(result); 
+// });
 
 
 // Loop over the drawCameraIntoCanvas function
