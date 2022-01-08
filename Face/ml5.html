@@ -21,10 +21,10 @@
 
 <body id="body_ID">
 
-<!-- <section id="loading-screen">
+<section id="loading-screen">
 	<div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div>
 	<button id="button_loader">Continue</button>
-</section> -->
+</section>
   
   <div id="container"></div>
   
@@ -211,15 +211,15 @@ $("#discription").on('touchstart mousedown', function(){
   $("#discription").fadeOut('fast');                
 });
 
-// setTimeout(function(){
-//    $('#loading-screen').fadeOut('fast');
-// }, 1900);
+setTimeout(function(){
+   $('#loading-screen').fadeOut('fast');
+}, 1900);
 
 
-// setTimeout(function(){
-//    $('#discription').fadeIn('slow');
-//    $("#aboutButton").fadeIn('slow');
-// }, 1900);
+setTimeout(function(){
+   $('#discription').fadeIn('slow');
+   $("#aboutButton").fadeIn('slow');
+}, 1900);
 
 function isAndroid() {
   return (/Android/i.test(navigator.userAgent)
@@ -408,6 +408,18 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   });
 } 
 
+navigator.permissions.query({
+   name: 'camera'
+}).then(function(result) {
+   if (result.state === 'granted') {
+      $("#loading-screen").show();
+   } else if (result.state === 'prompt') {
+      //there's no peristent permission registered, will be showing the prompt
+   } else if (result.state === 'denied') {
+      return null;
+   }
+  console.log(result); 
+});
 
 
 // Loop over the drawCameraIntoCanvas function
