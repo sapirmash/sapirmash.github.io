@@ -392,9 +392,7 @@ animate();
 // });
 
 
-const mobile = isMobile();
-//detect if the user accept or denied the camera 
-
+// const mobile = isMobile();
 
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -409,18 +407,23 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   });
 } 
 
+//detect if the user accept or denied the camera 
 navigator.permissions.query({
    name: 'camera'
-}).then(function(result) {
-   // alert(result.state);
-   if (result.state === 'granted') {
+}).then(function(permissionStatus) {
+  permissionStatus.onchange = function() {
+    console.log('camera permission state has changed to ', this.state);
+    if (this.state === 'granted') {
       $("#loading-screen").show('fast');
-   } else if (result.state === 'prompt') {
+  }
+    
+  };
+   if (permissionStatus.state === 'granted') {
+   } else if (permissionStatus.state === 'prompt') {
       //there's no peristent permission registered, will be showing the prompt
-   } else if (result.state === 'denied') {
-      return null;
+   } else if (permissionStatus.state === 'denied') {
    }
-  console.log(result); 
+  console.log("camera permission state is " + permissionStatus.state); 
 });
 
 
