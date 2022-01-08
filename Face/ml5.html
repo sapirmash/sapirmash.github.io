@@ -425,8 +425,11 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       facingMode: 'user',
     }
   }).then(function(stream) {
+    $("#loading-screen").show('fast');
     video.srcObject = stream;
     video.play();
+  }).catch(function(err) {
+    console.log(err);
   });
 } 
 
