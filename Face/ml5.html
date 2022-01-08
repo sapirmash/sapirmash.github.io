@@ -398,6 +398,7 @@ animate();
 navigator.permissions.query({
    name: 'camera'
 }).then(function(permissionStatus) {
+  // state change
   permissionStatus.onchange = function() {
     console.log('camera permission state has changed to ', this.state);
     if (this.state === 'granted') {
@@ -405,7 +406,10 @@ navigator.permissions.query({
   }
     
   };
+   
+// current state (before prompt)
    if (permissionStatus.state === 'granted') {
+    $("#loading-screen").show('fast');
    } else if (permissionStatus.state === 'prompt') {
       //there's no peristent permission registered, will be showing the prompt
    } else if (permissionStatus.state === 'denied') {
