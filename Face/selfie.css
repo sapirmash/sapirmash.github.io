@@ -187,7 +187,7 @@ html, body{
     font-size: 16px;
     color: rgb(255,255,255);
     font-family: 'PleasureStandardTrial-Regular';
-    /*display: none;*/
+    display: none;
 }
 
 .downloadButton{
@@ -198,7 +198,7 @@ html, body{
     font-size: 16px;
     color: rgb(255,255,255);
     font-family: 'PleasureStandardTrial-Regular';
-    /*display: none;*/
+    display: none;
 }
 
 #download_div{
