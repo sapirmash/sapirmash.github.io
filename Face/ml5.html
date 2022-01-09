@@ -218,9 +218,9 @@ $("#discription").on('touchstart mousedown', function(){
   $("#discription").fadeOut('fast');                
 });
 
-setTimeout(function(){
-   $('#loading-screen').fadeOut('fast');
-}, 4500);
+// setTimeout(function(){
+//    $('#loading-screen').fadeOut('fast');
+// }, 4500);
 
 
 
@@ -390,6 +390,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     video.srcObject = stream;
     video.play();
     setTimeout(function(){
+   $('#loading-screen').fadeOut('fast');   
    $('#discription').fadeIn('slow');
    $("#aboutButton").fadeIn('slow');
    $(".downloadButton").fadeIn('slow');
