@@ -23,12 +23,14 @@
 
 <body id="body_ID">
 
-<section id="loading-screen" style="display: none;">
-  <div id="loader-text">Loading...</div>
-</section>
+<div id="loading-screen" style="display: none;">
+  <div id="loader-text">
+  <p class="load">Loading...</p>
+  </div>
+</div>
 
-<section id="permission-screen" style="display: none;">
-  <!-- <div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div> -->
+<section id="permission-screen">
+  <div id="loader">This website need to grant a camera access to display your face on 3D graphics.</div>
   <button id="button_loader">Continue</button>
 </section>
   
@@ -218,13 +220,10 @@ $("#discription").on('touchstart mousedown', function(){
 
 setTimeout(function(){
    $('#loading-screen').fadeOut('fast');
-}, 2500);
+}, 4500);
 
 
-// setTimeout(function(){
-//    $('#discription').fadeIn('slow');
-//    $("#aboutButton").fadeIn('slow');
-// }, 1900);
+
 
 function isAndroid() {
   return (/Android/i.test(navigator.userAgent)
@@ -373,54 +372,11 @@ if ($(window).width() < 801) {
 init();
 animate();
 
-// var buttonclicked; 
-// $("#button_loader").click(function(){ 
-// if( buttonclicked!= true ) { 
-// if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-//   navigator.mediaDevices.getUserMedia({
-//     video: {
-//     width: 640,
-//     height: 480,
-//     facingMode: 'user',
-//   }
-//   }).then(function(stream) {
-//     video.srcObject = stream;
-//     video.play();
-//   });
-// }
-// $("#loading-screen").fadeOut('slow');      
-// }
-// else{ 
-//     alert("Button was clicked before"); 
-// } 
-// });
 
+var buttonclicked; 
 
-// const mobile = isMobile();
-
-//detect if the user accept or denied the camera 
-// navigator.permissions.query({
-//    name: 'camera'
-// }).then(function(permissionStatus) {
-//   // state change
-//   permissionStatus.onchange = function() {
-//     console.log('camera permission state has changed to ', this.state);
-//     if (this.state === 'granted') {
-//       $("#loading-screen").show('fast');
-//   }
-    
-//   };
-   
-// // current state (before prompt)
-//    if (permissionStatus.state === 'granted') {
-//     $("#loading-screen").show('fast');
-//    } else if (permissionStatus.state === 'prompt') {
-//       //there's no peristent permission registered, will be showing the prompt
-//    } else if (permissionStatus.state === 'denied') {
-//    }
-//   console.log("camera permission state is " + permissionStatus.state); 
-// });
-
+$("#button_loader").click(function(){ 
+if( buttonclicked!= true ) { 
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({
@@ -429,15 +385,25 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       facingMode: 'user',
     }
   }).then(function(stream) {
-    $("#loading-screen").show('fast');
+    // $("#loading-screen").show('slow');
+    document.getElementById("loading-screen").style.display = 'block';
     video.srcObject = stream;
     video.play();
+    setTimeout(function(){
+   $('#discription').fadeIn('slow');
+   $("#aboutButton").fadeIn('slow');
+   $(".downloadButton").fadeIn('slow');
+}, 4500);
   }).catch(function(err) {
     console.log(err);
   });
+}   
+$("#permission-screen").fadeOut('slow');      
+}
+else{ 
+    alert("Button was clicked before"); 
 } 
-
-
+});
 
 
 // Loop over the drawCameraIntoCanvas function
