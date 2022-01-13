@@ -417,7 +417,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
    $("#aboutButton").fadeIn('slow');
    $("#container").fadeIn('slow');
    $(".downloadButton").fadeIn('slow');
-}, 13000);
+}, 8000);
   }).catch(function(err) {
     console.log(err);
   });
@@ -592,7 +592,7 @@ function init() {
   cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
   scene.add(cube03);
 
-  var geometry03 = new THREE.BoxGeometry(90, 30, 30);
+  var geometry03 = new THREE.BoxGeometry(80, 40, 40);
   material03 = new THREE.MeshBasicMaterial({
     map: mouth_texture,
   });
