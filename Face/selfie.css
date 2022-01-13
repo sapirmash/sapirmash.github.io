@@ -15,10 +15,11 @@ html, body{
 #loading-screen {
   z-index: 2;
   height: 100vh;
-  height: calc(100vh - var(--vh-offset, 0px));
+  /*height: calc(100vh - var(--vh-offset, 0px));*/
   text-align: center;
   background-color: #000000;
-  display: block;
+  overflow: hidden;
+  /*display: block;*/
 }
 
 #loader-text {
@@ -75,9 +76,10 @@ html, body{
     display: block;
     position: absolute;
     font-family: 'PleasureStandardTrial-Regular';
-    right: 0;
+    left: 0;
     bottom: 0;
     margin: 5px;
+    /*border: 1px solid white;*/
     font-size: 22px;
     color: rgb(255,255,255);
 
@@ -138,7 +140,9 @@ html, body{
   display: none;
 }
 
-
+#load_canvas{
+  font-family: 'PleasureStandardTrial-Regular';
+}
 
 @media (min-width:801px) {
 
@@ -208,9 +212,9 @@ html, body{
 }  
 
 .questionButton{
-    height: 32px;
+    height: 24px;
     z-index: 500;
-    margin: 5px;
+    margin: 2px 5px 5px 5px;
     top: 0px;
     left: 0px;
     font-size: 16px;
@@ -220,8 +224,9 @@ html, body{
 }
 
 .downloadButton{
-    height: 32px;
-    margin: 5px;
+    height: 24px;
+   vertical-align: baseline;
+    margin: 2px 5px 5px 5px;
     top: 0px;
     right: 0px;
     font-size: 16px;
