@@ -14,9 +14,9 @@ html, body{
 
 #loading-screen {
   z-index: 2;
-  height: 100vh;
+  /*height: 100vh;*/
   /*height: calc(100vh - var(--vh-offset, 0px));*/
-  text-align: center;
+  /*text-align: center;*/
   background-color: #000000;
   overflow: hidden;
   /*display: block;*/

@@ -23,12 +23,12 @@
 
 <body id="body_ID">
 
-<div id="loading-screen" style="display: none;"> 
-  <!-- <canvas id="canvas_loading" width="300" height="300" style="font-family: 'PleasureStandardTrial-Regular';"> -->
+<div id="loading-screen" style="display: none;">
+  <!-- <canvas id="canvas_loading" width="300" height="300" style="font-family: 'PleasureStandardTrial-Regular'; display: none;"> </canvas>  -->
   <video autoplay muted playsinline width="480" height="640">
-     <source src="loading-screen.mp4" type=video/mp4>
+     <source src="loading_screen.mp4" type=video/mp4>
   </video>  
-  <!-- </canvas>   -->
+  
 </div>
 
 <section id="permission-screen">
@@ -390,7 +390,7 @@ animate();
 
 //   load.fillStyle = 'white';
 //   load.textAlign = 'center';
-//   load.fillText('loading...', 100, 150);
+//   load.fillText('loading...', 150, 160);
 //   // Ready to use the font in a canvas context
 // });
 
@@ -544,7 +544,7 @@ function init() {
 
   // var load_texture = new THREE.CanvasTexture(load_canvas);
 
-  // var geometry_load = new THREE.BoxGeometry(100, 100, 100);
+  // var geometry_load = new THREE.PlaneGeometry(100, 100);
   // material_load = new THREE.MeshBasicMaterial({
   //   map: load_texture,
   //   transparent: true, 
@@ -691,9 +691,9 @@ function animate() {
   ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
   ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
   // load.drawImage(canvas_loading, 0, 0, 300,300);
-  // cube05.rotation.x += 0.01;
+
   // cube05.rotation.y += 0.02;
-  // cube05.rotation.x += 0.02;
+  // cube05.rotation.x += 0.01;
   requestAnimationFrame(animate);
   render();
   controls.update();
