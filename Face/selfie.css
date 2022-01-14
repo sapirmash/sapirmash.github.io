@@ -13,17 +13,20 @@ html, body{
 
 #loading-screen {
   z-index: 2;
-  height: auto;
-  width: 100vw;
+/*  height: auto;
+  width: 100vw;*/
   position: absolute;
   overflow: hidden;
-  background-color: #000000; 
+  background-color: #000000;
+  display: flex;
+  justify-content: center; 
   
 }
 
 .loading_video{
-    margin-left: 50vw; 
-    transform: translate(-50%); 
+    align-items: center;
+  /*  margin-left: 50vw; 
+    transform: translate(-50%); */
     /*position: fixed; */
   /*  top: 0;
     left: 0;
