@@ -17,26 +17,21 @@ html, body{
   width: 100vw;
   position: absolute;
   overflow: hidden;
- /* height: 100vh;
-  width: 100vw;*/
-  /*height: calc(100vh - var(--vh-offset, 0px));*/
   background-color: #000000; 
   /*display: block;*/
 }
 
 .loading_video{
     /*position: fixed; */
-    margin: auto;
+    /*margin: auto;*/
     top: 0;
     left: 0;
- /*   right: 0;
-    bottom: 0;*/
+    right: 0;
+    bottom: 0;
     height: 100vh;
     width: 100vw;
-    /*width: 100%; 
-    height: auto;*/ 
     overflow: hidden;
-    /*background-size: cover;*/
+    object-fit: contain;
 }
 
 #loader-text {
