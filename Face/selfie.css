@@ -14,6 +14,9 @@ html, body{
 #loading-screen {
   z-index: 2;
   height: auto;
+  width: 100vw;
+  position: absolute;
+  overflow: hidden;
  /* height: 100vh;
   width: 100vw;*/
   /*height: calc(100vh - var(--vh-offset, 0px));*/
@@ -22,7 +25,8 @@ html, body{
 }
 
 .loading_video{
-    position: fixed; 
+    /*position: fixed; */
+    margin: auto;
     top: 0;
     left: 0;
  /*   right: 0;
