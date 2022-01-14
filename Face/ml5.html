@@ -593,7 +593,7 @@ function init() {
   cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
   scene.add(cube03);
 
-  var geometry03 = new THREE.BoxGeometry(80, 40, 40);
+  var geometry03 = new THREE.BoxGeometry(90, 45, 45);
   material03 = new THREE.MeshBasicMaterial({
     map: mouth_texture,
   });
@@ -666,6 +666,7 @@ function onMouseClick(e) {
   var info_y = getOffset(document.getElementById("aboutButton")).top;
   var click_x = e.pageX;
   var click_y = e.pageY;
+
   var download_clicked = Math.abs(click_x - download_x) < 35 && Math.abs(click_y - download_y) < 25;
   var info_clicked = Math.abs(click_x - info_x) < 35 && Math.abs(click_y - info_y) < 25;
   
@@ -691,7 +692,6 @@ function animate() {
   ctx01.drawImage(video, left_eyeX - d / 2, left_eyeY - d / 2, d + 0.01, d + 0.01, 0, 0, 300, 300);
   ctx02.drawImage(video, right_eyeX - d/2,right_eyeY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
   ctx03.drawImage(video, mouthX - d/2,mouthY-d/2, d+0.01, d+0.01, 0, 0, 300,300);
-  // load.drawImage(canvas_loading, 0, 0, 300,300);
 
   // cube05.rotation.y += 0.02;
   // cube05.rotation.x += 0.01;
