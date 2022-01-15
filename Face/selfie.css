@@ -18,9 +18,17 @@ html, body{
   position: absolute;
   overflow: hidden;
   background-color: #000000;
+  
+  
+}
+
+.wrapper{
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   justify-content: center; 
-  
 }
 
 #loading_video{
@@ -33,8 +41,8 @@ html, body{
     right: 0;
     bottom: 0;*/
     /*height: 100vh;*/
-    width: 100vw;
-    overflow: hidden;
+    /*width: 100vw;*/
+    /*overflow: hidden;*/
     /*object-fit: contain;*/
 }
 
