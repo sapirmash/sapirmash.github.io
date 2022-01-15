@@ -31,6 +31,11 @@ html, body{
   justify-content: center;
 }
 
+#loading_gif{
+  width: 100%;
+  height: auto;
+}
+
 #loading_video{
     align-items: center;
   /*  margin-left: 50vw; 
