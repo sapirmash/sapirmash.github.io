@@ -16,7 +16,7 @@ html, body{
 /*  height: auto;
   width: 100vw;*/
   position: absolute;
-  overflow: hidden;
+  /*overflow: hidden;*/
   background-color: #000000;
   
   
@@ -28,7 +28,7 @@ html, body{
   height: 100vh;
   overflow: hidden;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
 }
 
 #loading_video{
