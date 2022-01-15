@@ -666,9 +666,7 @@ function onMouseClick(e) {
 
   var download_clicked = (click_x - download_x) > -5 && Math.abs(click_y - download_y) < 25;
   var info_clicked = Math.abs(click_x - info_x) < 35 && Math.abs(click_y - info_y) < 25;
-  
-  console.log((click_x - download_x));
-  // console.log((click_y - download_y));
+ 
 
   if (!disable_refresh_position && !clicked_about && !download_clicked && !info_clicked) {
     ChangePosition();
