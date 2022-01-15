@@ -24,7 +24,7 @@ html, body{
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background-color: #ffffff;
+  background-color: #000000;
 }
 
 #loading_gif{
@@ -103,7 +103,7 @@ html, body{
     display: block;
     position: absolute;
     font-family: 'PleasureStandardTrial-Regular';
-    left: 0;
+    right: 0;
     bottom: 0;
     margin: 5px;
     font-size: 22px;
