@@ -15,7 +15,7 @@ html, body{
   z-index: 2;
 /*  height: auto;
   width: 100vw;*/
-  position: absolute;
+  /*position: absolute;*/
   /*overflow: hidden;*/
   background-color: #000000;
   
@@ -34,6 +34,8 @@ html, body{
 #loading_gif{
   width: 100%;
   height: auto;
+  align-items: center;
+  overflow: hidden;
 }
 
 #loading_video{
