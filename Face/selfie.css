@@ -37,15 +37,20 @@ html, body{
 }
 
 #loading_gif{
- /* width: 100%;
-  height: auto;
-  align-items: center;*/
+/*  width: 100%;
+  height: auto;*/
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  align-items: center;
   overflow: hidden;
-  display: flex;
+  /*display: flex;
   flex-direction: column;
   text-align: center;
   justify-content: center;
-  align-content: center;
+  align-content: center;*/
   width: 100vw;
   height: 100vh;
   margin: 0;
