@@ -23,7 +23,7 @@ html, body{
   
 }
 
-.loading_video{
+#loading_video{
     align-items: center;
   /*  margin-left: 50vw; 
     transform: translate(-50%); */
