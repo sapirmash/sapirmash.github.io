@@ -24,13 +24,13 @@
 <body id="body_ID">
 
 <div id="loading-screen" class="wrapper" style="display: none;">
- <img id="loading_gif" src="loading_screen_video.gif"> 
+ <img id="loading_gif" src="Loading_G.gif"> 
   <!-- <video id="loading_video" loop autoplay muted playsinline width="480" height="640">
      <source src="loading_screen_video.mp4" type=video/mp4>
   </video> -->
 </div>
 
-<!-- <canvas id="canvas_loading" width="300" height="300" style="font-family: 'PleasureStandardTrial-Regular'; display: none;"> </canvas>  -->
+<!-- <canvas id="canvas_loading" width="300" height="300" style="font-family: 'PleasureStandard-Regular'; display: none;"> </canvas>  -->
 
 <section id="permission-screen">
   <div id="loader">Please allow camera access to expereince this website.  <br>Your video will not be stored anywhere.
@@ -69,7 +69,7 @@
 <div id="about">
   <div id="aboutText">
     <p class="explain">
-    Selfie
+    Take a Selfie
     <br></br>
     is an experimental project that explores a new way to create a selfie using 3D rendering and face detection technologies. 
     You can play around by clicking and dragging until you find your best angle. 
@@ -77,19 +77,19 @@
     <p class="credits">
     Technologies:
     <br>
-    Three.js & ml5js (PoseNet)
+    <a href="https://threejs.org/" style=""> Three.js</a> & <a href="https://learn.ml5js.org/#/reference/posenet">ml5js (PoseNet)</a>
     <br></br>
     Design, coding:
     <br>
-    Sapir Mashiach
+    <a href="https://www.instagram.com/sapir__m/"> Sapir Mashiach</a>
     </p>
   </div>
   <button class="questionButton" id="aboutButton">Info</button>
 </div> 
 
 <div id="download_div">
-<button class="downloadButton">
-	<a id="download">Download</a>
+<button class="downloadButton" id="download">
+	Download
 </button>
 </div>
 
@@ -393,14 +393,14 @@ init();
 animate(); 
  
 
-// let f = new FontFace('PleasureStandardTrial-Regular', 'url(PleasureStandardTrial-Regular.otf)');
+// let f = new FontFace('PleasureStandard-Regular', 'url(PleasureStandard-Regular.otf)');
 
 // f.load().then(function() {
-//   load.font = '40px "PleasureStandardTrial-Regular"';
+//   load.font = '40px "PleasureStandard-Regular"';
 
 //   load.fillStyle = 'white';
 //   load.textAlign = 'center';
-//   load.fillText('loading...', 150, 160);
+//   load.fillText('Loading...', 150, 160);
 //   // Ready to use the font in a canvas context
 // });
 
