@@ -71,15 +71,15 @@
     <p class="explain">
     Take a Selfie
     <br></br>
-    is an experimental project that explores a new way to create a selfie using 3D rendering and face detection technologies. 
-    You can play around by clicking and dragging until you find your best angle. 
+    is a website that explores a new way to create a selfie using 3D rendering and face detection technologies. 
+    You can play around by clicking and dragging to find your best angle. 
     </p>
     <p class="credits">
     Technologies:
     <br>
-    <a href="https://threejs.org/" style=""> Three.js</a> & <a href="https://learn.ml5js.org/#/reference/posenet">ml5js (PoseNet)</a>
+    <a href="https://threejs.org/" style=""> Three.js</a> & <a href="https://learn.ml5js.org/#/reference/posenet">ml5js</a> (PoseNet)
     <br></br>
-    Design, coding:
+    Design and coding:
     <br>
     <a href="https://www.instagram.com/sapir__m/"> Sapir Mashiach</a>
     </p>
@@ -89,7 +89,7 @@
 
 <div id="download_div">
 <button class="downloadButton" id="download">
-	Download
+	Capture
 </button>
 </div>
 
@@ -590,7 +590,7 @@ function init() {
   cube03.rotation.y = getRandomArbitrary(0.1, 0.5);
   scene.add(cube03);
 
-  var geometry03 = new THREE.BoxGeometry(90, 45, 45);
+  var geometry03 = new THREE.BoxGeometry(100, 45, 45);
   material03 = new THREE.MeshBasicMaterial({
     map: mouth_texture,
   });
