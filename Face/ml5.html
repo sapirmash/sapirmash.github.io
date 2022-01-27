@@ -170,6 +170,7 @@ var disable_refresh_position = false;
 var clicked_about = false;
 var clicked_dis = false;
 var download_mouseIsOver = false;
+let drag = false;
 
 var video = document.getElementById("video");
 // var canvas = document.getElementById("canvas");
@@ -483,8 +484,7 @@ function init() {
   controls.enableRotate = true;
   controls.rotateSpeed = 1.0;
 
-  // var click = false;
-  document.addEventListener( 'pointerdown', onMouseClick, false );
+  // document.addEventListener( 'pointerdown', onMouseClick, false );
 
   // document.addEventListener('pointermove', function(event){
   //     if(){
@@ -499,16 +499,13 @@ function init() {
   //     }
   //   });
 
-  let drag = false;
-    document.addEventListener(
-        'pointerdown', () => drag = false);
+
+
+  document.addEventListener('pointerdown', () => drag = false);
   
-    document.addEventListener(
-        'pointermove', () => drag = true);
+  document.addEventListener('pointermove', () => drag = true);
   
-    document.addEventListener(
-        'pointerup', () => console.log(
-            drag ? 'drag' : 'click'));  
+  document.addEventListener('pointerup', onPointerUp);  
 
   // handleUp(){
   //   document.removeEventListener('pointermove',  this.handleMove);
@@ -642,6 +639,13 @@ function init() {
 
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
+}
+
+function onPointerUp(e){
+  if (!drag) {
+    onMouseClick(e);
+  }
+  // console.log(drag ? 'drag' : 'click');
 }
 
 function ChangePosition() {
