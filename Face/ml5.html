@@ -483,7 +483,43 @@ function init() {
   controls.enableRotate = true;
   controls.rotateSpeed = 1.0;
 
+  // var click = false;
   document.addEventListener( 'pointerdown', onMouseClick, false );
+
+  // document.addEventListener('pointermove', function(event){
+  //     if(){
+  //       click = true;
+  //       return false;
+  //     }
+  //   });
+  //   document.addEventListener("pointerup", function(event){
+  //     if(click === true){
+  //        // Use stopImmediatePropagation to stop the other handeller from trigerring
+  //       event.stopImmediatePropagation();
+  //     }
+  //   });
+
+  let drag = false;
+    document.addEventListener(
+        'pointerdown', () => drag = false);
+  
+    document.addEventListener(
+        'pointermove', () => drag = true);
+  
+    document.addEventListener(
+        'pointerup', () => console.log(
+            drag ? 'drag' : 'click'));  
+
+  // handleUp(){
+  //   document.removeEventListener('pointermove',  this.handleMove);
+  //   setTimeout(() => this.drag= false);
+  // }
+
+  // handleClick(){
+  //   if (!this.drag) {
+  //     this.click = !this.click;
+  //   }
+  // }
 
   var fogs = [
     0xBDE3F4,
