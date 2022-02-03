@@ -16,20 +16,19 @@
       arjs="sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;"
     >
     
-<!--     <a-text
+    <a-text
         value="This content will always face you."
         look-at="[gps-camera]"
         scale="50 50 50"
-        gps-entity-place="latitude: <add-your-latitude>; longitude: <add-your-longitude>;"
-    ></a-text> -->
+        gps-entity-place="latitude: 32.06493; longitude: 34.76943;"
+    ></a-text>
     
-    <a-entity
+    <!-- <a-entity
     geometry="primitive: box" material="color: red" 
     look-at="[gps-camera]"
     scale="0.15 0.15 0.15"
-    rotation="0 180 0"
     gps-entity-place="latitude: 32.06493; longitude: 34.76943;"
-    ></a-entity>
+    ></a-entity> -->
       <a-camera gps-camera rotation-reader> </a-camera>
     </a-scene>
   </body>
