@@ -9,20 +9,42 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
   </head>
 
+    <script>
+    const log = console.log;
+    window.onload = () => {
+      let scene = document.querySelector('a-scene'); /* Apply wrapper to whole scene */
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          let gps = document.createAttribute('gps-entity-place'),
+            arjs = document.createAttribute('arjs'),
+            welcome = document.getElementById('welcome');
+
+          arjs.value = 'sourceType: webcam; sourceWidth: 1280; sourceHeight: 960; trackingMethod: best; debugUIEnabled: false;';
+          gps.value = `latitude: ${position.coords.latitude - 0.001}; longitude: ${position.coords.longitude + 0.001}`;
+          log(gps.value);
+          scene.setAttributeNode(gps); /* Apply wrapper to whole scene */
+          scene.setAttributeNode(arjs);
+        });
+      }
+
+    };
+  </script>
   <body style="margin: 0; overflow: hidden;">
-    <a-scene
+   <a-scene vr-mode-ui="enabled: false">
+  <a-entity id="wrapper" position="0 -8 0">
+    <a-box id="welcome" value="Welcome" rotation="0 45 0" scale="40 20 40" color="#000000" position="-30 0 -150" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"></a-box>
+    <!-- look-at="[gps-camera]" -->
+
+  </a-entity><!-- /wrapper -->
+
+  <a-camera camera="fov: 60;" gps-camera rotation-reader></a-camera>
+</a-scene> 
+  <!--   <a-scene
       vr-mode-ui="enabled: false"
       embedded
       arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
     >
-    
-  <!--   <a-text
-        value="This content will always face you."
-        look-at="[gps-camera]"
-        scale="20 20 20"
-        rotation="0 180 0"
-        gps-entity-place="latitude: 32.06491; longitude: 34.76929;"
-    ></a-text> -->
     
     <a-box color="green" depth="30" height="30" width="30"
     look-at="[gps-camera]"
@@ -31,14 +53,8 @@
     gps-entity-place="latitude: 32.06491; longitude: 34.76929;"
     ></a-box>
 
-    <!-- <a-entity
-    geometry="primitive: box" material="color: red" 
-    look-at="[gps-camera]"
-    scale="0.15 0.15 0.15"
-    gps-entity-place="latitude: 32.06493; longitude: 34.76943;"
-    ></a-entity> -->
-      <a-camera arjs-look-controls='smoothingFactor: 0.1' gps-camera='gpsMinDistance: 5' gps-camera rotation-reader> </a-camera>
-    </a-scene>
+    <a-camera arjs-look-controls='smoothingFactor: 0.1' gps-camera='gpsMinDistance: 5' gps-camera rotation-reader> </a-camera>
+    </a-scene> -->
   </body>
 </html>
 
