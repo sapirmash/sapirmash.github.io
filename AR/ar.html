@@ -18,9 +18,9 @@
         navigator.geolocation.getCurrentPosition(function (position) {
           let gps = document.createAttribute('gps-entity-place'),
             arjs = document.createAttribute('arjs'),
-            welcome = document.getElementById('welcome');
+            welcome = document.getElementById('box');
 
-          arjs.value = 'sourceType: webcam; sourceWidth: 1280; sourceHeight: 960; trackingMethod: best; debugUIEnabled: false;';
+          arjs.value = 'sourceType: webcam; videoTexture: true; sourceWidth: 1280; sourceHeight: 960; trackingMethod: best; debugUIEnabled: false;';
           gps.value = `latitude: ${position.coords.latitude - 0.001}; longitude: ${position.coords.longitude + 0.001}`;
           log(gps.value);
           scene.setAttributeNode(gps); /* Apply wrapper to whole scene */
@@ -33,12 +33,12 @@
   <body style="margin: 0; overflow: hidden;">
    <a-scene vr-mode-ui="enabled: false">
   <a-entity id="wrapper" position="0 -8 0">
-    <a-box id="welcome" value="Welcome" rotation="0 45 0" scale="40 20 40" color="#000000" position="-30 0 -150" animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"></a-box>
+    <a-box id="box" value="Welcome" rotation="0 45 0" scale="40 20 40" color="#000000" position="-30 0 -150" animation="property: rotation; to: 0 -90 0; loop: true; dur: 10000"></a-box>
     <!-- look-at="[gps-camera]" -->
 
   </a-entity><!-- /wrapper -->
 
-  <a-camera camera="fov: 60;" gps-camera rotation-reader></a-camera>
+  <a-camera arjs-look-controls='smoothingFactor: 0.1' gps-camera='gpsMinDistance: 5' gps-camera rotation-reader></a-camera>
 </a-scene> 
   <!--   <a-scene
       vr-mode-ui="enabled: false"
