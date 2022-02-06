@@ -32,21 +32,27 @@
     };
   </script>
   <body style="margin: 0; overflow: hidden;">
-   <a-scene vr-mode-ui="enabled: false">
-  <a-entity id="wrapper" position="0 -8 0">
-    <a-box id="box"
-    look-at="#cam" 
-    value="Welcome" 
-    scale="40 20 40" color="#000000" 
-    position="-30 0 -150" 
-    animation="property: rotation; to: 360 360 360; loop: true; dur: 10000"
-    ></a-box>
-    <!-- look-at="[gps-camera]" -->
+  <a-scene vr-mode-ui="enabled: false">
+    <a-entity id="wrapper" position="0 -8 0">
+      <a-box id="box"
+      look-at="[gps-camera]"
+      
+      value="Welcome" 
+      scale="40 20 40" color="#000000" 
+      position="-30 0 -150" 
+      animation="property: rotation; to: 360 360 360; loop: true; dur: 10000"
+      ></a-box>
+      <!-- look-at="[gps-camera]"
+      look-at="#cam"  -->
 
-  </a-entity><!-- /wrapper -->
+    </a-entity><!-- /wrapper -->
 
-  <a-camera id="cam" arjs-look-controls='smoothingFactor: 0.1' gps-camera='gpsMinDistance: 5' gps-camera rotation-reader></a-camera>
-</a-scene> 
+    <a-camera id="cam" 
+    arjs-look-controls='smoothingFactor: 0.1' 
+    gps-camera='gpsMinDistance: 5' 
+    gps-camera rotation-reader
+    ></a-camera>
+  </a-scene> 
   <!--   <a-scene
       vr-mode-ui="enabled: false"
       embedded
