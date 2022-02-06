@@ -9,6 +9,38 @@
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
      <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
   </head>
+  <script> 
+    AFRAME.registerComponent('mythreejsthing', {
+  schema: {
+    color: {default: '#000'},
+    radius: {type: 'number', default: 10},
+    widthSegments: {type: 'number', default: 20},
+    heightSegments : {type: 'number', default: 50},
+    transmission: {type: 'number', default: 0.9},
+    opacity: {type: 'number', default: 1},
+    metalness: {type: 'number', default: 0},
+    roughness: {type: 'number', default: 0}
+  },
+
+  update: function() {
+    var material = new THREE.MeshPhysicalMaterial({
+      color: this.data.color,
+      transmission: this.data.transmission,
+      opacity: this.data.opacity,
+      metalness: this.data.metalness,
+      roughness: this.data.roughness,
+    });
+
+    var geometry = new THREE.SphereGeometry( this.data.radius, this.data.widthSegments, this.data.heightSegments);
+
+    this.el.setObject3D('mesh', new THREE.Mesh(geometry, material));
+  },
+
+  remove: function() {
+    this.el.removeObject3D('mesh');
+  }
+});
+</script>
 
     <script>
     const log = console.log;
@@ -32,17 +64,17 @@
     };
   </script>
   <body style="margin: 0; overflow: hidden;">
-  <a-scene vr-mode-ui="enabled: false">
+  <a-scene vr-mode-ui="enabled: false">  
     <a-entity id="wrapper" position="0 -8 0">
-      <a-box id="box"
-      look-at="[gps-camera]"
+       <a-entity  id="box" mythreejsthing="color: green;" scale="5 5" look-at="[gps-camera]" radius="10" segments-height="20" segments-width="50" position="0 0 -150"> </a-entity>  
       
-      value="Welcome" 
+       <!--  <a-box id="box"
+      look-at="[gps-camera]" 
       scale="40 20 40" color="#000000" 
       position="-30 0 -150" 
       animation="property: rotation; to: 360 360 360; loop: true; dur: 10000"
       ></a-box>
-      <!-- look-at="[gps-camera]"
+     look-at="[gps-camera]"
       look-at="#cam"  -->
 
     </a-entity><!-- /wrapper -->
