@@ -13,13 +13,16 @@
     AFRAME.registerComponent('mythreejsthing', {
   schema: {
     color: {default: '#000'},
-    radius: {type: 'number', default: 10},
-    widthSegments: {type: 'number', default: 20},
-    heightSegments : {type: 'number', default: 50},
+    radiusTop: {type: 'number', default: 10},
+    radiusBottom: {type: 'number', default: 10},
+    height: {type: 'number', default: 20},
+    radialSegments : {type: 'number', default: 50},
     transmission: {type: 'number', default: 0.9},
     opacity: {type: 'number', default: 1},
     metalness: {type: 'number', default: 0},
-    roughness: {type: 'number', default: 0}
+    roughness: {type: 'number', default: 0},
+    thickness: {type: 'number', default: 1},
+    ior: {type: 'number', default: 1}
   },
 
   update: function() {
@@ -29,9 +32,11 @@
       opacity: this.data.opacity,
       metalness: this.data.metalness,
       roughness: this.data.roughness,
+      thickness: this.data.thickness,
+      ior: this.data.ior,
     });
 
-    var geometry = new THREE.SphereGeometry( this.data.radius, this.data.widthSegments, this.data.heightSegments);
+    var geometry = new THREE.CylinderGeometry( this.data.radiusTop, this.data.radiusBottom, this.data.height, this.data.radialSegments);
 
     this.el.setObject3D('mesh', new THREE.Mesh(geometry, material));
   },
@@ -53,7 +58,7 @@
             arjs = document.createAttribute('arjs'),
             welcome = document.getElementById('box');
 
-          arjs.value = 'sourceType: webcam; videoTexture: true; sourceWidth: 1280; sourceHeight: 960; trackingMethod: best; debugUIEnabled: false;';
+          arjs.value = 'sourceType: webcam; videoTexture: true; sourceWidth: 480; sourceHeight: 640; trackingMethod: best; debugUIEnabled: false;';
           gps.value = `latitude: ${position.coords.latitude - 0.001}; longitude: ${position.coords.longitude + 0.001}`;
           log(gps.value);
           scene.setAttributeNode(gps); /* Apply wrapper to whole scene */
@@ -66,7 +71,7 @@
   <body style="margin: 0; overflow: hidden;">
   <a-scene vr-mode-ui="enabled: false">  
     <a-entity id="wrapper" position="0 -8 0">
-       <a-entity  id="box" mythreejsthing="color: green;" scale="5 5" look-at="[gps-camera]" radius="10" segments-height="20" segments-width="50" position="0 0 -150"> </a-entity>  
+       <a-entity  id="box" mythreejsthing="color: #fda5a5;" look-at="[gps-camera]" position="0 0 -150" animation="property: rotation; to: 360 360 360; loop: true; dur: 10000"> </a-entity>  
       
        <!--  <a-box id="box"
       look-at="[gps-camera]" 
