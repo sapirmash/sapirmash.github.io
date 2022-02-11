@@ -69,9 +69,10 @@
     };
   </script>
   <body style="margin: 0; overflow: hidden;">
+
   <a-scene vr-mode-ui="enabled: false">  
     <a-entity id="wrapper" position="0 -8 0">
-       <a-entity  id="box" mythreejsthing="color: #fda5a5;" look-at="[gps-camera]" position="0 0 -150" animation="property: rotation; to: 360 360 360; loop: true; dur: 10000"> </a-entity>  
+       <a-entity  id="box" mythreejsthing="color: #fda5a5;" position="0 0 -150" animation="property: rotation; to: 360 360 360; loop: true; dur: 10000"> </a-entity>  
       
        <!--  <a-box id="box"
       look-at="[gps-camera]" 
@@ -85,15 +86,17 @@
     </a-entity><!-- /wrapper -->
 
     <a-camera id="cam" 
-    arjs-look-controls='smoothingFactor: 0.1' 
-    gps-camera='gpsMinDistance: 5' 
-    gps-camera rotation-reader
+    gps-camera rotation-reader 
     ></a-camera>
   </a-scene> 
+
+
   <!--   <a-scene
       vr-mode-ui="enabled: false"
       embedded
       arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+        arjs-look-controls='smoothingFactor: 0.1' 
+    gps-camera='gpsMinDistance: 5'
     >
     
     <a-box color="green" depth="30" height="30" width="30"
@@ -107,7 +110,3 @@
     </a-scene> -->
   </body>
 </html>
-
-
-<!-- geometry="primitive: sphere; segmentsWidth: 20; segmentsHeight:30" material="color: red"  
-    metalness="1" -->
