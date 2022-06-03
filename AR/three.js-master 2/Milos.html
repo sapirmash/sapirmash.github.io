@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener"></a>
+		</div>
+
+		<script type="x-shader/x-vertex" id="sem-vs">
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 e = normalize( vec3( modelViewMatrix * vec4( position, .5 ) ) );
+        vec3 n = normalize( normalMatrix * normal );
+
+        vec3 r = reflect( e, n );
+        float m = 2. * sqrt( pow( r.x, 2. ) + pow( r.y, 2. ) + pow( r.z + 1., 2. ) );
+        vN = r.xy / m + .5;
+
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1. );
+
+      }
+
+    </script>
+
+    <script type="x-shader/x-vertex" id="sem-fs">
+
+      uniform sampler2D tMatCap;
+
+      varying vec2 vN;
+
+      void main() {
+
+        vec3 base = texture2D( tMatCap, vN ).rgb;
+        gl_FragColor = vec4( base, 1.0 );
+
+      }
+
+    </script>
+
+
+		<script type="module">
+
+			import * as THREE from '/build/three.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+			import { Reflector } from '/examples/jsm/objects/Reflector.js';
+			import { RGBELoader } from '/examples/jsm/loaders/RGBELoader.js';
+			// import {Stats} from '/examples/jsm/libs/stats.module.js';
+			import { GUI } from '/examples/jsm/libs/dat.gui.module.js';
+			import { RectAreaLightUniformsLib } from '/examples/jsm/lights/RectAreaLightUniformsLib.js';
+
+			
+			// scene size
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+
+			var SHADOW_MAP_WIDTH = WIDTH, SHADOW_MAP_HEIGHT = HEIGHT;
+
+			// camera
+			var VIEW_ANGLE = 35;
+			var ASPECT = WIDTH / HEIGHT;
+			var NEAR = 1;
+			var FAR = 25000;
+
+			var camera, scene, renderer, light1, cube, cylinder, box, sphere, sky, cone, sphere2;
+			var halfSphere;
+			var half;
+
+			var mouseX = 0, mouseY = 0;
+
+			var y1=0;
+
+			var x1 = 0;
+  			var z1 =0;
+
+  			var new_texture;
+
+  			var windowHalfX = window.innerWidth / 2;
+      		var windowHalfY = window.innerHeight / 2;
+
+			//new code
+			var material_new;
+			var dirLight;
+
+			var count = 0, cubeCamera, cubeRenderTarget;
+
+			var wavecounter = 0;
+			var width2 = 200, height2 = 200, width_segments =1, height_segments = 100;
+			var plane;
+			var mesh2;
+
+				init();
+				animate();
+
+			////////////
+
+			function init() {
+
+			  		// scene
+					scene = new THREE.Scene();
+
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false )
+		            document.addEventListener( 'wheel', onDocumentWheel, false );
+
+					var container = document.getElementById( 'container' );
+
+					// renderer
+					renderer = new THREE.WebGLRenderer( { antialias: true } );
+					renderer.setPixelRatio( window.devicePixelRatio );
+					renderer.setSize( WIDTH, HEIGHT );
+					container.appendChild( renderer.domElement );
+					// renderer.setClearColor('#D6A99A');
+					renderer.setClearColor('#7DB5DC');
+					
+					// renderer.setClearColor('#E3B3A3');
+			
+					
+
+					renderer.shadowMap.enabled = true;
+	        		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+					// camera
+					camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+					camera.position.z = 2300;
+	        		camera.position.y = 1000;
+
+
+	        		var controls = new OrbitControls( camera, renderer.domElement );
+	        		controls.minDistance = 2300;
+    				controls.maxDistance = 100;
+    				controls.update();
+	      
+
+	        		var fogs = [
+			          0xBDE3F4,
+			          0x1A1F21,
+			          0xf2eedd
+			        ]
+
+	        		scene.fog = new THREE.Fog( 0xFFFFFF, 1, 25000 );
+
+        			//LIGHTS
+
+        		  	light1 = new THREE.SpotLight( 0xffffff, 0.3, 0, Math.PI / 2 );
+			        light1.position.set( 2000, 4000, -3000 );
+			        light1.target.position.set( 1, 1, 1 );
+
+			        light1.castShadow = true;
+
+			        light1.shadow = new THREE.LightShadow( new THREE.PerspectiveCamera( 20, 10, 100, 20000 ) );
+			        light1.shadow.bias = 0.0001;
+			        light1.shadow.camera.near = NEAR;
+			        light1.shadow.camera.far = FAR;
+			        light1.shadow.camera.fov = 15;
+
+			        light1.shadow.mapSize.width = SHADOW_MAP_WIDTH;
+			        light1.shadow.mapSize.height = SHADOW_MAP_HEIGHT;
+
+			        light1.shadow.camera.right    =  50000;
+			        light1.shadow.camera.left     = -50000;
+			        light1.shadow.camera.top      =  50000;
+			        light1.shadow.camera.bottom   = -50000;
+
+			        var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.8 );
+				    hemiLight.position.set( 100, 500, 0 );
+				    scene.add( hemiLight );
+
+				    dirLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
+			        dirLight.position.set( -3000, 4000, 3000 );
+			 
+			        scene.add( dirLight );
+
+			        dirLight.castShadow = true;
+
+			        dirLight.shadow.mapSize.width = 3048;
+			        dirLight.shadow.mapSize.height = 3048;
+
+			        var d = 1500;
+
+			        dirLight.shadow.camera.left = -d;
+			        dirLight.shadow.camera.right = d;
+			        dirLight.shadow.camera.top = d;
+			        dirLight.shadow.camera.bottom = -d;
+			        dirLight.shadow.camera.near = 40;
+			        dirLight.shadow.camera.far = 10000;
+			        dirLight.shadow.bias = 0.00001;
+			        dirLight.shadow.darkness = 0.2;
+
+			     
+					//floor
+					var geometry = new THREE.BoxBufferGeometry( 1900, 2100, 40);
+					var material = new THREE.MeshPhongMaterial({ 
+					color:"#F0F0F2",
+					// color:'#DB684B' 
+					side:THREE.front
+					});
+					cube = new THREE.Mesh( geometry, material );
+					scene.add(cube);
+					cube.position.y = -700;
+					cube.position.z = -1280;
+					cube.rotation.x = Math.PI/2;
+
+					cube.position.x = 100;
+					
+					cube.receiveShadow = true;
+					cube.castShadow = true;
+
+			
+
+                var brokeShape = new THREE.Shape();
+                brokeShape.moveTo( 200 , 0 );
+                //middle bottom left
+                brokeShape.lineTo( 200, -200 );
+                //middle top left
+                brokeShape.lineTo( 400, -200);
+                //middle top right
+                brokeShape.lineTo( 400, -400);
+                //right top left
+                brokeShape.lineTo( 600, -400);
+                //right top right
+                brokeShape.lineTo( 600, -600);
+
+                brokeShape.lineTo( 1200, -600);
+                brokeShape.lineTo( 1200, -800);
+                brokeShape.lineTo( 1200, -800);
+                brokeShape.lineTo( 1200, -1000);
+
+                brokeShape.lineTo( 600, -1000);
+                brokeShape.lineTo( 600, -1200);
+                brokeShape.lineTo( 400, -1200);
+                brokeShape.lineTo( 400, -1400);
+
+                brokeShape.lineTo( 200, -1400);
+                brokeShape.lineTo( 200, -1600);
+
+                brokeShape.lineTo( -1100, -1600);
+                //bottom right
+                brokeShape.lineTo( -1100, -600);
+                //bottom left
+                brokeShape.lineTo( -1100, 0);
+
+                var extrudeSettings = { amount: 1500, bevelEnabled: false, material: 0, extrudeMaterial: 0 };
+                var geometry = new THREE.ExtrudeGeometry( brokeShape, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						// color: '#EB8C87', 
+						color:'#F2EBE6'
+					});
+                var mesh = new THREE.Mesh( geometry, material );
+                mesh.position.x = -416;
+                mesh.position.y = 0;
+                mesh.position.z = -1700;
+                mesh.rotation.z =Math.PI/2;
+                // scene.add(mesh);
+                mesh.scale.set(0.65,0.65,0.65);
+                mesh.receiveShadow = true;
+				mesh.castShadow = true;
+
+
+
+			
+
+				//curch
+				var church = new THREE.Shape();
+				church.moveTo( -692, 400 );
+				church.lineTo( 600, 400 );
+				church.lineTo( 600, -700 );
+				church.lineTo( -692, -700 );
+				church.lineTo( -692, 400 );
+
+				var extrudeSettings = { amount: 1400, bevelEnabled: false, curveSegments:80};
+                var geometry = new THREE.ExtrudeGeometry( church, extrudeSettings );
+                var material = new THREE.MeshPhongMaterial ({ 
+						// color:"#778C73",
+						color:'#F0F0F2'
+						// map:  marble
+					});
+                var box = new THREE.Mesh( geometry, material );
+                box.position.x = 100;
+                box.position.y = -213;
+                box.position.z = -1630;
+                box.scale.set(0.65,0.65,0.65);
+                scene.add( box );
+               	box.receiveShadow = true;
+				box.castShadow = true;
+
+
+
+
+                var halfshape = new THREE.Shape();
+
+				halfshape.moveTo( 530, 0 );
+				halfshape.absarc( 0, 0, 220, 0, 2 * Math.PI/2, false );
+				halfshape.lineTo( -220, -550 );
+				halfshape.lineTo( 220, -550 );
+				
+				var extrudeSettings3 = { amount: 140, bevelEnabled: false, curveSegments:80};
+                var geometry = new THREE.ExtrudeGeometry( halfshape, extrudeSettings3 );
+                var material = new THREE.MeshPhongMaterial ({ 
+						// color:"#778C73",
+						color:'#36429C'
+						// map:  marble
+					});
+                half = new THREE.Mesh( geometry, material );
+                half.position.x = 208;
+                half.position.y = -300;
+                half.position.z = -600;
+                half.scale.set(0.65,0.65,0.65);
+                half.rotation.y = Math.PI/1;
+                // scene.add(half);
+
+
+
+                var halfshape1 = new THREE.Shape();
+
+				halfshape1.moveTo( 530, 0 );
+				halfshape1.absarc( 0, 0, 180, 0, 2 * Math.PI/2, false );
+				halfshape1.lineTo( -180, -550 );
+				halfshape1.lineTo( 180, -550 );
+				halfshape.holes.push( halfshape1 );
+
+				var extrudeSettings3 = { amount: 140, bevelEnabled: false, curveSegments:80};
+                var geometry = new THREE.ExtrudeGeometry( halfshape, extrudeSettings3 );
+                var material = new THREE.MeshPhongMaterial ({ 
+						// color:"#36429C",
+						color:'#F0F0F2'	
+						// color:'#36429C'
+						// map:  marble
+					});
+                var half1 = new THREE.Mesh( geometry, material );
+                half1.position.x = 70;
+                half1.position.y = -310;
+                half1.position.z = -615;
+                half1.scale.set(0.65,0.65,0.65);
+                half1.rotation.y = Math.PI/1;
+                scene.add(half1);
+                half1.receiveShadow = true;
+				half1.castShadow = true;
+
+
+
+                var door = new THREE.Shape();
+
+				door.moveTo( 530, 0 );
+				door.absarc( 0, 0, 180, 0, 2 * Math.PI/2, false );
+				door.lineTo( -180, -550 );
+				door.lineTo( 180, -550 );
+
+				
+				
+				var extrudeSettings4 = { amount: 50, bevelEnabled: false, curveSegments:80};
+                var geometry = new THREE.ExtrudeGeometry( door, extrudeSettings4 );
+                var material = new THREE.MeshPhongMaterial ({ 
+						// color:'#E6DFDA'
+						color:"#0357A6",
+					});
+                var smalldoor = new THREE.Mesh( geometry, material );
+                smalldoor.position.x = 70;
+                smalldoor.position.y = -310;
+                smalldoor.position.z = -615;
+                smalldoor.scale.set(0.65,0.65,0.65);
+                smalldoor.rotation.y = Math.PI/1;
+                scene.add(smalldoor);
+
+                ///////////
+
+
+                var topwindow = new THREE.Shape();
+
+				topwindow.moveTo( 530, 0 );
+				topwindow.absarc( 0, 0, 300, 0, 2 * Math.PI/2, false );
+				//x,y
+				//top right
+				topwindow.lineTo( -600, 0 );
+				//bottom right
+				topwindow.lineTo( -600, -750 );
+				topwindow.lineTo( -900, -750 );
+				topwindow.lineTo( -900, -950 );
+				topwindow.lineTo( -1200, -950 );
+				topwindow.lineTo( -1200, -1150 );
+				topwindow.lineTo( -1500, -1150 );
+				topwindow.lineTo( -1500, -1450 );
+
+				topwindow.lineTo( 600, -1450 );
+				topwindow.lineTo( 1500, -1450 );
+				topwindow.lineTo( 1500, -1150 );
+				topwindow.lineTo( 1200, -1150 );
+				topwindow.lineTo( 1200, -950);
+				topwindow.lineTo( 900, -950);
+				topwindow.lineTo( 900, -750);
+			
+				//bottom left
+				topwindow.lineTo( 600, -750 );
+
+				//top left
+				topwindow.lineTo( 600, 0 );
+
+				
+				var extrudeSettings6 = { amount: 140, bevelEnabled: false, curveSegments:80};
+                var geometry6 = new THREE.ExtrudeGeometry( topwindow, extrudeSettings6 );
+                var material6 = new THREE.MeshPhongMaterial ({ 
+						// color:"#778C73",
+						color:'#F0F0F2'
+						// map:  marble
+					});
+                var tophalf = new THREE.Mesh( geometry6, material6 );
+                tophalf.position.x = 208;
+                tophalf.position.y = -240;
+                tophalf.position.z = -600;
+                tophalf.scale.set(0.45,0.45,0.45);
+                tophalf.rotation.y = Math.PI/1;
+                tophalf.receiveShadow = true;
+				tophalf.castShadow = true;
+
+                // scene.add(tophalf);
+
+
+                var w = new THREE.Shape();
+
+				w.moveTo( 530, 0 );
+				w.absarc( 0, 0, 220, 0, 2 * Math.PI/2, false );
+				w.lineTo(-220, -650);
+				w.lineTo(220, -650);
+
+				topwindow.holes.push( w );
+
+				var extrudeSettings6 = { amount: 540, bevelEnabled: false, curveSegments:80};
+                var geometry6 = new THREE.ExtrudeGeometry( topwindow, extrudeSettings6 );
+                var material6 = new THREE.MeshPhongMaterial ({ 
+						color:'#F0F0F2',
+					});
+                var wind = new THREE.Mesh( geometry6, material6 );
+                wind.position.x = 100;
+                wind.position.y = 873;
+                wind.position.z = -617;
+                wind.scale.set(0.4,0.4,0.4);
+                wind.rotation.y = Math.PI/1;
+                scene.add(wind);
+                wind.receiveShadow = true;
+				wind.castShadow = true;
+
+
+
+                const group = new THREE.Group();
+				group.add( wind );
+				group.add( cube );
+				
+				group.scale.set(0.7,0.7,0.7);
+				scene.add( group );
+				group.position.x = 0;
+				group.position.y = -190;
+				group.position.z = -290;
+				group.receiveShadow = true;
+				group.castShadow = true;
+
+}
+
+		
+		function animate(){
+
+		// box.position.x = Math.sin(y1)*40+30;
+		// cone.rotation.z += 0.02;
+
+		// sphere.position.z -= Math.sin(z1) * Math.PI * 0.6;
+		// sphere.position.x += Math.sin(z1) * Math.PI * 0.9;
+		// half.position.y += 0.5;
+		y1 += 0.04;
+		x1 += 0.01;
+  		z1 += 0.03;
+
+		
+		requestAnimationFrame(animate);
+		render();
+	}
+	
+	function onDocumentMouseMove(event) {
+
+        mouseX = ( event.clientX - windowHalfX );
+        mouseY = ( event.clientY - windowHalfY );
+
+      }
+
+
+      function onDocumentWheel(event) {
+        event.preventDefault();
+        //mag = event.deltaY * 0.0008;
+      }
+
+       window.onresize = function(event) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+      };  
+
+	
+	function render(){
+
+		
+
+		camera.position.x += ( mouseX - camera.position.x ) * .05;
+        camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 800 ) - camera.position.y ) * .05, 50, 1000 );
+
+        dirLight.position.x += ( mouseX - dirLight.position.x - 1000 ) * .05;
+
+        camera.lookAt( scene.position );
+		// plane.verticesNeedUpdate = true;
+		renderer.render( scene, camera );
+	}
+
+
+		
+
+		</script>
+	</body>
+</html>

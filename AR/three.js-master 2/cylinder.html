@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	</head>
+	<body>
+
+		<div id="container"></div>
+		<div id="info"><a href="https://threejs.org" target="_blank" rel="noopener"></a>
+		</div>
+
+	
+
+
+		<script type="module">
+
+			import * as THREE from '/build/three.module.js';
+			import { OrbitControls } from '/examples/jsm/controls/OrbitControls.js';
+			import { Reflector } from '/examples/jsm/objects/Reflector.js';
+			import { RGBELoader } from '/examples/jsm/loaders/RGBELoader.js';
+
+			import { GUI } from '/examples/jsm/libs/dat.gui.module.js';
+			import { RectAreaLightUniformsLib } from '/examples/jsm/lights/RectAreaLightUniformsLib.js';
+
+			
+			// scene size
+			var WIDTH = window.innerWidth;
+			var HEIGHT = window.innerHeight;
+
+			var SHADOW_MAP_WIDTH = WIDTH, SHADOW_MAP_HEIGHT = HEIGHT;
+
+			// camera
+			var VIEW_ANGLE = 35;
+			var ASPECT = WIDTH / HEIGHT;
+			var NEAR = 1;
+			var FAR = 25000;
+
+			var camera, scene, renderer, light1, cube, cylinder, floor, sphere, sky, cone;
+
+			var mouseX = 0, mouseY = 0;
+
+			var y1=0;
+
+			var x1 = 0;
+  			var z1 =0;
+
+  			var new_texture;
+
+  			var windowHalfX = window.innerWidth / 2;
+      		var windowHalfY = window.innerHeight / 2;
+
+			//new code
+			var material_new;
+			var dirLight;
+			let particleLight;
+
+			var count = 0, cubeCamera, cubeRenderTarget;
+
+				init();
+				animate();
+
+			////////////
+
+			function init() {
+
+			  	// scene
+				scene = new THREE.Scene();
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false )
+		        document.addEventListener( 'wheel', onDocumentWheel, false );
+
+				var container = document.getElementById( 'container' );
+
+				// renderer
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( WIDTH, HEIGHT );
+				container.appendChild( renderer.domElement );
+				renderer.setClearColor('#FFC8A3');
+				// renderer.setClearColor('#B7ADED');
+				renderer.shadowMap.enabled = true;
+	        	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+				// camera
+				camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR );
+				camera.position.z = 2300;
+	        	camera.position.y = 1000;
+
+	        	// Lights
+
+				scene.add( new THREE.AmbientLight( 0x222222 ) );
+
+				const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+				directionalLight.position.set( 1, 1, 1 ).normalize();
+				scene.add( directionalLight );
+
+
+			    // Cube_texture
+			    var path = "examples/textures/cube/sky/";
+		        	var format = '.jpg';
+		        	var urls = [
+		            path + 'px' + format, path + 'nx' + format,
+		            path + 'py' + format, path + 'ny' + format,
+		            path + 'pz' + format, path + 'nz' + format
+		         ];
+
+
+				var reflectionCube = new THREE.CubeTextureLoader().load( urls );
+				var refractionCube = new THREE.CubeTextureLoader().load( urls );
+			    refractionCube.mapping = THREE.CubeRefractionMapping;
+			    refractionCube.format = THREE.RGBFormat;
+
+
+				var textureLoader = new THREE.TextureLoader();
+				var new_texture = textureLoader.load( 'examples/textures/IMG_9859.JPG' );
+				new_texture.mapping = THREE.UVMapping;
+				new_texture.wrapS = new_texture.wrapT = THREE.RepeatWrapping;
+				new_texture.magFilter = THREE.LinearFilter;
+				new_texture.anisotropy = renderer.getMaxAnisotropy();
+
+				// scene.background = new_texture;
+				// scene.background = reflectionCube;
+			
+				var geometry = new THREE.SphereGeometry( 60, 60, 100);
+				var material = new THREE.MeshPhysicalMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						// side:THREE.DoubleSide,
+						envMap: refractionCube,
+				} );
+				var cylinder = new THREE.Mesh( geometry, material );
+				scene.add( cylinder );
+				cylinder.position.x = -160;
+				cylinder.position.y = -230;
+				cylinder.position.z = -30;
+
+
+				var geometry = new THREE.CylinderGeometry( 200, 200, 250, 100 );
+				var material = new THREE.MeshStandardMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						side:THREE.DoubleSide,
+						envMap: refractionCube,
+				} );
+				var cylinder = new THREE.Mesh( geometry, material );
+				scene.add( cylinder );
+				cylinder.position.x = 15;
+				cylinder.position.y = -270;
+				cylinder.position.z = -50;
+
+
+				var geometry = new THREE.CylinderGeometry( 80, 80, 400, 100 );
+				var material = new THREE.MeshStandardMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						side:THREE.DoubleSide,
+						envMap: refractionCube,
+				} );
+				var cylinder1 = new THREE.Mesh( geometry, material );
+				scene.add( cylinder1 );
+				cylinder1.position.x = -290;
+				cylinder1.position.y = -200;
+				cylinder1.position.z = -80;
+
+					var geometry = new THREE.CylinderGeometry( 120, 120, 800, 100 );
+				var material = new THREE.MeshStandardMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						side:THREE.DoubleSide,
+						envMap: refractionCube,
+				} );
+				var cylinder2 = new THREE.Mesh( geometry, material );
+				scene.add( cylinder2 );
+				cylinder2.position.x = -219;
+				cylinder2.position.y = -50;
+				cylinder2.position.z = -280;
+
+				var geometry = new THREE.CylinderGeometry( 100, 100, 100, 100 );
+				var material = new THREE.MeshStandardMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						side:THREE.DoubleSide,
+						envMap: refractionCube,
+				} );
+				var cylinder3 = new THREE.Mesh( geometry, material );
+				scene.add( cylinder3 );
+				cylinder3.position.x = -210;
+				cylinder3.position.y = -340;
+				cylinder3.position.z = 160;
+
+				var geometry = new THREE.CylinderGeometry( 70, 70, 500, 100 );
+				var material = new THREE.MeshStandardMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						side:THREE.DoubleSide,
+						envMap: refractionCube,
+				} );
+				var cylinder4 = new THREE.Mesh( geometry, material );
+				scene.add( cylinder4 );
+				cylinder4.position.x = 70;
+				cylinder4.position.y = -200;
+				cylinder4.position.z = -310;
+
+				const settings = {
+				metalness: 1.0,
+				roughness: 0.4,
+				ambientIntensity: 0.2,
+				aoMapIntensity: 1.0,
+				envMapIntensity: 1.0,
+				displacementScale: 2.436143, // from original model
+				normalScale: 1.0
+			};
+
+				var geometry = new THREE.CylinderGeometry( 50, 50, 600, 100 );
+				var material = new THREE.MeshStandardMaterial( {
+						color: 0xffffff,
+						metalness: 1,
+						roughness: 0, 
+						side:THREE.DoubleSide,
+						envMap: refractionCube,
+
+					// color: 0x888888,
+					// roughness: settings.roughness,
+					// metalness: settings.metalness,
+
+					// displacementScale: settings.displacementScale,
+					// displacementBias: - 0.428408, // from original model
+
+					// envMap: reflectionCube,
+					// envMapIntensity: settings.envMapIntensity,
+
+					// side: THREE.DoubleSide
+				} );
+				var cylinder5 = new THREE.Mesh( geometry, material );
+				scene.add( cylinder5 );
+				cylinder5.position.x = -50;
+				cylinder5.position.y = -100;
+				cylinder5.position.z = -300;
+
+
+				// var geometry = new THREE.CylinderGeometry( 50, 50, 600, 100 );
+				// var verticalMirror = new Reflector( geometry, {
+				// 	clipBias: 0.003,
+				// 	textureWidth: window.innerWidth * window.devicePixelRatio,
+				// 	textureHeight: window.innerHeight * window.devicePixelRatio,
+				// 	color: 0x889999
+				// } );
+				// verticalMirror.position.y = -100;
+				// verticalMirror.position.x = -50;
+				// verticalMirror.position.z = - 300;
+				// scene.add( verticalMirror );
+		     
+				
+				// floor Shape
+				var geometry = new THREE.BoxBufferGeometry( 1300, 1300, 20);
+				var groundMirror = new Reflector( geometry, {
+					clipBias: 0.003,
+					textureWidth: window.innerWidth * window.devicePixelRatio,
+					textureHeight: window.innerHeight * window.devicePixelRatio,
+					color: 0x777777
+				} );
+				groundMirror.position.y = -400;
+				groundMirror.position.z = -400;
+				groundMirror.rotateX( - Math.PI / 2 );
+				scene.add( groundMirror );
+
+				// var material = new THREE.MeshStandardMaterial({ 
+				// 		color: 0xffffff,
+				// 		metalness: 1,
+				// 		roughness: 0, 
+				// 		side:THREE.DoubleSide,
+				// 		envMap: refractionCube,
+				// });
+				// floor = new THREE.Mesh( geometry, material );
+				// scene.add(floor);
+				// floor.position.y = -300;
+				// floor.rotation.x = Math.PI/2;
+				// floor.rotation.z = Math.PI/4;
+   	// 			floor.position.x = 0;
+   	// 			floor.position.z = -400;	
+				// floor.receiveShadow = true;
+				// floor.castShadow = true;
+
+
+				const group = new THREE.Group();
+				group.add( cylinder );
+				group.add( cylinder1 );
+				group.add( cylinder2 );
+				group.add( cylinder3 );
+				group.add( cylinder4 );
+				group.add( cylinder5 );
+				// group.add( verticalMirror );
+
+				scene.add( group );
+				group.position.z = -200;
+				group.position.x = 50;
+
+			}
+
+	
+	function animate(){
+		
+		requestAnimationFrame(animate);
+		render();
+	}
+	
+	
+	function onDocumentMouseMove(event) {
+
+        mouseX = ( event.clientX - windowHalfX );
+        mouseY = ( event.clientY - windowHalfY );
+
+    }
+
+
+    function onDocumentWheel(event) {
+        event.preventDefault();
+        //mag = event.deltaY * 0.0008;
+    }
+
+    window.onresize = function(event) {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+    };  
+
+	
+	function render(){
+
+		camera.position.x += ( mouseX - camera.position.x ) * .05;
+        camera.position.y = THREE.Math.clamp( camera.position.y + ( - ( mouseY - 800 ) - camera.position.y ) * .05, 50, 1000 );
+
+        // dirLight.position.x += ( mouseX - dirLight.position.x - 1000 ) * .05;
+
+        camera.lookAt( scene.position );
+		renderer.render( scene, camera );
+	}
+
+		</script>
+	</body>
+</html>
