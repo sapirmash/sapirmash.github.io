@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <!-- The main handpose library -->
+  <script src="https://unpkg.com/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></script>
+
+  <script src="fingerpose.js" type="text/javascript"></script>
+  <meta charset="utf-8" />
+
+</head>
+  <body>
+    <a id="gallery" href="gallery.html">Gallery</a>
+    <span id="on_start">
+      Use your 👆 to draw, use 🖐 to stop drawing and click on <button id="btn_on_start"></button> to change colors.
+    </span>
+    <span class="date"></span>
+    <span class="name">Back <br>to</br> Kindergarten</span>
+    <video class="input_video"></video>
+    
+
+    <div id="canvascontainer"></div>
+
+    <ul class="actions">
+    <li class="buttons_list"> 
+    <button id="uploadButton">Upload</button>
+    </li>
+    <li class="buttons_list">
+    <button id="downloadButton">Save</button>
+    </li>
+    <li class="buttons_list">
+    <button id="clearButton">New</button>
+    </li>
+    <li class="buttons_list">
+      <button id="btn"></button>
+    </li>
+    </ul>
+
+   <!--  <ol id="drawinglist">
+    </ol> -->
+  </body>
+</html>
+
+<style type="text/css">
+ html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  @font-face {
+  font-family: CommonSans-Regular;
+  src: url(CommonSans-Regular 2.otf);
+}
+
+#gallery{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  color: black;
+  text-decoration: none;
+  padding: 46px;
+  margin-left: 400px;
+  position: fixed;
+
+}
+
+.actions{
+    display: flex;
+    align-items: center; /* Default */
+    justify-content: center;
+    width: 50%;
+    margin: 0 auto;
+    padding: 0;
+    position: fixed;
+    bottom: 0;
+    transform: translate(50%, 0);
+
+
+}
+
+.buttons_list{
+  display: block;
+  flex: 0 1 auto; /* Default */
+  list-style-type: none;
+}
+
+/*#drawinglist{
+  position: absolute;
+  top: 50%;
+}*/
+
+#on_start{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  transform: translate(50%, 50%);
+  text-align: center
+}
+
+#btn_on_start{
+  width: 18px;
+  height: 18px;
+  padding-bottom:4px;
+  border-radius: 50%;
+  border: none;
+  color: "#F26945";
+}
+
+
+#btn{
+  /*position: fixed;
+  margin: 20px;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;*/
+
+  padding: 21px;
+  margin: 10px;
+  border-radius: 10%;
+  border: none;
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+
+}
+
+#uploadButton{
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 8%;
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  background-color: white;
+}
+
+#downloadButton{
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 8%;
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+}
+
+#clearButton{
+  padding: 10px;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 8%;
+    font-size: 17px;
+  font-family: CommonSans-Regular;
+}
+
+.name{
+  padding: 5px;
+  margin: 0;
+  font-size: 17px;
+  position: fixed;
+  font-family: CommonSans-Regular;
+}
+
+.date{
+  padding: 46px;
+  margin-left: 120px;
+  font-size: 17px;
+  position: fixed;
+  font-family: CommonSans-Regular;
+}
+
+  canvas {
+    display: block;
+    /*new code*/
+   /* position: absolute;
+    z-index: 3;*/
+  }
+  
+  video{
+    position: fixed;
+    bottom: 0;
+    -webkit-filter: grayscale(100%); 
+    filter: grayscale(100%);
+  }
+</style>
+
+<script type="text/javascript">
+
+class FingerPoseEstimator {
+
+  constructor(options) {
+
+    this.options = {...{
+
+      // curl estimation
+      HALF_CURL_START_LIMIT: 60.0,
+      NO_CURL_START_LIMIT: 130.0,
+
+      // direction estimation
+      DISTANCE_VOTE_POWER: 1.1,
+      SINGLE_ANGLE_VOTE_POWER: 0.9,
+      TOTAL_ANGLE_VOTE_POWER: 1.6
+    }, ...options};
+  }
+
+  estimate(landmarks) {
+
+    // step 1: calculate slopes
+
+    let slopesXY = [];
+    let slopesYZ = [];
+
+    for(let finger of fp.Finger.all) {
+
+      let points = fp.Finger.getPoints(finger);
+      let slopeAtXY = [];
+      let slopeAtYZ = [];
+
+      for(let point of points) {
+
+        let point1 = landmarks[point[0]];
+        let point2 = landmarks[point[1]];
+
+        // calculate single slope
+        let slopes = this.getSlopes(point1, point2);
+        let slopeXY = slopes[0];
+        let slopeYZ = slopes[1];
+        slopeAtXY.push(slopeXY);
+        slopeAtYZ.push(slopeYZ);
+      }
+
+      slopesXY.push(slopeAtXY);
+      slopesYZ.push(slopeAtYZ);
+    }
+
+    // step 2: calculate orientations
+
+    let fingerCurls = [];
+    let fingerDirections = [];
+
+    for(let finger of fp.Finger.all) {
+
+      // start finger predictions from palm - except for thumb
+      let pointIndexAt = (finger == fp.Finger.Thumb) ? 1 : 0;
+
+      let fingerPointsAt = fp.Finger.getPoints(finger);
+      let startPoint = landmarks[fingerPointsAt[pointIndexAt][0]];
+      let midPoint = landmarks[fingerPointsAt[pointIndexAt + 1][1]];
+      let endPoint = landmarks[fingerPointsAt[3][1]];
+
+      // check if finger is curled
+      let fingerCurled = this.estimateFingerCurl(
+        startPoint, midPoint, endPoint
+      );
+
+      let fingerPosition = this.calculateFingerDirection(
+        startPoint, midPoint, endPoint,
+        slopesXY[finger].slice(pointIndexAt)
+      );
+
+      fingerCurls[finger] = fingerCurled;
+      fingerDirections[finger] = fingerPosition;
+    }
+
+    return { curls: fingerCurls, directions: fingerDirections }
+  }
+
+  // point1, point2 are 2d or 3d point arrays (xy[z])
+  // returns either a single scalar (2d) or array of two slopes (3d)
+  getSlopes(point1, point2) {
+
+    let slopeXY = this.calculateSlope(point1[0], point1[1], point2[0], point2[1]);
+    if(point1.length == 2) {
+      return slopeXY;
+    }
+
+    let slopeYZ = this.calculateSlope(point1[1], point1[2], point2[1], point2[2])
+    return [slopeXY, slopeYZ];
+  }
+
+  angleOrientationAt(angle, weightageAt = 1.0) {
+
+    let isVertical = 0;
+    let isDiagonal = 0;
+    let isHorizontal = 0;
+
+    if(angle >= 75.0 && angle <= 105.0) {
+      isVertical = 1 * weightageAt;
+    }
+    else if(angle >= 25.0 && angle <= 155.0) {
+      isDiagonal = 1 * weightageAt;
+    }
+    else {
+      isHorizontal = 1 * weightageAt;
+    }
+
+    return [isVertical, isDiagonal, isHorizontal];
+  }
+
+  estimateFingerCurl(startPoint, midPoint, endPoint) {
+
+    let start_mid_x_dist = startPoint[0] - midPoint[0];
+    let start_end_x_dist = startPoint[0] - endPoint[0];
+    let mid_end_x_dist = midPoint[0] - endPoint[0];
+    
+    let start_mid_y_dist = startPoint[1] - midPoint[1];
+    let start_end_y_dist = startPoint[1] - endPoint[1];
+    let mid_end_y_dist = midPoint[1] - endPoint[1];
+  
+    let start_mid_z_dist = startPoint[2] - midPoint[2];
+    let start_end_z_dist = startPoint[2] - endPoint[2];
+    let mid_end_z_dist = midPoint[2] - endPoint[2];
+    
+    let start_mid_dist = Math.sqrt(
+      start_mid_x_dist * start_mid_x_dist +
+      start_mid_y_dist * start_mid_y_dist +
+      start_mid_z_dist * start_mid_z_dist
+    );
+    let start_end_dist = Math.sqrt(
+      start_end_x_dist * start_end_x_dist +
+      start_end_y_dist * start_end_y_dist +
+      start_end_z_dist * start_end_z_dist
+    );
+    let mid_end_dist = Math.sqrt(
+      mid_end_x_dist * mid_end_x_dist +
+      mid_end_y_dist * mid_end_y_dist +
+      mid_end_z_dist * mid_end_z_dist
+    );
+
+    let cos_in = (
+      mid_end_dist * mid_end_dist +
+      start_mid_dist * start_mid_dist -
+      start_end_dist *start_end_dist
+    ) / (2 * mid_end_dist * start_mid_dist);
+
+    if(cos_in > 1.0) {
+      cos_in = 1.0;
+    }
+    else if(cos_in < -1.0) {
+      cos_in = -1.0;
+    }
+
+    let angleOfCurve = Math.acos(cos_in);
+
+    angleOfCurve = (57.2958 * angleOfCurve) % 180;
+
+    let fingerCurl;
+    if(angleOfCurve > this.options.NO_CURL_START_LIMIT) {
+      fingerCurl = fp.FingerCurl.NoCurl;
+    }
+    else if(angleOfCurve > this.options.HALF_CURL_START_LIMIT) {
+      fingerCurl = fp.FingerCurl.HalfCurl;
+    }
+    else {
+      fingerCurl = fp.FingerCurl.FullCurl;
+    }
+
+
+    return fingerCurl;
+  }
+
+  estimateHorizontalDirection(start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x) {
+
+    let estimatedDirection;
+    if(max_dist_x == Math.abs(start_end_x_dist)) {
+      if(start_end_x_dist > 0) {
+        estimatedDirection = fp.FingerDirection.HorizontalLeft;
+      } else {
+        estimatedDirection = fp.FingerDirection.HorizontalRight;
+      }
+    }
+    else if(max_dist_x == Math.abs(start_mid_x_dist)) {
+      if(start_mid_x_dist > 0) {
+        estimatedDirection = fp.FingerDirection.HorizontalLeft;
+      } else {
+        estimatedDirection = fp.FingerDirection.HorizontalRight;
+      }
+    }
+    else {
+      if(mid_end_x_dist > 0) {
+        estimatedDirection = fp.FingerDirection.HorizontalLeft;
+      } else {
+        estimatedDirection = fp.FingerDirection.HorizontalRight;
+      }
+    }
+
+    return estimatedDirection;
+  }
+
+  estimateVerticalDirection(start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y) {
+
+    let estimatedDirection;
+    if(max_dist_y == Math.abs(start_end_y_dist)) {
+      if(start_end_y_dist < 0) {
+        estimatedDirection = fp.FingerDirection.VerticalDown;
+      } else {
+        estimatedDirection = fp.FingerDirection.VerticalUp;
+      }
+    }
+    else if(max_dist_y == Math.abs(start_mid_y_dist)) {
+      if(start_mid_y_dist < 0) {
+        estimatedDirection = fp.FingerDirection.VerticalDown;
+      } else {
+        estimatedDirection = fp.FingerDirection.VerticalUp;
+      }
+    }
+    else {
+      if(mid_end_y_dist < 0) {
+        estimatedDirection = fp.FingerDirection.VerticalDown;
+      } else {
+        estimatedDirection = fp.FingerDirection.VerticalUp;
+      }
+    }
+
+    return estimatedDirection;
+  }
+
+  estimateDiagonalDirection(
+    start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y,
+    start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x
+  ) {
+
+    let estimatedDirection;
+    let reqd_vertical_direction = this.estimateVerticalDirection(
+      start_end_y_dist, start_mid_y_dist, mid_end_y_dist, max_dist_y
+    );
+    let reqd_horizontal_direction = this.estimateHorizontalDirection(
+      start_end_x_dist, start_mid_x_dist, mid_end_x_dist, max_dist_x
+    );
+    
+    if(reqd_vertical_direction == fp.FingerDirection.VerticalUp) {
+      if(reqd_horizontal_direction == fp.FingerDirection.HorizontalLeft) {
+        estimatedDirection = fp.FingerDirection.DiagonalUpLeft;
+      } else {
+        estimatedDirection = fp.FingerDirection.DiagonalUpRight;
+      }
+    }
+    else {
+      if(reqd_horizontal_direction == fp.FingerDirection.HorizontalLeft) {
+        estimatedDirection = fp.FingerDirection.DiagonalDownLeft;
+      } else {
+        estimatedDirection = fp.FingerDirection.DiagonalDownRight;
+      }
+    }
+
+    return estimatedDirection;
+  }
+
+  calculateFingerDirection(startPoint, midPoint, endPoint, fingerSlopes) {
+
+    let start_mid_x_dist = startPoint[0] - midPoint[0];
+    let start_end_x_dist = startPoint[0] - endPoint[0];
+    let mid_end_x_dist = midPoint[0] - endPoint[0];
+    
+    let start_mid_y_dist = startPoint[1] - midPoint[1];
+    let start_end_y_dist = startPoint[1] - endPoint[1];
+    let mid_end_y_dist = midPoint[1] - endPoint[1];
+
+    let max_dist_x = Math.max(
+      Math.abs(start_mid_x_dist),
+      Math.abs(start_end_x_dist),
+      Math.abs(mid_end_x_dist)
+    );
+    let max_dist_y = Math.max(
+      Math.abs(start_mid_y_dist),
+      Math.abs(start_end_y_dist),
+      Math.abs(mid_end_y_dist)
+    );
+
+    let voteVertical = 0.0;
+    let voteDiagonal = 0.0;
+    let voteHorizontal = 0.0;
+
+    let start_end_x_y_dist_ratio = max_dist_y / (max_dist_x + 0.00001);
+    if(start_end_x_y_dist_ratio > 1.5) {
+      voteVertical += this.options.DISTANCE_VOTE_POWER;
+    }
+    else if(start_end_x_y_dist_ratio > 0.66) {
+      voteDiagonal += this.options.DISTANCE_VOTE_POWER;
+    }
+    else {
+      voteHorizontal += this.options.DISTANCE_VOTE_POWER;
+    }
+
+    let start_mid_dist = Math.sqrt(
+      start_mid_x_dist * start_mid_x_dist + start_mid_y_dist *start_mid_y_dist
+    );
+    let start_end_dist = Math.sqrt(
+      start_end_x_dist * start_end_x_dist + start_end_y_dist * start_end_y_dist
+    );
+    let mid_end_dist = Math.sqrt(
+      mid_end_x_dist * mid_end_x_dist + mid_end_y_dist * mid_end_y_dist
+    );
+
+    let max_dist = Math.max(start_mid_dist, start_end_dist, mid_end_dist);
+    let calc_start_point_x = startPoint[0],
+        calc_start_point_y = startPoint[1];
+    let calc_end_point_x = endPoint[0],
+        calc_end_point_y = endPoint[1];
+
+    if(max_dist == start_mid_dist) {
+      calc_end_point_x = endPoint[0],
+      calc_end_point_y = endPoint[1];
+    }
+    else if(max_dist == mid_end_dist) {
+      calc_start_point_x = midPoint[0],
+      calc_start_point_y = midPoint[1];
+    }
+
+    let calcStartPoint = [calc_start_point_x, calc_start_point_y];
+    let calcEndPoint = [calc_end_point_x, calc_end_point_y];
+
+    let totalAngle = this.getSlopes(calcStartPoint, calcEndPoint);
+    let votes = this.angleOrientationAt(totalAngle, this.options.TOTAL_ANGLE_VOTE_POWER);
+    voteVertical += votes[0];
+    voteDiagonal += votes[1];
+    voteHorizontal += votes[2];
+
+    for(let fingerSlope of fingerSlopes) {
+      let votes = this.angleOrientationAt(fingerSlope, this.options.SINGLE_ANGLE_VOTE_POWER);
+      voteVertical += votes[0];
+      voteDiagonal += votes[1];
+      voteHorizontal += votes[2];
+    }
+
+    // in case of tie, highest preference goes to Vertical,
+    // followed by horizontal and then diagonal
+    let estimatedDirection;
+    if(voteVertical == Math.max(voteVertical, voteDiagonal, voteHorizontal)) {
+      estimatedDirection = this.estimateVerticalDirection(
+        start_end_y_dist,
+        start_mid_y_dist, 
+        mid_end_y_dist, max_dist_y
+      );
+    }
+    else if(voteHorizontal == Math.max(voteDiagonal, voteHorizontal)) {
+      estimatedDirection = this.estimateHorizontalDirection(
+        start_end_x_dist,
+        start_mid_x_dist,
+        mid_end_x_dist, max_dist_x
+      );
+    }
+    else {
+      estimatedDirection = this.estimateDiagonalDirection(
+        start_end_y_dist, start_mid_y_dist,
+        mid_end_y_dist, max_dist_y,
+        start_end_x_dist, start_mid_x_dist,
+        mid_end_x_dist, max_dist_x
+      );
+    }
+
+    return estimatedDirection;
+  }
+
+  calculateSlope(point1x, point1y, point2x, point2y) {
+
+    let value = (point1y - point2y) / (point1x - point2x);
+    let slope = Math.atan(value) * 180 / Math.PI;
+
+    if(slope <= 0) {
+      slope = -slope;
+    }
+    else if(slope > 0) {
+      slope = 180 - slope;
+    }
+
+    return slope;
+  }
+}
+
+
+  var is_raised_fist = false;
+  var is_open_hand = false;
+  var is_finger_up = false;
+  var is_draw = true;
+
+  const raisedDescription = new fp.GestureDescription('raised_fist');
+
+  // thumb:
+  raisedDescription.addCurl(fp.Finger.Thumb, fp.FingerCurl.HalfCurl, 1.0);
+
+  // index:
+  raisedDescription.addCurl(fp.Finger.Index, fp.FingerCurl.FullCurl, 1.0);
+
+  // middle:
+  raisedDescription.addCurl(fp.Finger.Middle, fp.FingerCurl.FullCurl, 1.0);
+
+  // ring:
+  raisedDescription.addCurl(fp.Finger.Ring, fp.FingerCurl.FullCurl, 1.0);
+
+  // pinky:
+  raisedDescription.addCurl(fp.Finger.Pinky, fp.FingerCurl.FullCurl, 1.0);
+
+
+  const openDescription = new fp.GestureDescription('open_hand');
+
+  // thumb:
+  openDescription.addCurl(fp.Finger.Thumb, fp.FingerCurl.NoCurl, 1.0);
+
+  // index:
+  openDescription.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl, 1.0);
+
+  // middle:
+  openDescription.addCurl(fp.Finger.Middle, fp.FingerCurl.NoCurl, 1.0);
+
+  // ring:
+  openDescription.addCurl(fp.Finger.Ring, fp.FingerCurl.NoCurl, 1.0);
+
+  // pinky:
+  openDescription.addCurl(fp.Finger.Pinky, fp.FingerCurl.NoCurl, 1.0);
+
+
+
+  const fingerDescription = new fp.GestureDescription('finger_up');
+
+  // thumb:
+  // raisedDescription.addCurl(fp.Finger.Thumb, fp.FingerCurl.FullCurl, 1.0);
+
+  // index:
+  fingerDescription.addCurl(fp.Finger.Index, fp.FingerCurl.NoCurl, 1.0);
+
+  // middle:
+  fingerDescription.addCurl(fp.Finger.Middle, fp.FingerCurl.FullCurl, 1.0);
+
+  // ring:
+  fingerDescription.addCurl(fp.Finger.Ring, fp.FingerCurl.FullCurl, 1.0);
+
+  // pinky:
+  fingerDescription.addCurl(fp.Finger.Pinky, fp.FingerCurl.FullCurl, 1.0);
+
+
+      const knownGestures = [
+        fp.Gestures.VictoryGesture,
+        fp.Gestures.ThumbsUpGesture,
+        raisedDescription,
+        fingerDescription,
+        openDescription
+      ];
+      const GE = new fp.GestureEstimator(knownGestures);
+
+
+      // main estimation loop 
+      function estimate_hands(detections, width, height){
+
+
+        for(let i = 0; i < detections.multiHandLandmarks.length; i++) {
+
+          landmarks = [];
+          for(let j = 0; j < detections.multiHandLandmarks[0].length; j++){
+            landmarks.push([detections.multiHandLandmarks[0][j].x * width, 
+                            detections.multiHandLandmarks[0][j].y * height, 
+                            detections.multiHandLandmarks[0][j].z])
+          }
+
+          min_score = 8;
+          const est = GE.estimate(landmarks, min_score);
+          const dic = {};
+
+          const fp_estimator = new FingerPoseEstimator(dic);
+
+          const fp_est = fp_estimator.estimate(landmarks);
+
+          let poseData = [];
+          for(let fingerIdx of fp.Finger.all) {
+            poseData.push([
+              fp.Finger.getName(fingerIdx),
+              fp.FingerCurl.getName(fp_est.curls[fingerIdx]),
+              fp.FingerDirection.getName(fp_est.directions[fingerIdx])
+            ]);
+          }
+          
+          // console.log(poseData);
+          // console.log("tried to estimate gestures " + est.gestures.length);
+
+          if(est.gestures.length > 0) {
+
+
+            // find gesture with highest match score
+            let result = est.gestures.reduce((p, c) => { 
+              return (p.score > c.score) ? p : c;
+            });
+            const gestureStrings = {
+                  'raised_fist': '✊',
+                  'finger_up' : '👆',
+                  'open_hand' : '🖐',
+            };
+
+            if (result.name=='open_hand') {
+                is_open_hand = true;
+            }
+
+            else{
+              is_open_hand = false;
+            }
+
+             if (result.name=='finger_up') {
+                is_finger_up = true;
+            }
+
+            else{
+              is_finger_up = false;
+            }
+
+            // console.log(gestureStrings[result.name]);
+            // console.log(result.score);
+          }
+
+
+        }
+
+      };
+
+
+
+
+var objToday = new Date(),
+  weekday = new Array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'),
+  dayOfWeek = weekday[objToday.getDay()],
+  domEnder = function() { var a = objToday; if (/1/.test(parseInt((a + "").charAt(0)))) return "th"; a = parseInt((a + "").charAt(1)); return 1 == a ? "st" : 2 == a ? "nd" : 3 == a ? "rd" : "th" }(),
+  dayOfMonth = today + ( objToday.getDate() < 10) ? '0' + objToday.getDate() + domEnder : objToday.getDate() + domEnder,
+  months = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'),
+  curMonth = months[objToday.getMonth()],
+  curYear = objToday.getFullYear();
+  var today = dayOfWeek + " " + dayOfMonth + " of " + curMonth + ", " + curYear;
+
+document.getElementsByClassName('date')[0].textContent = today;
+
+
+//colors button
+const btn = document.getElementById('btn');
+
+let index = 0;
+var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
+btn.style.backgroundColor = colors[index];
+
+
+
+  btn.addEventListener('click', function onClick() {
+  index = index >= colors.length - 1 ? 0 : index + 1;
+  btn.style.backgroundColor = colors[index];
+
+  
+});
+
+//video  
+let detections = {};
+const videoElement = document.getElementsByClassName('input_video')[0];
+
+function gotHands(results) {
+  detections= results;
+  // console.log(detections);
+}
+
+const hands = new Hands({locateFile: (file) => {
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+}});
+
+
+hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  hands.onResults(gotHands);
+
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await hands.send({image: videoElement});
+    },
+    width: 320/1.2,
+    height: 240/1.2
+  });
+  camera.start();
+
+
+var px;
+var py;
+var lastX = 0;
+var lastY = 0;
+let pts = [];
+var myColors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292"];
+let canvas;
+var line_count = 0;
+var database;
+var drawing = [];
+
+let eraseEnable = false;
+
+let sketch = function(p){
+  p.setup = function(){
+    canvas = p.createCanvas(p.windowWidth,p.windowHeight);
+    canvas.parent('canvascontainer');
+
+    var uploadButton = p.select('#uploadButton');
+    uploadButton.mousePressed(uploadDrawing);
+
+    var downloadButton = p.select('#downloadButton');
+    downloadButton.mousePressed(downloadCanvas);
+
+    var clearButton = p.select('#clearButton');
+    clearButton.mousePressed(clearCanvas);
+
+    p.background(255);
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyC1cngA73ni9Oef-37GkDjksdnQJ48VLno",
+    authDomain: "handsdrawing-5f3a9.firebaseapp.com",
+    databaseURL: "https://handsdrawing-5f3a9-default-rtdb.firebaseio.com",
+    projectId: "handsdrawing-5f3a9",
+    storageBucket: "handsdrawing-5f3a9.appspot.com",
+    messagingSenderId: "210592277963",
+    appId: "1:210592277963:web:0809b3deda186aaebfc24e",
+    measurementId: "G-2G046QY5BG"
+  };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+    ref = database.ref('drawing');
+
+    
+    ref.on('value', gotData);
+  }
+
+
+  function clearCanvas(){
+    p.clear();
+    p.background(255);
+  }
+
+  function downloadCanvas() {
+    p.saveCanvas('BackToKindergarten', 'jpg');
+  }
+
+  // function uploadDrawing(){
+  //   const img = canvas.get();
+  //   img.resize(p.windowWidth/10, p.windowHeight/10);
+  //   img.loadPixels();
+  //   var ref = database.ref('drawing');
+  //   var data = {
+  //     name: "Dan",
+  //     drawing: drawing,
+  //     img: img.pixels
+  //   }
+  //   var results = ref.push(data);
+  //   // console.log(results);
+  // }
+
+    function uploadDrawing(){
+    let html_canvas = document.querySelector("#defaultCanvas0");
+    var storageRef = firebase.storage().ref();
+    html_canvas.toBlob(function(blob){
+      var file_ref = storageRef.child('images/' + Math.floor(Math.random() * 1000));
+      var uploadTask = file_ref.put(blob).then((snapshot) => {
+        var url = file_ref.getDownloadURL().then((url) => {
+        // Do something with the URL ...
+        var ref = database.ref('drawing');
+        var data = {
+          name: "Dan",
+          url: url
+        }
+        var results = ref.push(data);
+        console.log(url);
+        }
+      );
+    });
+  
+    });
+  }
+
+
+  function gotData(data){
+
+    if (data == null) {
+      return;
+    }
+
+    var data = data.val();
+
+    if (data == null) {
+      return;
+    }
+
+    // var keys = Object.keys(data);
+    // ref = database.ref('drawing');
+    // document.querySelector('ol').innerHTML = '';
+    // for (var i = 0; i< keys.length; i++) {
+    //   // ref.child(keys[i]).remove();
+    //   var key = keys[i];
+    //   url = data[key].url;
+    //   var li = document.createElement('li', url);
+    //   document.querySelector('ol').appendChild(li);
+    //   var img = document.createElement('img');
+    //   img.src = url;
+    //   img.width = p.windowWidth/3;
+    //   img.height = p.windowHeight/3;
+    //   img.style.boxShadow = "5px 5px 10px gray";
+    //   li.appendChild(img);
+    // }
+
+
+    //   var pixels = data[key].img;
+    //   let img = p.createImage(Math.floor(p.windowWidth/10), Math.floor(p.windowHeight/10));
+    //   img.loadPixels();
+    //   img.pixels = pixels;
+    //   for (var j = 0; j< pixels.length; j++) {
+    //     if(pixels[j]!=255)
+    //     {
+    //       // console.log("HAIIIIIIIII" + pixels[j]);
+    //     }
+      // }
+      // for (let i = 0; i < img.height; i++) {
+      //   for (let j = 0; j < img.width; j++) {
+      //     img.set(i, j, 0.9);
+      //   }
+      // }
+      // img.updatePixels();
+
+      // p.image(img, p.windowWidth, p.windowHeight);
+    // }
+  }
+
+  function showDrawing(){
+    var key = this.html();
+    var ref = database.ref('drawing/' + key);
+    ref.on('value', oneDrawing, errData);
+
+    function oneDrawing(data){
+      var dbdrawing = data.val();
+      drawing = dbdrawing.drawing;
+    }
+  }
+
+  p.draw = function(){
+    
+    if (detections != undefined) {
+      if (detections.multiHandLandmarks != undefined) {
+        if (is_draw) {
+        
+        p.drawHands();
+        
+        }
+        if(detections.multiHandLandmarks.length > 0){
+          estimate_hands(detections, p.width, p.height);  
+        }
+        if (is_open_hand) {
+          is_draw = false;
+          line_count = 0;
+        }
+        if (is_finger_up) {
+          is_draw = true;
+          $( "#on_start" ).hide();
+        }
+      }
+    }  
+  }
+
+
+
+// p.drawHands = function(){
+//   p.stroke(colors[index]);
+//   p.strokeWeight(10);
+
+//   for (var i =0; i<detections.multiHandLandmarks.length; i++) {
+//     for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
+      
+//       let x = detections.multiHandLandmarks[i][j].x * p.width;
+//       let y = detections.multiHandLandmarks[i][j].y * p.height;
+//       let z = detections.multiHandLandmarks[i][j].z;
+
+//       p.point(x, y, z);
+
+//       }
+//     }
+//   }
+
+
+// draw lines
+
+p.drawHands = function(){
+  p.stroke(colors[index]);
+  p.strokeWeight(6);
+
+  for (var i =0; i<detections.multiHandLandmarks.length; i++) {
+    for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
+      
+      let x = (1- detections.multiHandLandmarks[i][j].x) * p.width;
+      let y = detections.multiHandLandmarks[i][j].y * p.height;
+
+      if(lastX==0 && lastY==0){
+        lastX = x;
+        lastY = y;
+      }
+
+      if(j==8){
+        let d = p.dist(lastX, lastY, x, y);
+
+// d<130
+        if (true) {
+          line_count++;
+          if(line_count>2){
+          p.line(lastX, lastY, x, y);
+          drawing.push({x1:lastX, y1:lastY, x2: x, y2:y, color: colors[index]})
+        }
+          lastX = x;
+          lastY = y;
+        }
+        else{
+          lastX = 0;
+          lastY = 0;
+          // console.log(d);
+        }    
+
+      } 
+
+      }
+    }
+  }
+}
+let myp5 = new p5(sketch);
+
+
+</script>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <!-- The main handpose library -->
+  <script src="https://unpkg.com/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></script>
+
+  <script src="fingerpose.js" type="text/javascript"></script>
+  <meta charset="utf-8" />
+
+</head>
+<div id="canvascontainer"></div>
+  <body>
+    <ul id="drawinglist">
+    </ul>
+  </body>
+</html>
+
+<style type="text/css">
+ html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  @font-face {
+  font-family: CommonSans-Regular;
+  src: url(CommonSans-Regular 2.otf);
+}
+
+canvas {
+    display: block;
+    /*new code*/
+   /* position: absolute;
+    z-index: 3;*/
+  }
+
+
+#drawinglist{
+  /*font-size: 17px;
+  font-family: CommonSans-Regular;*/
+  position: fixed;
+  padding: 30px;
+  margin: 0;
+  top: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-around;
+  align-items: flex-start;
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(3, 30fr);
+  column-gap: 20px;
+  grid-row-gap: 20px;
+}
+
+li {
+  display: block;
+  flex: 0 1 auto; /* Default */
+}
+</style>
+
+<script type="text/javascript">
+
+  var database;
+  var drawing = [];
+
+  let sketch = function(p){
+  p.setup = function(){
+    canvas = p.createCanvas(p.windowWidth,p.windowHeight);
+    canvas.parent('canvascontainer');
+    p.background(255);
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyC1cngA73ni9Oef-37GkDjksdnQJ48VLno",
+    authDomain: "handsdrawing-5f3a9.firebaseapp.com",
+    databaseURL: "https://handsdrawing-5f3a9-default-rtdb.firebaseio.com",
+    projectId: "handsdrawing-5f3a9",
+    storageBucket: "handsdrawing-5f3a9.appspot.com",
+    messagingSenderId: "210592277963",
+    appId: "1:210592277963:web:0809b3deda186aaebfc24e",
+    measurementId: "G-2G046QY5BG"
+  };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+    ref = database.ref('drawing');
+
+    
+    ref.on('value', gotData);
+  }
+
+
+    function uploadDrawing(){
+    let html_canvas = document.querySelector("#defaultCanvas0");
+    var storageRef = firebase.storage().ref();
+    html_canvas.toBlob(function(blob){
+      var file_ref = storageRef.child('images/' + Math.floor(Math.random() * 1000));
+      var uploadTask = file_ref.put(blob).then((snapshot) => {
+        var url = file_ref.getDownloadURL().then((url) => {
+        // Do something with the URL ...
+        var ref = database.ref('drawing');
+        var data = {
+          name: "Dan",
+          url: url
+        }
+        var results = ref.push(data);
+        console.log(url);
+        }
+      );
+    });
+  
+    });
+  }
+
+
+  function gotData(data){
+
+    if (data == null) {
+      return;
+    }
+
+    var data = data.val();
+
+    if (data == null) {
+      return;
+    }
+
+    var keys = Object.keys(data);
+    ref = database.ref('drawing');
+    document.querySelector('ul').innerHTML = '';
+    for (var i = 0; i< keys.length; i++) {
+      // ref.child(keys[i]).remove();
+      var key = keys[i];
+      url = data[key].url;
+      var li = document.createElement('li', url);
+      document.querySelector('ul').appendChild(li);
+      var img = document.createElement('img');
+      img.src = url;
+      img.width = p.windowWidth/3.5;
+      img.height = p.windowHeight/3.5;
+      img.style.boxShadow = "5px 5px 10px gray";
+      li.appendChild(img);
+    }
+   }
+
+     function showDrawing(){
+    var key = this.html();
+    var ref = database.ref('drawing/' + key);
+    ref.on('value', oneDrawing, errData);
+
+    function oneDrawing(data){
+      var dbdrawing = data.val();
+      drawing = dbdrawing.drawing;
+    }
+  } 
+  } 
+  let myp5 = new p5(sketch);  
+</script>
