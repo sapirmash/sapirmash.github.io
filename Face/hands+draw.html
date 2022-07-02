@@ -17,11 +17,11 @@
 
 </head>
   <body>
-    <a id="gallery" href="gallery.html">Gallery</a>
+    <a id="gallery" href="gallery.html">Info</a>
     <span id="on_start">
       Use your 👆 to draw, use 🖐 to stop drawing and click on <button id="btn_on_start"></button> to change colors.
     </span>
-    <span class="date"></span>
+    <!-- <span class="date"></span> -->
     <span class="name">Back <br>to</br> Kindergarten</span>
     <video class="input_video"></video>
     
@@ -43,8 +43,16 @@
     </li>
     </ul>
 
-   <!--  <ol id="drawinglist">
-    </ol> -->
+    <div class="modal">
+      <div class="save-overlay">    
+          <div class="content-overlay">
+              <input type="text" id="fname" name="fname">
+              <button id="Submit">Submit</button>
+          </div>
+        <a href='#' class="save-overlay__close">
+          Close <!-- &times; --></a>
+        </div>
+    </div>
   </body>
 </html>
 
@@ -59,13 +67,79 @@
   src: url(CommonSans-Regular 2.otf);
 }
 
+.save-overlay {
+  -webkit-transition: -webkit-transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);
+  transition: transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);
+  font-family: CommonSans-Regular;
+  background: white;
+  border: 1px solid #382826;
+  width: calc(100% - 80%);
+  height: calc(100% - 88%);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 4000;
+  display: none;
+  padding: 20px;
+}
+
+.modal{
+  background-color: rgb(56, 40, 38, 0.1);
+  height: 100%;
+  width: 100%;
+  z-index: 3000;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  display: none;
+  position: fixed;
+}
+
+.content-overlay{
+  width: 100%;
+  display: none;
+  text-align:center;
+}
+
+.active_overlay{
+  display: block;
+}
+.save-overlay.open {
+  -webkit-transform: translate(-50%, 50%);
+  transform: translate(-50%, 50%);
+  bottom: 53vh;
+  z-index: 4000;
+}
+
+.save-overlay__close {
+  font-family: 'Kern-r';
+  position: absolute;
+  bottom: 1.2rem;
+  font-size: 42px;
+  color: #382826;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  /*display: none;*/
+  z-index: 4000;
+  left: calc(100% - 65%);
+}
+
+.save-overlay__close:hover{
+  text-decoration: underline;
+  color: #382826;
+}
+
 #gallery{
   font-size: 17px;
   font-family: CommonSans-Regular;
   color: black;
   text-decoration: none;
   padding: 46px;
-  margin-left: 400px;
+  margin-left: 140px;
   position: fixed;
 
 }
@@ -731,7 +805,7 @@ var objToday = new Date(),
   curYear = objToday.getFullYear();
   var today = dayOfWeek + " " + dayOfMonth + " of " + curMonth + ", " + curYear;
 
-document.getElementsByClassName('date')[0].textContent = today;
+// document.getElementsByClassName('date')[0].textContent = today;
 
 
 //colors button
@@ -800,7 +874,7 @@ let sketch = function(p){
     canvas = p.createCanvas(p.windowWidth,p.windowHeight);
     canvas.parent('canvascontainer');
 
-    var uploadButton = p.select('#uploadButton');
+    var uploadButton = p.select('#Submit');
     uploadButton.mousePressed(uploadDrawing);
 
     var downloadButton = p.select('#downloadButton');
@@ -831,6 +905,17 @@ let sketch = function(p){
     ref.on('value', gotData);
   }
 
+
+  $("#uploadButton").on("click", function() {
+        // changeCursor = false;
+        $(".save-overlay, .content-overlay, .modal").addClass("active_overlay");
+        });
+      
+
+        $(".save-overlay__close").on("click", function() {
+          // changeCursor = true;
+        $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+  });
 
   function clearCanvas(){
     p.clear();
