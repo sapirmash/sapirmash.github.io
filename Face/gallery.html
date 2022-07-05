@@ -16,10 +16,17 @@
   <meta charset="utf-8" />
 
 </head>
-<div id="canvascontainer"></div>
   <body>
+    <span class="name">Back <br>to</br> Kindergarten</span>
+    <div class="info">
+      An experimental that give you the option to draw with your hands.  
+    </div>
+    <a id="gallery">Canvas</a>
+    <div id="canvascontainer"></div>
+   
     <ul id="drawinglist">
     </ul>
+
   </body>
 </html>
 
@@ -34,6 +41,17 @@
   src: url(CommonSans-Regular 2.otf);
 }
 
+figcaption{
+  /*float: left;*/
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  padding-top: 20px;
+}
+
+img{
+  border: 1px solid black;
+}
+
 canvas {
     display: block;
     /*new code*/
@@ -41,13 +59,39 @@ canvas {
     z-index: 3;*/
   }
 
+#gallery{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  color: black;
+  text-decoration: none;
+  padding: 46px;
+  margin-left: 140px;
+  position: fixed;
 
-#drawinglist{
-  /*font-size: 17px;
-  font-family: CommonSans-Regular;*/
+}
+
+.info{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  color: black;
+  margin: 0;
+  position: fixed;
+  padding-left: 5px;
+  padding-top: 100px;
+}
+
+.name{
+  padding: 5px;
+  margin: 0;
+  font-size: 17px;
+  position: fixed;
+  font-family: CommonSans-Regular;
+}
+
+/*#drawinglist{
   position: fixed;
   padding: 30px;
-  margin: 0;
+  margin-top: 100px;
   top: 0;
   flex-direction: row;
   flex-wrap: wrap;
@@ -59,6 +103,40 @@ canvas {
   grid-template-columns: repeat(3, 30fr);
   column-gap: 20px;
   grid-row-gap: 20px;
+}
+
+li {
+  display: block;
+  flex: 0 1 auto; 
+}*/
+
+#drawinglist::-webkit-scrollbar {
+    display: none;
+}
+
+#drawinglist{
+  position: fixed;
+  padding: 5px;
+  margin-top: 100px;
+  top: 0;
+  right: 0px;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-around;
+  align-items: flex-start;
+  list-style-type: none;
+  display: table-column;
+  grid-template-columns: repeat(1, 30fr);
+  /*column-gap: 20px;*/
+  grid-row-gap: 30px;
+  overflow:auto;
+  height: 100%;
+  width: 580px;
+  overflow-x: hidden;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none; 
+
 }
 
 li {
@@ -98,30 +176,6 @@ li {
     ref.on('value', gotData);
   }
 
-
-    function uploadDrawing(){
-    let html_canvas = document.querySelector("#defaultCanvas0");
-    var storageRef = firebase.storage().ref();
-    html_canvas.toBlob(function(blob){
-      var file_ref = storageRef.child('images/' + Math.floor(Math.random() * 1000));
-      var uploadTask = file_ref.put(blob).then((snapshot) => {
-        var url = file_ref.getDownloadURL().then((url) => {
-        // Do something with the URL ...
-        var ref = database.ref('drawing');
-        var data = {
-          name: "Dan",
-          url: url
-        }
-        var results = ref.push(data);
-        console.log(url);
-        }
-      );
-    });
-  
-    });
-  }
-
-
   function gotData(data){
 
     if (data == null) {
@@ -141,14 +195,17 @@ li {
       // ref.child(keys[i]).remove();
       var key = keys[i];
       url = data[key].url;
+      name = data[key].name;
       var li = document.createElement('li', url);
       document.querySelector('ul').appendChild(li);
       var img = document.createElement('img');
+      var label = document.createElement('figcaption');
+      label.innerHTML = name;
       img.src = url;
-      img.width = p.windowWidth/3.5;
-      img.height = p.windowHeight/3.5;
-      img.style.boxShadow = "5px 5px 10px gray";
+      img.width = p.windowWidth/2.2;
+      img.height = p.windowHeight/2.2;
       li.appendChild(img);
+      li.appendChild(label);
     }
    }
 

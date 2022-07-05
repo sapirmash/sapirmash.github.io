@@ -46,11 +46,18 @@
     <div class="modal">
       <div class="save-overlay">    
           <div class="content-overlay">
-              <input type="text" id="fname" name="fname">
+            <p class="text">
+              Share your drawing 
+            </p>
+            <div id="preview"> 
+            </div>
+            <div class="form">
+              <input type="text" id="name_input" name="fname">
               <button id="Submit">Submit</button>
+           </div>   
           </div>
         <a href='#' class="save-overlay__close">
-          Close <!-- &times; --></a>
+           x <!-- &times; --></a>
         </div>
     </div>
   </body>
@@ -73,8 +80,8 @@
   font-family: CommonSans-Regular;
   background: white;
   border: 1px solid #382826;
-  width: calc(100% - 80%);
-  height: calc(100% - 88%);
+  width: calc(100% - 70%);
+  /*height: calc(100% - 88%);*/
   position: fixed;
   top: 50%;
   left: 50%;
@@ -86,7 +93,7 @@
 }
 
 .modal{
-  background-color: rgb(56, 40, 38, 0.1);
+  background-color: rgb(0, 0, 0, 0.1);
   height: 100%;
   width: 100%;
   z-index: 3000;
@@ -115,23 +122,19 @@
 }
 
 .save-overlay__close {
-  font-family: 'Kern-r';
+  font-size: 17px;
+  font-family: CommonSans-Regular;
   position: absolute;
-  bottom: 1.2rem;
-  font-size: 42px;
-  color: #382826;
+  right: 20px;
+  top: 15px;
+  /*top: 1.2rem;*/
+  color: black;
   cursor: pointer;
   text-decoration: none;
-  text-align: center;
-  /*display: none;*/
   z-index: 4000;
-  left: calc(100% - 65%);
+  /*right: calc(100% - 93%);*/
 }
 
-.save-overlay__close:hover{
-  text-decoration: underline;
-  color: #382826;
-}
 
 #gallery{
   font-size: 17px;
@@ -154,8 +157,6 @@
     position: fixed;
     bottom: 0;
     transform: translate(50%, 0);
-
-
 }
 
 .buttons_list{
@@ -163,11 +164,6 @@
   flex: 0 1 auto; /* Default */
   list-style-type: none;
 }
-
-/*#drawinglist{
-  position: absolute;
-  top: 50%;
-}*/
 
 #on_start{
   font-size: 17px;
@@ -190,14 +186,6 @@
 
 
 #btn{
-  /*position: fixed;
-  margin: 20px;
-  right: 0;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: none;*/
-
   padding: 21px;
   margin: 10px;
   border-radius: 10%;
@@ -211,28 +199,85 @@
   padding: 10px;
   margin: 10px;
   border: 1px solid black;
-  border-radius: 8%;
+  border-radius: 4px;
   font-size: 17px;
   font-family: CommonSans-Regular;
   background-color: white;
+  cursor: pointer;
 }
 
 #downloadButton{
   padding: 10px;
   margin: 10px;
   border: 1px solid black;
-  border-radius: 8%;
+  background-color: white;
+  border-radius: 4px;
   font-size: 17px;
   font-family: CommonSans-Regular;
+  cursor: pointer;
+}
+
+#Submit{
+  border: 1px solid black;
+  border-radius: 4px;
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  padding: 1px 10px;
+  flex-grow: 1;
+  max-width: 150px;
+  position: relative;
+  background-color: white;
+  cursor: pointer;
+}
+
+input{
+  height: 38px;
+  position: relative;
+  border-radius: 4px;
+  min-width: 30px;
+  padding: 1px 5px;
+  color: black;
+  border: 1.4px solid black;
+  flex-grow: 1;
+  fill: black;
+}
+
+
+.form{
+  display: flex;
+  column-gap: 10px;
+  position: relative;
+  /*transform: translate(0%, 170%);*/
+}
+
+#preview{
+  width: calc(100% - 1%);
+  height: 270px;
+  margin-right: 0;
+  border: 1px solid black;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  /*align-items: center;*/
+  vertical-align: middle;
+}
+
+.text{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  position: absolute;
+  left: 20px;
+  top: 0;
 }
 
 #clearButton{
   padding: 10px;
   margin: 10px;
   border: 1px solid black;
-  border-radius: 8%;
-    font-size: 17px;
+  border-radius: 4px;
+  font-size: 17px;
   font-family: CommonSans-Regular;
+  background-color: white;
+  cursor: pointer;
 }
 
 .name{
@@ -240,6 +285,12 @@
   margin: 0;
   font-size: 17px;
   position: fixed;
+  font-family: CommonSans-Regular;
+}
+
+
+.name_input{
+  font-size: 17px;
   font-family: CommonSans-Regular;
 }
 
@@ -253,9 +304,6 @@
 
   canvas {
     display: block;
-    /*new code*/
-   /* position: absolute;
-    z-index: 3;*/
   }
   
   video{
@@ -264,6 +312,45 @@
     -webkit-filter: grayscale(100%); 
     filter: grayscale(100%);
   }
+
+  @media only screen and (max-width: 980px){
+
+  .actions{
+      display: none;
+    }
+
+  .name{
+      display: none;
+    }
+
+  #canvascontainer{
+      display: none;
+    }
+   #gallery{
+     display: none;
+   } 
+
+  .explanation{
+      display: block;
+      width: calc(100% - 170px);
+      height: calc(100% - 30px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin: 20px;
+      font-size: 38px;
+      line-height: 42px;
+      font-family:'Kern-r';
+      pointer-events: none; 
+      color: #382826;
+      margin-top: 80px;
+    }
+
+   #on_start{
+    display: none;
+    } 
+
+}
 </style>
 
 <script type="text/javascript">
@@ -866,6 +953,7 @@ let canvas;
 var line_count = 0;
 var database;
 var drawing = [];
+var current_blob;
 
 let eraseEnable = false;
 
@@ -875,7 +963,11 @@ let sketch = function(p){
     canvas.parent('canvascontainer');
 
     var uploadButton = p.select('#Submit');
-    uploadButton.mousePressed(uploadDrawing);
+    uploadButton.mousePressed(submitDraw);
+
+
+    var uploadButton02 = p.select('#uploadButton');
+    uploadButton02.mousePressed(uploadDrawing);
 
     var downloadButton = p.select('#downloadButton');
     downloadButton.mousePressed(downloadCanvas);
@@ -926,39 +1018,53 @@ let sketch = function(p){
     p.saveCanvas('BackToKindergarten', 'jpg');
   }
 
-  // function uploadDrawing(){
-  //   const img = canvas.get();
-  //   img.resize(p.windowWidth/10, p.windowHeight/10);
-  //   img.loadPixels();
-  //   var ref = database.ref('drawing');
-  //   var data = {
-  //     name: "Dan",
-  //     drawing: drawing,
-  //     img: img.pixels
-  //   }
-  //   var results = ref.push(data);
-  //   // console.log(results);
-  // }
+  
+  function uploadDrawing(){
+    // document.querySelector('#preview').innerHTML = 'loading...';
+   
 
-    function uploadDrawing(){
     let html_canvas = document.querySelector("#defaultCanvas0");
-    var storageRef = firebase.storage().ref();
     html_canvas.toBlob(function(blob){
+        current_blob = blob;
+        var objectURL = URL.createObjectURL(current_blob);
+        document.querySelector('#preview').innerHTML = '';
+        var preview = document.createElement('span');
+        document.querySelector('#preview').appendChild(preview);
+        var img = document.createElement('img');
+        img.src = objectURL;
+        img.width = p.windowWidth/3.5;
+        img.height = p.windowHeight/3.5;
+        preview.appendChild(img);
+  
+    });
+  }
+
+  function submitDraw(){
+      var storageRef = firebase.storage().ref();
+      var element = document.getElementById("name_input");
+      var text = element.value;
       var file_ref = storageRef.child('images/' + Math.floor(Math.random() * 1000));
-      var uploadTask = file_ref.put(blob).then((snapshot) => {
+      var uploadTask = file_ref.put(current_blob).then((snapshot) => {
         var url = file_ref.getDownloadURL().then((url) => {
         // Do something with the URL ...
         var ref = database.ref('drawing');
         var data = {
-          name: "Dan",
+          name: text,
           url: url
         }
         var results = ref.push(data);
-        console.log(url);
+        // document.querySelector('#preview').innerHTML = '';
+        // var preview = document.createElement('span', url);
+        // document.querySelector('#preview').appendChild(preview);
+        // var img = document.createElement('img');
+        // img.src = url;
+        // img.width = p.windowWidth/3.5;
+        // img.height = p.windowHeight/3.5;
+        // preview.appendChild(img);
+        // console.log(url);
         }
+
       );
-    });
-  
     });
   }
 
@@ -974,45 +1080,25 @@ let sketch = function(p){
     if (data == null) {
       return;
     }
+  }  
 
-    // var keys = Object.keys(data);
-    // ref = database.ref('drawing');
-    // document.querySelector('ol').innerHTML = '';
-    // for (var i = 0; i< keys.length; i++) {
-    //   // ref.child(keys[i]).remove();
-    //   var key = keys[i];
-    //   url = data[key].url;
-    //   var li = document.createElement('li', url);
-    //   document.querySelector('ol').appendChild(li);
-    //   var img = document.createElement('img');
-    //   img.src = url;
-    //   img.width = p.windowWidth/3;
-    //   img.height = p.windowHeight/3;
-    //   img.style.boxShadow = "5px 5px 10px gray";
-    //   li.appendChild(img);
-    // }
-
-
-    //   var pixels = data[key].img;
-    //   let img = p.createImage(Math.floor(p.windowWidth/10), Math.floor(p.windowHeight/10));
-    //   img.loadPixels();
-    //   img.pixels = pixels;
-    //   for (var j = 0; j< pixels.length; j++) {
-    //     if(pixels[j]!=255)
-    //     {
-    //       // console.log("HAIIIIIIIII" + pixels[j]);
-    //     }
-      // }
-      // for (let i = 0; i < img.height; i++) {
-      //   for (let j = 0; j < img.width; j++) {
-      //     img.set(i, j, 0.9);
-      //   }
-      // }
-      // img.updatePixels();
-
-      // p.image(img, p.windowWidth, p.windowHeight);
-    // }
-  }
+  //   var keys = Object.keys(data);
+  //   ref = database.ref('drawing');
+  //   document.querySelector('#preview').innerHTML = '';
+  //   for (var i = 0; i< keys.length; i++) {
+  //     // ref.child(keys[i]).remove();
+  //     var key = keys;
+  //     var new_url = url;
+  //     new_url = data[key].url;
+  //     var preview = document.createElement('span', url);
+  //     document.querySelector('#preview').appendChild(preview);
+  //     var img = document.createElement('img');
+  //     img.src = url;
+  //     img.width = p.windowWidth/3.5;
+  //     img.height = p.windowHeight/3.5;
+  //     preview.appendChild(img);
+  //   }
+  //  }
 
   function showDrawing(){
     var key = this.html();
