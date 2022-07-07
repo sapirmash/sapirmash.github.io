@@ -19,13 +19,12 @@
   <body>
     <a id="gallery" href="gallery.html">Info</a>
     <span id="on_start">
-      Use your 👆 to draw, use 🖐 to stop drawing and click on <button id="btn_on_start"></button> to change colors.
+      Use your 👆 to draw, use 🖐 to stop drawing.
     </span>
     <!-- <span class="date"></span> -->
     <span class="name">Back <br>to</br> Kindergarten</span>
     <video class="input_video"></video>
     
-
     <div id="canvascontainer"></div>
 
     <ul class="actions">
@@ -38,8 +37,32 @@
     <li class="buttons_list">
     <button id="clearButton">New</button>
     </li>
-    <li class="buttons_list">
+    </ul>
+
+    <ul class="colors">
+    <li class="colors_list">
       <button id="btn"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_01"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_02"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_03"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_04"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_05"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_06"></button>
+    </li>
+    <li class="colors_list">
+      <button id="btn_07"></button>
     </li>
     </ul>
 
@@ -60,6 +83,8 @@
            x <!-- &times; --></a>
         </div>
     </div>
+
+    
   </body>
 </html>
 
@@ -142,7 +167,7 @@
   color: black;
   text-decoration: none;
   padding: 46px;
-  margin-left: 140px;
+  margin-left: 200px;
   position: fixed;
 
 }
@@ -150,13 +175,14 @@
 .actions{
     display: flex;
     align-items: center; /* Default */
-    justify-content: center;
+    justify-content: flex-start;
     width: 50%;
-    margin: 0 auto;
+    margin: 0;
     padding: 0;
     position: fixed;
     bottom: 0;
-    transform: translate(50%, 0);
+    left: 0;
+    /*transform: translate(50%, 0);*/
 }
 
 .buttons_list{
@@ -175,52 +201,125 @@
   text-align: center
 }
 
-#btn_on_start{
-  width: 18px;
-  height: 18px;
-  padding-bottom:4px;
-  border-radius: 50%;
-  border: none;
-  color: "#F26945";
+.colors{
+    display: flex;
+    align-items: center; /* Default */
+    justify-content: flex-end;
+    width: 26%;
+    margin: 5px;
+    padding: 0;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    /*border: 1px solid #000;
+    border-radius: 8px;*/
+    /*transform: translate(50%, 0);*/
 }
 
+.colors_list{
+  display: block;
+  flex: 0 1 auto; /* Default */
+  list-style-type: none;
+  margin: 6px;
+}
 
 #btn{
   padding: 21px;
-  margin: 10px;
-  border-radius: 10%;
+  /*margin: 10px;*/
+  border-radius: 60%;
   border: none;
-  font-size: 17px;
-  font-family: CommonSans-Regular;
+  background-color: #F26945;
+}
 
+#btn_01{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color: #FAE80B;
+}
+
+#btn_02{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color:#CF2133;
+}
+
+#btn_03{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color:#0E8142;
+}
+
+#btn_04{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color:#4D3292;
+}
+
+#btn_05{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color:#2D63AF;
+}
+
+#btn_06{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color:#81592F;
+}
+
+#btn_07{
+  padding: 21px;
+  /*margin: 10px;*/
+  border-radius: 60%;
+  border: none;
+  background-color:#000000;
 }
 
 #uploadButton{
   padding: 10px;
   margin: 10px;
-  border: 1px solid black;
+  border: 1px solid #000;
   border-radius: 4px;
-  font-size: 17px;
+  font-size: 15px;
   font-family: CommonSans-Regular;
   background-color: white;
   cursor: pointer;
+}
+
+#uploadButton:hover{
+  background-color: #eee;
 }
 
 #downloadButton{
   padding: 10px;
   margin: 10px;
-  border: 1px solid black;
+  border: 1px solid #000;
   background-color: white;
   border-radius: 4px;
-  font-size: 17px;
+  font-size: 15px;
   font-family: CommonSans-Regular;
   cursor: pointer;
 }
 
+#downloadButton:hover{
+ background-color: #eee;
+}
 #Submit{
-  border: 1px solid black;
+  border: 1px solid #000;
   border-radius: 4px;
-  font-size: 17px;
+  font-size: 15px;
   font-family: CommonSans-Regular;
   padding: 1px 10px;
   flex-grow: 1;
@@ -230,18 +329,26 @@
   cursor: pointer;
 }
 
+#Submit:hover{
+  background-color: #eee;
+}
+
 input{
   height: 38px;
   position: relative;
   border-radius: 4px;
   min-width: 30px;
   padding: 1px 5px;
-  color: black;
-  border: 1.4px solid black;
+  background-color: white;
+  border: 1.4px solid #000;
   flex-grow: 1;
   fill: black;
 }
 
+:focus {
+  outline: none;
+
+}
 
 .form{
   display: flex;
@@ -254,7 +361,7 @@ input{
   width: calc(100% - 1%);
   height: 270px;
   margin-right: 0;
-  border: 1px solid black;
+  border: 1px solid #000;
   margin-top: 30px;
   margin-bottom: 20px;
   /*align-items: center;*/
@@ -272,12 +379,16 @@ input{
 #clearButton{
   padding: 10px;
   margin: 10px;
-  border: 1px solid black;
+  border: 1px solid #000;
   border-radius: 4px;
-  font-size: 17px;
+  font-size: 15px;
   font-family: CommonSans-Regular;
   background-color: white;
   cursor: pointer;
+}
+
+#clearButton:hover{
+  background-color: #eee;
 }
 
 .name{
@@ -308,7 +419,8 @@ input{
   
   video{
     position: fixed;
-    bottom: 0;
+    right: 0;
+    display: none;
     -webkit-filter: grayscale(100%); 
     filter: grayscale(100%);
   }
@@ -897,19 +1009,61 @@ var objToday = new Date(),
 
 //colors button
 const btn = document.getElementById('btn');
+const btn_01 = document.getElementById('btn_01');
+const btn_02 = document.getElementById('btn_02');
+const btn_03 = document.getElementById('btn_03');
+const btn_04 = document.getElementById('btn_04');
+const btn_05 = document.getElementById('btn_05');
+const btn_06 = document.getElementById('btn_06');
+const btn_07 = document.getElementById('btn_07');
 
-let index = 0;
-var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
-btn.style.backgroundColor = colors[index];
+var color = "#F26945";
 
+// let index = 0;
+// var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
+// btn.style.backgroundColor = colors[index];
 
-
-  btn.addEventListener('click', function onClick() {
-  index = index >= colors.length - 1 ? 0 : index + 1;
-  btn.style.backgroundColor = colors[index];
-
+// btn.addEventListener('click', function onClick() {
+//   index = index >= colors.length - 1 ? 0 : index + 1;
+//   btn.style.backgroundColor = colors[index];
   
+// });
+
+btn.addEventListener('click', function onClick() {
+  color = "#F26945";  
 });
+
+btn_01.addEventListener('click', function onClick() {
+  color = "#FAE80B";  
+});
+
+btn_02.addEventListener('click', function onClick() {
+  color = "#CF2133";  
+});
+
+btn_03.addEventListener('click', function onClick() {
+  color = "#0E8142";  
+});
+
+btn_04.addEventListener('click', function onClick() {
+  color = "#4D3292";  
+});
+
+btn_05.addEventListener('click', function onClick() {
+  color = "#2D63AF";  
+});
+
+btn_06.addEventListener('click', function onClick() {
+  color = "#81592F";  
+});
+
+btn_07.addEventListener('click', function onClick() {
+  color = "#000000";  
+});
+
+
+
+
 
 //video  
 let detections = {};
@@ -937,8 +1091,8 @@ hands.setOptions({
     onFrame: async () => {
       await hands.send({image: videoElement});
     },
-    width: 320/1.2,
-    height: 240/1.2
+    width: 320/1.4,
+    height: 240/1.4
   });
   camera.start();
 
@@ -1004,7 +1158,7 @@ let sketch = function(p){
         });
       
 
-        $(".save-overlay__close").on("click", function() {
+        $(".save-overlay__close, #Submit").on("click", function() {
           // changeCursor = true;
         $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
   });
@@ -1158,7 +1312,7 @@ let sketch = function(p){
 // draw lines
 
 p.drawHands = function(){
-  p.stroke(colors[index]);
+  p.stroke(color);
   p.strokeWeight(6);
 
   for (var i =0; i<detections.multiHandLandmarks.length; i++) {
@@ -1180,7 +1334,7 @@ p.drawHands = function(){
           line_count++;
           if(line_count>2){
           p.line(lastX, lastY, x, y);
-          drawing.push({x1:lastX, y1:lastY, x2: x, y2:y, color: colors[index]})
+          drawing.push({x1:lastX, y1:lastY, x2: x, y2:y, color: color})
         }
           lastX = x;
           lastY = y;
