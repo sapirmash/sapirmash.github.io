@@ -28,15 +28,18 @@
     <div id="canvascontainer"></div>
 
     <ul class="actions">
-    <li class="buttons_list"> 
+    <li class="buttons_list grid-item"> 
     <button id="uploadButton">Upload</button>
     </li>
-    <li class="buttons_list">
-    <button id="downloadButton">Save</button>
+    <li class="buttons_list grid-item">
+    <button id="downloadButton">Download</button>
     </li>
-    <li class="buttons_list">
+    <li class="buttons_list grid-item">
     <button id="clearButton">New</button>
     </li>
+    <!-- <li class="buttons_list">
+    <button id="btn">Color</button>
+    </li> -->
     </ul>
 
     <ul class="colors">
@@ -84,7 +87,10 @@
         </div>
     </div>
 
-    
+    <div id="frame">
+      <p class="desktop_view">For the full experince please open this website in the desktop</p>
+    </div>
+
   </body>
 </html>
 
@@ -105,6 +111,7 @@
   font-family: CommonSans-Regular;
   background: white;
   border: 1px solid #382826;
+  border-radius: 8px;
   width: calc(100% - 70%);
   /*height: calc(100% - 88%);*/
   position: fixed;
@@ -172,23 +179,25 @@
 
 }
 
+
 .actions{
     display: flex;
-    align-items: center; /* Default */
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     width: 50%;
-    margin: 0;
     padding: 0;
     position: fixed;
     bottom: 0;
-    left: 0;
-    /*transform: translate(50%, 0);*/
+    right: 50%;
+    margin: 0 auto;
+    transform: translate(50%, 0);
 }
 
 .buttons_list{
   display: block;
   flex: 0 1 auto; /* Default */
   list-style-type: none;
+  margin-bottom: 10px;
 }
 
 #on_start{
@@ -204,16 +213,19 @@
 .colors{
     display: flex;
     align-items: center; /* Default */
-    justify-content: flex-end;
-    width: 26%;
-    margin: 5px;
-    padding: 0;
+    justify-content: center;
+    /*width: 20s%;*/
+    margin-bottom: 60px;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 4px;
+    padding-right: 4px;
     position: fixed;
     bottom: 0;
-    right: 0;
-    /*border: 1px solid #000;
-    border-radius: 8px;*/
-    /*transform: translate(50%, 0);*/
+    right: 50%;
+    border: 1px solid #000;
+    border-radius: 8px;
+    transform: translate(50%, 0);
 }
 
 .colors_list{
@@ -221,77 +233,88 @@
   flex: 0 1 auto; /* Default */
   list-style-type: none;
   margin: 6px;
+
 }
 
 #btn{
-  padding: 21px;
-  /*margin: 10px;*/
-  border-radius: 60%;
+  padding: 14px;
   border: none;
+  cursor: pointer;
+  /*margin: 10px;*/
+  border-radius: 8px;
+  /*border: 1px solid #000;*/
+  background-color: white;
   background-color: #F26945;
 }
 
 #btn_01{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color: #FAE80B;
 }
 
 #btn_02{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color:#CF2133;
 }
 
 #btn_03{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color:#0E8142;
 }
 
 #btn_04{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color:#4D3292;
 }
 
 #btn_05{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color:#2D63AF;
 }
 
 #btn_06{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color:#81592F;
 }
 
 #btn_07{
-  padding: 21px;
+  padding: 14px;
+  cursor: pointer;
   /*margin: 10px;*/
-  border-radius: 60%;
+  border-radius: 8px;
   border: none;
   background-color:#000000;
 }
 
 #uploadButton{
-  padding: 10px;
-  margin: 10px;
+  /*padding: 10px;*/
+  padding: 10px 26px 10px 26px;
   border: 1px solid #000;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   background-color: white;
@@ -303,11 +326,11 @@
 }
 
 #downloadButton{
-  padding: 10px;
-  margin: 10px;
+  padding: 10px 26px 10px 26px;
+  margin: 0 10px 0px;
   border: 1px solid #000;
   background-color: white;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   cursor: pointer;
@@ -318,7 +341,7 @@
 }
 #Submit{
   border: 1px solid #000;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   padding: 1px 10px;
@@ -377,10 +400,9 @@ input{
 }
 
 #clearButton{
-  padding: 10px;
-  margin: 10px;
+  padding: 10px 26px 10px 26px;
   border: 1px solid #000;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   background-color: white;
@@ -425,6 +447,9 @@ input{
     filter: grayscale(100%);
   }
 
+  #frame{
+    display: none;
+  }
   @media only screen and (max-width: 980px){
 
   .actions{
@@ -442,22 +467,28 @@ input{
      display: none;
    } 
 
-  .explanation{
-      display: block;
-      width: calc(100% - 170px);
-      height: calc(100% - 30px);
-      position: fixed;
-      top: 0;
-      left: 0;
-      margin: 20px;
-      font-size: 38px;
-      line-height: 42px;
-      font-family:'Kern-r';
-      pointer-events: none; 
-      color: #382826;
-      margin-top: 80px;
-    }
+   #frame {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    inset: 0px;
+    z-index: 999;
+    background: rgb(255, 255, 255);
+} 
 
+.desktop_view {
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    place-content: center;
+    width: 100vw;
+    height: 100vh;
+    margin: 0px;
+    padding: 0px;
+    font-family: CommonSans-Regular;
+ }   
    #on_start{
     display: none;
     } 
@@ -1021,7 +1052,9 @@ var color = "#F26945";
 
 // let index = 0;
 // var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
-// btn.style.backgroundColor = colors[index];
+// btn.style.borderStyle = colors[index];
+// // btn.style.backgroundColor = colors[index];
+// btn.style.text = colors[index];
 
 // btn.addEventListener('click', function onClick() {
 //   index = index >= colors.length - 1 ? 0 : index + 1;
