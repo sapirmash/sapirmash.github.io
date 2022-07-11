@@ -17,11 +17,6 @@
 
 </head>
   <body>
-    <span class="name">Back <br>to</br> Kindergarten</span>
-    <div class="info">
-      An experimental that give you the option to draw with your hands.  
-    </div>
-    <a id="gallery">Canvas</a>
     <div id="canvascontainer"></div>
    
     <ul id="drawinglist">
@@ -45,7 +40,7 @@ figcaption{
   /*float: left;*/
   font-size: 17px;
   font-family: CommonSans-Regular;
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 img{
@@ -59,36 +54,7 @@ canvas {
     z-index: 3;*/
   }
 
-#gallery{
-  font-size: 17px;
-  font-family: CommonSans-Regular;
-  color: black;
-  text-decoration: none;
-  padding: 46px;
-  margin-left: 140px;
-  position: fixed;
-
-}
-
-.info{
-  font-size: 17px;
-  font-family: CommonSans-Regular;
-  color: black;
-  margin: 0;
-  position: fixed;
-  padding-left: 5px;
-  padding-top: 100px;
-}
-
-.name{
-  padding: 5px;
-  margin: 0;
-  font-size: 17px;
-  position: fixed;
-  font-family: CommonSans-Regular;
-}
-
-/*#drawinglist{
+#drawinglist{
   position: fixed;
   padding: 30px;
   margin-top: 100px;
@@ -108,9 +74,9 @@ canvas {
 li {
   display: block;
   flex: 0 1 auto; 
-}*/
+}
 
-#drawinglist::-webkit-scrollbar {
+/*#drawinglist::-webkit-scrollbar {
     display: none;
 }
 
@@ -128,13 +94,12 @@ li {
   list-style-type: none;
   display: table-column;
   grid-template-columns: repeat(1, 30fr);
-  /*column-gap: 20px;*/
   grid-row-gap: 30px;
   overflow:auto;
   height: 100%;
   width: 580px;
   overflow-x: hidden;
-  -ms-overflow-style: none;  /* IE and Edge */
+  -ms-overflow-style: none;
   scrollbar-width: none; 
 
 }
@@ -142,7 +107,7 @@ li {
 li {
   display: block;
   flex: 0 1 auto; /* Default */
-}
+/*}*/
 </style>
 
 <script type="text/javascript">

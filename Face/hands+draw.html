@@ -3,11 +3,12 @@
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.3/firebase.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1640029074/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils@0.6.1629159505/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1620248257/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/hands.js" crossorigin="anonymous"></script>
 
     <!-- The main handpose library -->
   <script src="https://unpkg.com/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></script>
@@ -17,7 +18,8 @@
 
 </head>
   <body>
-    <a id="gallery" href="gallery.html">Info</a>
+    <a id="info">Info</a>
+    <a id="gallery">Gallery</a>
     <span id="on_start">
       Use your 👆 to draw, use 🖐 to stop drawing.
     </span>
@@ -27,47 +29,61 @@
     
     <div id="canvascontainer"></div>
 
-    <ul class="actions">
-    <li class="buttons_list grid-item"> 
+    <div class="actions">
+    <span class="buttons_list"> 
     <button id="uploadButton">Upload</button>
-    </li>
-    <li class="buttons_list grid-item">
+    </span>
+    <span class="buttons_list">
     <button id="downloadButton">Download</button>
-    </li>
-    <li class="buttons_list grid-item">
+    </span>
+    <span class="buttons_list">
     <button id="clearButton">New</button>
-    </li>
-    <!-- <li class="buttons_list">
-    <button id="btn">Color</button>
-    </li> -->
-    </ul>
+    </span>
+    </div>
 
-    <ul class="colors">
-    <li class="colors_list">
+    <div class="colors">
+    <span class="colors_list">
       <button id="btn"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_01"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_02"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_03"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_04"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_05"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_06"></button>
-    </li>
-    <li class="colors_list">
+    </span>
+    <span class="colors_list">
       <button id="btn_07"></button>
-    </li>
-    </ul>
+    </span>
+    </div>
+
+    <div class="gallery-modal">
+    <!-- <div class="gallery-content">   -->
+     <ul class="drawinglist"></ul> 
+    <!-- </div> -->
+    <a href='#' class="close">
+           x <!-- &times; --></a>
+    </div>
+
+
+    <div class="info-modal">
+      <div class="info-text">
+        Back to Kindergarten invites you to draw 
+      </div>
+      <a href='#' class="close">
+           x <!-- &times; --></a>
+    </div>
 
     <div class="modal">
       <div class="save-overlay">    
@@ -105,13 +121,115 @@
   src: url(CommonSans-Regular 2.otf);
 }
 
+figcaption{
+  /*float: left;*/
+  font-size: 15px;
+  font-family: CommonSans-Regular;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  display: none;
+}
+
+/*img{
+  border: 1px solid #000;
+  display: none;
+}*/
+
+#preview{
+  width: calc(100% - 1%);
+  height: 270px;
+  margin-right: 0;
+  border: 1px solid #000;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  vertical-align: middle;
+}
+
+.preview_img{
+  border: 1px solid #000;
+  display: none;
+}
+
+.drawinglist::-webkit-scrollbar {
+    display: none;
+}
+
+.drawinglist{ 
+  height: 90%;
+  margin-top: 60px;
+  overflow-y: scroll;
+  display: flex;
+  max-width: 100%;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-around;
+}
+
+.gallery-content{
+  height: 90%;
+  padding-top: 40px;  
+  display: none;
+}
+
+.li-draw {
+  display: block;
+  flex: 0 1 auto;
+}
+
+
+.gallery-modal{
+  transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
+  width: 80%;
+  height: 80%;
+  left: 50%;
+  top: 50%;
+  background: white;
+  border: 1px solid #382826;
+  position: fixed;
+  display: none;
+}
+
+.info-modal{
+  transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
+  width: 40%;
+  height: 40%;
+  left: 50%;
+  top: 50%;
+  background: white;
+  border: 1px solid #382826;
+  position: fixed;
+  display: none;
+}
+
+.info-text{
+  height: 85%;
+  padding-left:20px;
+  padding-top: 40px;
+  font-family: CommonSans-Regular;
+  display: none;
+}
+
+.close{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  position: absolute;
+  padding: 20px;
+  right: 0;
+  top: 0;
+  color: black;
+  cursor: pointer;
+  text-decoration: none;
+  z-index: 4000;
+}
 .save-overlay {
-  -webkit-transition: -webkit-transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);
-  transition: transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);
+  /*-webkit-transition: -webkit-transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);*/
+  /*transition: transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);*/
   font-family: CommonSans-Regular;
   background: white;
   border: 1px solid #382826;
-  border-radius: 8px;
+  /*border-radius: 8px;*/
   width: calc(100% - 70%);
   /*height: calc(100% - 88%);*/
   position: fixed;
@@ -125,7 +243,7 @@
 }
 
 .modal{
-  background-color: rgb(0, 0, 0, 0.1);
+  /*background-color: rgb(0, 0, 0, 0.1);*/
   height: 100%;
   width: 100%;
   z-index: 3000;
@@ -139,13 +257,32 @@
 
 .content-overlay{
   width: 100%;
-  display: none;
+  display: block;
+  /*display: none;*/
   text-align:center;
 }
 
 .active_overlay{
   display: block;
 }
+
+.active_gallery{
+  display: flex;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: left;
+  row-gap: 8px;
+  column-gap: 28px;
+  transform:translateX(-0.9%);
+
+}
+
+/*.active_gallery::after {
+  content: "";
+  flex: auto;
+  align-content: flex-start;
+}*/
 .save-overlay.open {
   -webkit-transform: translate(-50%, 50%);
   transform: translate(-50%, 50%);
@@ -168,7 +305,7 @@
 }
 
 
-#gallery{
+#info{
   font-size: 17px;
   font-family: CommonSans-Regular;
   color: black;
@@ -176,7 +313,19 @@
   padding: 46px;
   margin-left: 200px;
   position: fixed;
+  cursor: pointer;
 
+}
+
+#gallery{
+  font-size: 17px;
+  font-family: CommonSans-Regular;
+  color: black;
+  text-decoration: none;
+  padding: 46px;
+  margin-left: 410px;
+  position: fixed;
+  cursor: pointer;
 }
 
 
@@ -224,7 +373,6 @@
     bottom: 0;
     right: 50%;
     border: 1px solid #000;
-    border-radius: 8px;
     transform: translate(50%, 0);
 }
 
@@ -237,84 +385,102 @@
 }
 
 #btn{
-  padding: 14px;
-  border: none;
+  padding: 13px;
+  /*border: none;*/
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  /*border: 1px solid #000;*/
-  background-color: white;
+  border: none;
+  border: 1px solid #F26945;
+  /*background-color: white;*/
   background-color: #F26945;
 }
 
+#btn:focus{
+   border: 1px solid #000;
+}
+
+.buttonSelect{
+   border: 1px solid #000;
+}
+
 #btn_01{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #FAE80B;
   background-color: #FAE80B;
 }
 
+#btn_01:focus{
+   border: 1px solid #000;
+}
+
 #btn_02{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #CF2133;
   background-color:#CF2133;
 }
 
+#btn_02:focus{
+   border: 1px solid #000;
+}
+
 #btn_03{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #0E8142;
   background-color:#0E8142;
 }
 
+#btn_03:focus{
+   border: 1px solid #000;
+}
+
 #btn_04{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #4D3292;
   background-color:#4D3292;
 }
 
+#btn_04:focus{
+   border: 1px solid #000;
+}
+
 #btn_05{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #2D63AF;
   background-color:#2D63AF;
 }
 
+#btn_05:focus{
+   border: 1px solid #000;
+}
 #btn_06{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #81592F;
   background-color:#81592F;
+}
+#btn_06:focus{
+   border: 1px solid #000;
 }
 
 #btn_07{
-  padding: 14px;
+  padding: 13px;
   cursor: pointer;
-  /*margin: 10px;*/
-  border-radius: 8px;
-  border: none;
+  border: 1px solid #000000;
   background-color:#000000;
+}
+
+#btn_07:focus{
+   border: 1px solid #000000;
 }
 
 #uploadButton{
   /*padding: 10px;*/
   padding: 10px 26px 10px 26px;
   border: 1px solid #000;
-  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   background-color: white;
@@ -330,7 +496,6 @@
   margin: 0 10px 0px;
   border: 1px solid #000;
   background-color: white;
-  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   cursor: pointer;
@@ -341,7 +506,6 @@
 }
 #Submit{
   border: 1px solid #000;
-  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   padding: 1px 10px;
@@ -359,7 +523,6 @@
 input{
   height: 38px;
   position: relative;
-  border-radius: 4px;
   min-width: 30px;
   padding: 1px 5px;
   background-color: white;
@@ -380,16 +543,7 @@ input{
   /*transform: translate(0%, 170%);*/
 }
 
-#preview{
-  width: calc(100% - 1%);
-  height: 270px;
-  margin-right: 0;
-  border: 1px solid #000;
-  margin-top: 30px;
-  margin-bottom: 20px;
-  /*align-items: center;*/
-  vertical-align: middle;
-}
+
 
 .text{
   font-size: 17px;
@@ -402,7 +556,6 @@ input{
 #clearButton{
   padding: 10px 26px 10px 26px;
   border: 1px solid #000;
-  border-radius: 8px;
   font-size: 15px;
   font-family: CommonSans-Regular;
   background-color: white;
@@ -1048,6 +1201,7 @@ const btn_05 = document.getElementById('btn_05');
 const btn_06 = document.getElementById('btn_06');
 const btn_07 = document.getElementById('btn_07');
 
+
 var color = "#F26945";
 
 // let index = 0;
@@ -1062,9 +1216,26 @@ var color = "#F26945";
   
 // });
 
-btn.addEventListener('click', function onClick() {
-  color = "#F26945";  
-});
+
+
+// btn.addEventListener('click', function() {
+//   color = "#F26945";
+//   if(this.style.border === "") {
+//     this.style.border = "1px solid #000";
+//   }      
+//   else {
+//     this.style.border = "";
+//   }      
+// });
+
+// btn.addEventListener('click', function onClick() {
+//   color = "#F26945";
+//   this.classList.toggle('buttonSelect'); 
+// });
+
+ window.onload=function(){
+    document.getElementById('btn').focus();
+  }
 
 btn_01.addEventListener('click', function onClick() {
   color = "#FAE80B";  
@@ -1108,26 +1279,26 @@ function gotHands(results) {
 }
 
 const hands = new Hands({locateFile: (file) => {
-  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`;
 }});
 
 
 hands.setOptions({
     maxNumHands: 1,
     modelComplexity: 1,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
+    minDetectionConfidence: 0.6,
+    minTrackingConfidence: 0.7
   });
   hands.onResults(gotHands);
 
-  const camera = new Camera(videoElement, {
+const camera = new Camera(videoElement, {
     onFrame: async () => {
       await hands.send({image: videoElement});
     },
     width: 320/1.4,
     height: 240/1.4
   });
-  camera.start();
+camera.start();
 
 
 var px;
@@ -1184,17 +1355,36 @@ let sketch = function(p){
     ref.on('value', gotData);
   }
 
+  //modals
+
+  $("#gallery").on("click", function() {
+        // changeCursor = false;
+        $(".gallery-modal, .gallery-content, figcaption, .preview_img").addClass("active_overlay");
+        $(".drawinglist").addClass("active_gallery");
+        });
+        $(".close").on("click", function() {
+          // changeCursor = true;
+        $(".gallery-modal, .gallery-content, figcaption, .preview_img").removeClass("active_overlay");
+        $(".drawinglist").removeClass("active_gallery");
+  });
+
+  $("#info").on("click", function() {
+        // changeCursor = false;
+        $(".info-modal, .info-text").addClass("active_overlay");
+        });
+        $(".close").on("click", function() {
+          // changeCursor = true;
+        $(".info-modal, .info-text").removeClass("active_overlay");
+  });
 
   $("#uploadButton").on("click", function() {
         // changeCursor = false;
         $(".save-overlay, .content-overlay, .modal").addClass("active_overlay");
         });
-      
-
         $(".save-overlay__close, #Submit").on("click", function() {
           // changeCursor = true;
         $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
-  });
+  });      
 
   function clearCanvas(){
     p.clear();
@@ -1215,14 +1405,11 @@ let sketch = function(p){
         current_blob = blob;
         var objectURL = URL.createObjectURL(current_blob);
         document.querySelector('#preview').innerHTML = '';
-        var preview = document.createElement('span');
+        var preview = document.createElement('img');
         document.querySelector('#preview').appendChild(preview);
-        var img = document.createElement('img');
-        img.src = objectURL;
-        img.width = p.windowWidth/3.5;
-        img.height = p.windowHeight/3.5;
-        preview.appendChild(img);
-  
+        preview.src = objectURL;
+        preview.width = p.windowWidth/3.5;
+        preview.height = p.windowHeight/3.5;
     });
   }
 
@@ -1256,7 +1443,7 @@ let sketch = function(p){
   }
 
 
-  function gotData(data){
+   function gotData(data){
 
     if (data == null) {
       return;
@@ -1267,25 +1454,29 @@ let sketch = function(p){
     if (data == null) {
       return;
     }
-  }  
 
-  //   var keys = Object.keys(data);
-  //   ref = database.ref('drawing');
-  //   document.querySelector('#preview').innerHTML = '';
-  //   for (var i = 0; i< keys.length; i++) {
-  //     // ref.child(keys[i]).remove();
-  //     var key = keys;
-  //     var new_url = url;
-  //     new_url = data[key].url;
-  //     var preview = document.createElement('span', url);
-  //     document.querySelector('#preview').appendChild(preview);
-  //     var img = document.createElement('img');
-  //     img.src = url;
-  //     img.width = p.windowWidth/3.5;
-  //     img.height = p.windowHeight/3.5;
-  //     preview.appendChild(img);
-  //   }
-  //  }
+    var keys = Object.keys(data);
+    ref = database.ref('drawing');
+    document.querySelector('ul').innerHTML = '';
+    for (var i = 0; i< keys.length; i++) {
+      // ref.child(keys[i]).remove();
+      var key = keys[i];
+      url = data[key].url;
+      name = data[key].name;
+      var li = document.createElement('li', url);
+      li.classList.add("li-draw");
+      document.querySelector('ul.drawinglist').appendChild(li);
+      var img = document.createElement('img');
+      img.classList.add("preview_img");
+      var label = document.createElement('figcaption');
+      label.innerHTML = name;
+      img.src = url;
+      img.width = p.windowWidth/4.1;
+      img.height = p.windowHeight/4.1;
+      li.appendChild(img);
+      li.appendChild(label);
+    }
+   }
 
   function showDrawing(){
     var key = this.html();
