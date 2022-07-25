@@ -14,6 +14,10 @@
   <script src="https://unpkg.com/@tensorflow-models/handpose@0.0.7/dist/handpose.js"></script>
 
   <script src="fingerpose.js" type="text/javascript"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Open+Sans:wght@600&family=Work+Sans:wght@500&display=swap" rel="stylesheet">
   <meta charset="utf-8" />
 
 </head>
@@ -21,10 +25,10 @@
     <a id="info">Info</a>
     <a id="gallery">Gallery</a>
     <span id="on_start">
-      Use your 👆 to draw, use 🖐 to stop drawing.
+      Use your pointing finger to draw, use the stop gesture to stop drawing.
     </span>
     <!-- <span class="date"></span> -->
-    <span class="name">Back <br>to</br> Kindergarten</span>
+    <span class="name">Back to Kindergarten</span>
     <video class="input_video"></video>
     
     <div id="canvascontainer"></div>
@@ -43,50 +47,53 @@
 
     <div class="colors">
     <span class="colors_list">
-      <button id="btn"></button>
+      <button class="colors_button orange" id="btn"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_01"></button>
+      <button class="colors_button yellow" id="btn_01"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_02"></button>
+      <button class="colors_button red" id="btn_02"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_03"></button>
+      <button class="colors_button green" id="btn_03"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_04"></button>
+      <button class="colors_button purple" id="btn_04"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_05"></button>
+      <button class="colors_button blue" id="btn_05"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_06"></button>
+      <button class="colors_button brown" id="btn_06"></button>
     </span>
     <span class="colors_list">
-      <button id="btn_07"></button>
+      <button class="colors_button black" id="btn_07"></button>
     </span>
     </div>
+
 
     <div class="gallery-modal">
-    <!-- <div class="gallery-content">   -->
-     <ul class="drawinglist"></ul> 
-    <!-- </div> -->
-    <a href='#' class="close">
-           x <!-- &times; --></a>
+     <div class="drawinglist"></div> 
+    <a href='#' class="close">&#x2715;</a>
     </div>
-
 
     <div class="info-modal">
       <div class="info-text">
-        Back to Kindergarten invites you to draw 
+        Back to Kindergarten is a machine learning drawing tool, where you can simply draw with your hands. Enjoy the opportunity to be less precise and controlled by freely moving your hand in space.
+        <br></br>
+        Technologies:
+        <br>
+        Media Pipe + P5js
+        <br></br>
+        Code & Design:
+        <br>
+        Sapir Mashiach  
       </div>
-      <a href='#' class="close">
-           x <!-- &times; --></a>
+      <a href='#' class="close">&#x2715;</a>
     </div>
 
-    <div class="modal">
-      <div class="save-overlay">    
+    <div class="save-overlay">    
           <div class="content-overlay">
             <p class="text">
               Share your drawing 
@@ -99,12 +106,11 @@
            </div>   
           </div>
         <a href='#' class="save-overlay__close">
-           x <!-- &times; --></a>
+           &#x2715;</a>
         </div>
-    </div>
 
     <div id="frame">
-      <p class="desktop_view">For the full experince please open this website in the desktop</p>
+      <p class="desktop_view">Sorry, but Back to Kindergarten needs more space to draw. Please visit on something larger for the full experience.</p>
     </div>
 
   </body>
@@ -116,73 +122,72 @@
     padding: 0;
   }
   
-  @font-face {
+/*  @font-face {
   font-family: CommonSans-Regular;
   src: url(CommonSans-Regular 2.otf);
-}
-
-figcaption{
-  /*float: left;*/
-  font-size: 15px;
-  font-family: CommonSans-Regular;
-  padding-top: 10px;
-  padding-bottom: 15px;
-  display: none;
-}
-
-/*img{
-  border: 1px solid #000;
-  display: none;
 }*/
 
+figcaption{
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  padding-top: 10px;
+  padding-bottom: 5px;
+  display: none;
+}
+
+
 #preview{
-  width: calc(100% - 1%);
-  height: 270px;
   margin-right: 0;
   border: 1px solid #000;
-  margin-top: 30px;
-  margin-bottom: 20px;
+  margin-top: 45px;
+  margin-bottom: 14px;
   vertical-align: middle;
+  margin: 0.5rem;
 }
 
 .preview_img{
   border: 1px solid #000;
   display: none;
+
 }
 
 .drawinglist::-webkit-scrollbar {
     display: none;
 }
 
-.drawinglist{ 
-  height: 90%;
-  margin-top: 60px;
+.drawinglist{
+  margin: 0 auto;
+  display: grid;
+  padding: 3rem 1rem 0rem 1rem;
   overflow-y: scroll;
-  display: flex;
-  max-width: 100%;
-  align-content: flex-start;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: space-around;
+  max-height: 45vw;
+  overflow-x: hidden;
+}
+
+.active_gallery{
 }
 
 .gallery-content{
-  height: 90%;
-  padding-top: 40px;  
   display: none;
 }
 
 .li-draw {
-  display: block;
-  flex: 0 1 auto;
+    padding: 0.5rem;
+}
+
+@media (min-width: 900px) {
+  .drawinglist { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 1350px) {
+  .drawinglist { grid-template-columns: repeat(2, 1fr); }
 }
 
 
 .gallery-modal{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
-  width: 80%;
-  height: 80%;
+  max-width: 1630px;
   left: 50%;
   top: 50%;
   background: white;
@@ -191,10 +196,28 @@ figcaption{
   display: none;
 }
 
+.save-overlay {
+  font-family: 'Inter', sans-serif;
+  transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
+  max-width: 1630px;
+  left: 50%;
+  top: 50%;
+  background: white;
+  border: 1px solid #382826;
+  position: fixed;
+  display: none;
+}
+
+.content-overlay{
+   margin: 0 auto;
+  display: grid;
+  padding: 3rem 1rem 0rem 1rem;
+  grid-template-columns: repeat(1, 1fr);
+}
+
 .info-modal{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
-  width: 40%;
-  height: 40%;
+  max-width: 550px;
   left: 50%;
   top: 50%;
   background: white;
@@ -204,18 +227,21 @@ figcaption{
 }
 
 .info-text{
-  height: 85%;
-  padding-left:20px;
-  padding-top: 40px;
-  font-family: CommonSans-Regular;
+  display: grid;
+  padding: 3rem 6.5rem 1.5rem 1.5rem;
+  font-size: 17px;
+  line-height: 22px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
   display: none;
 }
 
 .close{
   font-size: 17px;
-  font-family: CommonSans-Regular;
+  font-family: 'Inter', sans-serif;
   position: absolute;
-  padding: 20px;
+  padding-top: 20px;
+  padding-right: 28px;
   right: 0;
   top: 0;
   color: black;
@@ -223,27 +249,9 @@ figcaption{
   text-decoration: none;
   z-index: 4000;
 }
-.save-overlay {
-  /*-webkit-transition: -webkit-transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);*/
-  /*transition: transform .35s cubic-bezier(.44,0,.35,1.28), bottom .35s cubic-bezier(.44,0,.35,1.28);*/
-  font-family: CommonSans-Regular;
-  background: white;
-  border: 1px solid #382826;
-  /*border-radius: 8px;*/
-  width: calc(100% - 70%);
-  /*height: calc(100% - 88%);*/
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  z-index: 4000;
-  display: none;
-  padding: 20px;
-}
+
 
 .modal{
-  /*background-color: rgb(0, 0, 0, 0.1);*/
   height: 100%;
   width: 100%;
   z-index: 3000;
@@ -255,27 +263,10 @@ figcaption{
   position: fixed;
 }
 
-.content-overlay{
-  width: 100%;
-  display: block;
-  /*display: none;*/
-  text-align:center;
-}
+
 
 .active_overlay{
   display: block;
-}
-
-.active_gallery{
-  display: flex;
-  align-content: flex-start;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: left;
-  row-gap: 8px;
-  column-gap: 28px;
-  transform:translateX(-0.9%);
-
 }
 
 /*.active_gallery::after {
@@ -292,11 +283,11 @@ figcaption{
 
 .save-overlay__close {
   font-size: 17px;
-  font-family: CommonSans-Regular;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
   position: absolute;
-  right: 20px;
-  top: 15px;
-  /*top: 1.2rem;*/
+  right: 28px;
+  top: 20px;
   color: black;
   cursor: pointer;
   text-decoration: none;
@@ -307,11 +298,13 @@ figcaption{
 
 #info{
   font-size: 17px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
   color: black;
   text-decoration: none;
-  padding: 46px;
-  margin-left: 200px;
+  padding: 5px;
+  /*padding: 46px;*/
+  margin-left: 250px;
   position: fixed;
   cursor: pointer;
 
@@ -319,11 +312,13 @@ figcaption{
 
 #gallery{
   font-size: 17px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
   color: black;
   text-decoration: none;
-  padding: 46px;
-  margin-left: 410px;
+  float: right;
+  padding: 5px;
+  right: 0;
   position: fixed;
   cursor: pointer;
 }
@@ -346,12 +341,13 @@ figcaption{
   display: block;
   flex: 0 1 auto; /* Default */
   list-style-type: none;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 #on_start{
   font-size: 17px;
-  font-family: CommonSans-Regular;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
   position: absolute;
   width: 50%;
   top: 50%;
@@ -364,11 +360,8 @@ figcaption{
     align-items: center; /* Default */
     justify-content: center;
     /*width: 20s%;*/
-    margin-bottom: 60px;
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 4px;
-    padding-right: 4px;
+    margin-bottom: 50px;
+    padding:5px;
     position: fixed;
     bottom: 0;
     right: 50%;
@@ -380,134 +373,132 @@ figcaption{
   display: block;
   flex: 0 1 auto; /* Default */
   list-style-type: none;
-  margin: 6px;
+  margin: 2px 3px 2px 4px;
 
 }
 
 #btn{
-  padding: 13px;
-  /*border: none;*/
+  padding: 12px;
   cursor: pointer;
-  border: none;
-  border: 1px solid #F26945;
-  /*background-color: white;*/
   background-color: #F26945;
 }
 
-#btn:focus{
-   border: 1px solid #000;
+.orange{
+  border: 1px solid #F26945;
 }
 
-.buttonSelect{
-   border: 1px solid #000;
-}
 
 #btn_01{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #FAE80B;
   background-color: #FAE80B;
 }
 
-#btn_01:focus{
-   border: 1px solid #000;
+.yellow{
+  border: 1px solid #FAE80B;
 }
 
+
 #btn_02{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #CF2133;
   background-color:#CF2133;
 }
 
-#btn_02:focus{
-   border: 1px solid #000;
+.red{
+  border: 1px solid #CF2133;
 }
 
+
 #btn_03{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #0E8142;
   background-color:#0E8142;
 }
 
-#btn_03:focus{
-   border: 1px solid #000;
+.green{
+   border: 1px solid #0E8142;
 }
 
+
 #btn_04{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #4D3292;
   background-color:#4D3292;
 }
 
-#btn_04:focus{
-   border: 1px solid #000;
+.purple{
+  border: 1px solid #4D3292;
 }
 
+
 #btn_05{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #2D63AF;
   background-color:#2D63AF;
 }
 
-#btn_05:focus{
-   border: 1px solid #000;
+.blue{
+  border: 1px solid #2D63AF;
 }
+
 #btn_06{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #81592F;
   background-color:#81592F;
 }
-#btn_06:focus{
-   border: 1px solid #000;
+
+.brown{
+  border: 1px solid #81592F;
 }
 
 #btn_07{
-  padding: 13px;
+  padding: 12px;
   cursor: pointer;
-  border: 1px solid #000000;
   background-color:#000000;
 }
 
-#btn_07:focus{
-   border: 1px solid #000000;
+.black{
+  border: 1px solid #000000;
+}
+
+.color_selected{
+   border: 1px solid #000;
 }
 
 #uploadButton{
-  /*padding: 10px;*/
-  padding: 10px 26px 10px 26px;
+  padding: 8px 16px 8px 16px;
   border: 1px solid #000;
   font-size: 15px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
   background-color: white;
   cursor: pointer;
 }
 
-#uploadButton:hover{
+/*#uploadButton:hover{
   background-color: #eee;
-}
+}*/
 
 #downloadButton{
-  padding: 10px 26px 10px 26px;
+  padding: 8px 16px 8px 16px;
   margin: 0 10px 0px;
   border: 1px solid #000;
   background-color: white;
   font-size: 15px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
   cursor: pointer;
 }
 
-#downloadButton:hover{
+/*#downloadButton:hover{
  background-color: #eee;
-}
+}*/
 #Submit{
   border: 1px solid #000;
   font-size: 15px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
   padding: 1px 10px;
   flex-grow: 1;
   max-width: 150px;
@@ -516,12 +507,12 @@ figcaption{
   cursor: pointer;
 }
 
-#Submit:hover{
+/*#Submit:hover{
   background-color: #eee;
-}
+}*/
 
 input{
-  height: 38px;
+  height: 32px;
   position: relative;
   min-width: 30px;
   padding: 1px 5px;
@@ -540,6 +531,7 @@ input{
   display: flex;
   column-gap: 10px;
   position: relative;
+  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
   /*transform: translate(0%, 170%);*/
 }
 
@@ -547,37 +539,42 @@ input{
 
 .text{
   font-size: 17px;
-  font-family: CommonSans-Regular;
-  position: absolute;
-  left: 20px;
-  top: 0;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
+  /*position: absolute;*/
+  /*left: 24px;*/
+  margin: 0rem 0.5rem 1rem 0.5rem;
+  /*top: 10px;*/
 }
 
 #clearButton{
-  padding: 10px 26px 10px 26px;
+  padding: 8px 16px 8px 16px;
   border: 1px solid #000;
   font-size: 15px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
   background-color: white;
   cursor: pointer;
 }
 
-#clearButton:hover{
+/*#clearButton:hover{
   background-color: #eee;
-}
+}*/
 
 .name{
   padding: 5px;
   margin: 0;
   font-size: 17px;
   position: fixed;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
 }
 
 
 .name_input{
   font-size: 17px;
-  font-family: CommonSans-Regular;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
 }
 
 .date{
@@ -585,7 +582,8 @@ input{
   margin-left: 120px;
   font-size: 17px;
   position: fixed;
-  font-family: CommonSans-Regular;
+ font-family:'Inter', sans-serif;
+  font-weight: 400;
 }
 
   canvas {
@@ -603,7 +601,7 @@ input{
   #frame{
     display: none;
   }
-  @media only screen and (max-width: 980px){
+  @media only screen and (max-width: 900px){
 
   .actions{
       display: none;
@@ -640,7 +638,7 @@ input{
     height: 100vh;
     margin: 0px;
     padding: 0px;
-    font-family: CommonSans-Regular;
+    font-family: 'Inter', sans-serif;
  }   
    #on_start{
     display: none;
@@ -1233,36 +1231,66 @@ var color = "#F26945";
 //   this.classList.toggle('buttonSelect'); 
 // });
 
- window.onload=function(){
-    document.getElementById('btn').focus();
-  }
 
+window.onload=function(){
+    // document.getElementById('btn').focus();
+    $("#btn").addClass("color_selected");
+}
+
+btn.addEventListener('click', function onClick() {
+  color = "#F26945";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn").addClass("color_selected");  
+  last_points = [];
+});
+  
 btn_01.addEventListener('click', function onClick() {
-  color = "#FAE80B";  
+  color = "#FAE80B";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_01").addClass("color_selected");  
+  last_points = [];
 });
 
 btn_02.addEventListener('click', function onClick() {
-  color = "#CF2133";  
+  color = "#CF2133";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_02").addClass("color_selected");  
+  last_points = [];
 });
 
 btn_03.addEventListener('click', function onClick() {
-  color = "#0E8142";  
+  color = "#0E8142";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_03").addClass("color_selected");   
+  last_points = [];
 });
 
 btn_04.addEventListener('click', function onClick() {
-  color = "#4D3292";  
+  color = "#4D3292";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_04").addClass("color_selected");   
+  last_points = [];
 });
 
 btn_05.addEventListener('click', function onClick() {
-  color = "#2D63AF";  
+  color = "#2D63AF";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_05").addClass("color_selected");    
+  last_points = [];
 });
 
 btn_06.addEventListener('click', function onClick() {
-  color = "#81592F";  
+  color = "#81592F"; 
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_06").addClass("color_selected");   
+  last_points = [];
 });
 
 btn_07.addEventListener('click', function onClick() {
-  color = "#000000";  
+  color = "#000000";
+  $(".colors_button").removeClass("color_selected")
+  $("#btn_07").addClass("color_selected");   
+  last_points = [];
 });
 
 
@@ -1310,8 +1338,14 @@ var myColors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292"];
 let canvas;
 var line_count = 0;
 var database;
-var drawing = [];
+var counter = 0;
+var interval;
+// var drawing = [];
 var current_blob;
+var last_points = [];
+var line_points_counter = 1;
+// var num = 12;
+
 
 let eraseEnable = false;
 
@@ -1319,6 +1353,11 @@ let sketch = function(p){
   p.setup = function(){
     canvas = p.createCanvas(p.windowWidth,p.windowHeight);
     canvas.parent('canvascontainer');
+    interval = setInterval(timeIt, 50);
+
+    // for (var i = 0; i < num; i++) {
+    //   points[i] = p.createVector(p.random(p.windowWidth), p.random(p.windowHeight));
+    // }
 
     var uploadButton = p.select('#Submit');
     uploadButton.mousePressed(submitDraw);
@@ -1359,12 +1398,12 @@ let sketch = function(p){
 
   $("#gallery").on("click", function() {
         // changeCursor = false;
-        $(".gallery-modal, .gallery-content, figcaption, .preview_img").addClass("active_overlay");
+        $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").addClass("active_overlay");
         $(".drawinglist").addClass("active_gallery");
         });
-        $(".close").on("click", function() {
+        $("#info, #uploadButton, .close").on("click", function() {
           // changeCursor = true;
-        $(".gallery-modal, .gallery-content, figcaption, .preview_img").removeClass("active_overlay");
+        $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").removeClass("active_overlay");
         $(".drawinglist").removeClass("active_gallery");
   });
 
@@ -1372,7 +1411,7 @@ let sketch = function(p){
         // changeCursor = false;
         $(".info-modal, .info-text").addClass("active_overlay");
         });
-        $(".close").on("click", function() {
+        $("#gallery, #uploadButton, .close").on("click", function() {
           // changeCursor = true;
         $(".info-modal, .info-text").removeClass("active_overlay");
   });
@@ -1381,7 +1420,7 @@ let sketch = function(p){
         // changeCursor = false;
         $(".save-overlay, .content-overlay, .modal").addClass("active_overlay");
         });
-        $(".save-overlay__close, #Submit").on("click", function() {
+        $("#info, #gallery, .save-overlay__close, #Submit").on("click", function() {
           // changeCursor = true;
         $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
   });      
@@ -1389,6 +1428,7 @@ let sketch = function(p){
   function clearCanvas(){
     p.clear();
     p.background(255);
+    last_points = [];
   }
 
   function downloadCanvas() {
@@ -1408,8 +1448,8 @@ let sketch = function(p){
         var preview = document.createElement('img');
         document.querySelector('#preview').appendChild(preview);
         preview.src = objectURL;
-        preview.width = p.windowWidth/3.5;
-        preview.height = p.windowHeight/3.5;
+        preview.width = 480;
+        preview.height = 270;
     });
   }
 
@@ -1457,22 +1497,22 @@ let sketch = function(p){
 
     var keys = Object.keys(data);
     ref = database.ref('drawing');
-    document.querySelector('ul').innerHTML = '';
+    document.querySelector('main').innerHTML = '';
     for (var i = 0; i< keys.length; i++) {
       // ref.child(keys[i]).remove();
       var key = keys[i];
       url = data[key].url;
       name = data[key].name;
-      var li = document.createElement('li', url);
+      var li = document.createElement('div', url);
       li.classList.add("li-draw");
-      document.querySelector('ul.drawinglist').appendChild(li);
+      document.querySelector('div.drawinglist').appendChild(li);
       var img = document.createElement('img');
       img.classList.add("preview_img");
       var label = document.createElement('figcaption');
       label.innerHTML = name;
       img.src = url;
-      img.width = p.windowWidth/4.1;
-      img.height = p.windowHeight/4.1;
+      img.width = 409;
+      img.height = 231;
       li.appendChild(img);
       li.appendChild(label);
     }
@@ -1484,36 +1524,39 @@ let sketch = function(p){
     ref.on('value', oneDrawing, errData);
 
     function oneDrawing(data){
-      var dbdrawing = data.val();
-      drawing = dbdrawing.drawing;
+      // var dbdrawing = data.val();
+      // drawing = dbdrawing.drawing;
     }
   }
 
   p.draw = function(){
-    
+  
+
     if (detections != undefined) {
       if (detections.multiHandLandmarks != undefined) {
         if (is_draw) {
-        
-        p.drawHands();
-        
+          p.drawHands();
         }
         if(detections.multiHandLandmarks.length > 0){
           estimate_hands(detections, p.width, p.height);  
         }
         if (is_open_hand) {
           is_draw = false;
+          last_points = [];
           line_count = 0;
         }
         if (is_finger_up) {
           is_draw = true;
           $( "#on_start" ).hide();
+          clearInterval(interval);
         }
       }
     }  
   }
 
-
+  function timeIt(){
+    counter++;
+  }
 
 // p.drawHands = function(){
 //   p.stroke(colors[index]);
@@ -1538,6 +1581,9 @@ let sketch = function(p){
 p.drawHands = function(){
   p.stroke(color);
   p.strokeWeight(6);
+  p.strokeJoin(p.ROUND);
+  p.strokeCap(p.ROUND);
+
 
   for (var i =0; i<detections.multiHandLandmarks.length; i++) {
     for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
@@ -1545,24 +1591,42 @@ p.drawHands = function(){
       let x = (1- detections.multiHandLandmarks[i][j].x) * p.width;
       let y = detections.multiHandLandmarks[i][j].y * p.height;
 
+
+      if (interval) {
+        p.stroke(color);
+        p.strokeWeight(6);
+        p.point(x,y);
+      }
+
       if(lastX==0 && lastY==0){
         lastX = x;
         lastY = y;
       }
+      
+      line_points_counter++;
+      num_line_points = Math.min(line_points_counter, 8);
 
       if(j==8){
         let d = p.dist(lastX, lastY, x, y);
 
-// d<130
         if (true) {
           line_count++;
           if(line_count>2){
-          p.line(lastX, lastY, x, y);
-          drawing.push({x1:lastX, y1:lastY, x2: x, y2:y, color: color})
+            // p.line(lastX, lastY, x, y);
+            last_points.push([x,y]);
+            p.beginShape();
+            p.noFill();
+            start_index = Math.max(0,last_points.length - num_line_points);
+            for (var p_index = start_index; p_index < last_points.length; p_index++) {
+              p.curveVertex(last_points[p_index][0], last_points[p_index][1]);
+            }
+            p.endShape();          
+            // drawing.push({x1:lastX, y1:lastY, x2: x, y2:y, color: color}); 
         }
           lastX = x;
           lastY = y;
         }
+
         else{
           lastX = 0;
           lastY = 0;
