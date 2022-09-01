@@ -22,30 +22,71 @@
 
 </head>
   <body>
-    <a id="info">Info</a>
-    <a id="gallery">Gallery</a>
+    <div id="hand_pointer"></div>
+
+    <div class="nav">
+    <a class="name" href='hands+draw.html'>Back to Kindergarten</a>
+    <a class="target" id="info">Info</a>
+    </div>
+
     <span id="on_start">
-      Use your pointing finger to draw, use the stop gesture to stop drawing.
+      Use your <img style="width: 20px; height: 23px; vertical-align:middle; padding-left: 2px;
+    padding-bottom: 5px;" src="point.png"> finger to draw and the 
+    <img style="width: 20px; height: 23px; vertical-align:middle; padding-left: 2px;
+    padding-bottom: 5px;" src="five.png"> gesture to stop drawing.
     </span>
     <!-- <span class="date"></span> -->
-    <span class="name">Back to Kindergarten</span>
+    
     <video class="input_video"></video>
     
     <div id="canvascontainer"></div>
 
     <div class="actions">
+    <span class="buttons_list">
+    <button id="gallery" class="close_me">Gallery</button>
+    </span>
     <span class="buttons_list"> 
     <button id="uploadButton">Upload</button>
     </span>
+
+    <span class="buttons_list">
+     <span class="colors_list">
+      <button class="colors_button orange" id="btn"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button yellow" id="btn_01"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button red" id="btn_02"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button green" id="btn_03"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button purple" id="btn_04"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button blue" id="btn_05"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button brown" id="btn_06"></button>
+    </span>
+    <span class="colors_list">
+      <button class="colors_button black" id="btn_07"></button>
+    </span> 
+    </span>
+
     <span class="buttons_list">
     <button id="downloadButton">Download</button>
     </span>
     <span class="buttons_list">
     <button id="clearButton">New</button>
     </span>
+
+
     </div>
 
-    <div class="colors">
+   <!--  <div class="colors">
     <span class="colors_list">
       <button class="colors_button orange" id="btn"></button>
     </span>
@@ -70,33 +111,35 @@
     <span class="colors_list">
       <button class="colors_button black" id="btn_07"></button>
     </span>
-    </div>
+    </div> -->
 
 
     <div class="gallery-modal">
      <div class="drawinglist"></div> 
-    <a href='#' class="close">&#x2715;</a>
+    <!-- <a href='#' class="close"><img style="width: 17px; stroke-width:0.5px;" src="close.svg"></a> -->
     </div>
 
     <div class="info-modal">
       <div class="info-text">
-        Back to Kindergarten is a machine learning drawing tool, where you can simply draw with your hands. Enjoy the opportunity to be less precise and controlled by freely moving your hand in space.
-        <br></br>
-        Technologies:
+        Back to Kindergarten is a machine learning - based drawing tool, where you can simply draw with your hands. Enjoy the opportunity to be less precise and controlled by freely moving your hand in space.
         <br>
-        Media Pipe + P5js
-        <br></br>
-        Code & Design:
         <br>
-        Sapir Mashiach  
+        <br>
+        Technologies
+        <br>
+        <a class="info_links" href="https://google.github.io/mediapipe/solutions/hands.html">Media Pipe</a> + <a class="info_links" href="https://p5js.org/">P5js</a>
+        <br></br>
+        Code & Design
+        <br>
+        <a class="info_links" href="https://www.instagram.com/sapir__m/">Sapir Mashiach</a>  
       </div>
-      <a href='#' class="close">&#x2715;</a>
+     <!--  <a href='#' class="close"><img style="width: 17px;" src="close.svg"></a> -->
     </div>
 
     <div class="save-overlay">    
           <div class="content-overlay">
             <p class="text">
-              Share your drawing 
+              Share your drawing with everyone! Please be nice, and respect this space.
             </p>
             <div id="preview"> 
             </div>
@@ -105,12 +148,12 @@
               <button id="Submit">Submit</button>
            </div>   
           </div>
-        <a href='#' class="save-overlay__close">
-           &#x2715;</a>
+        <!-- <a href='#' class="save-overlay__close">
+           <img style="width: 17px;" src="close.svg"></a> -->
         </div>
 
     <div id="frame">
-      <p class="desktop_view">Sorry, but Back to Kindergarten needs more space to draw. Please visit on something larger for the full experience.</p>
+      <p class="desktop_view">Sorry, but Back to Kindergarten needs more screen space. Please visit on something larger for the full experience.</p>
     </div>
 
   </body>
@@ -120,6 +163,9 @@
  html, body {
     margin: 0;
     padding: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
   }
   
 /*  @font-face {
@@ -136,20 +182,58 @@ figcaption{
   display: none;
 }
 
+.info_links{
+  text-decoration: none;
+  color: #000;
+  box-shadow: 0 0.06em 0 0.0001em #000;
+}
+
+.nav{
+  /*display: flex;*/
+  /*width: width: calc(100vw - (100vw - 100%) + 1px);*/
+  /*justify-content: space-between;*/
+  /*align-items: center;*/
+  /*position: fixed;*/
+  /*padding:5px;*/
+  /*height: 35px;*/
+  /*left: 0px;*/
+  border-bottom: 0.9px solid;
+  background-color: white;
+  display: flex;
+  position: fixed;
+  z-index: 1;
+  width: calc(100vw - (100vw - 100%) + 1px);
+  height: 34px;
+  transform: translate(-1px, -1px);
+}
+
+#hand_pointer{
+  width: 8px;
+  height: 8px;
+  border-radius: 20px;
+  position: absolute;
+  z-index: 999999;
+  display: none;
+}
+
 
 #preview{
   margin-right: 0;
-  border: 1px solid #000;
+  border: 0.9px solid #000;
   margin-top: 45px;
   margin-bottom: 14px;
   vertical-align: middle;
   margin: 0.5rem;
+  /*width: 852px;*/
+  width: 800px;
+  height: auto;
 }
 
 .preview_img{
-  border: 1px solid #000;
+  border: 0.9px solid #000;
   display: none;
-
+  max-width: 100%;
+  height: auto;
 }
 
 .drawinglist::-webkit-scrollbar {
@@ -159,13 +243,18 @@ figcaption{
 .drawinglist{
   margin: 0 auto;
   display: grid;
-  padding: 3rem 1rem 0rem 1rem;
+  /*padding: 1rem 1rem 0rem 1rem;*/
   overflow-y: scroll;
-  max-height: 45vw;
+  max-height: 51vw;
+  /*margin-top: 45px;*/
   overflow-x: hidden;
 }
 
 .active_gallery{
+}
+
+.no_pointer{
+  display: none;
 }
 
 .gallery-content{
@@ -173,25 +262,41 @@ figcaption{
 }
 
 .li-draw {
-    padding: 0.5rem;
+    padding: 0.9rem;
 }
 
 @media (min-width: 900px) {
-  .drawinglist { grid-template-columns: repeat(3, 1fr); }
+  .drawinglist { grid-template-columns: repeat(4, 1fr); }
 }
 
 @media (max-width: 1350px) {
-  .drawinglist { grid-template-columns: repeat(2, 1fr); }
+  .drawinglist { 
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0 auto;
+    display: grid;
+    overflow-y: scroll;
+    max-height: 65vw;
+    overflow-x: hidden;
+   }
+
+   .preview_img{
+  border: 0.9px solid #000;
+  display: none;
+  max-width: 100%;
+  height: auto;
+}
 }
 
 
 .gallery-modal{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
-  max-width: 1630px;
+  width: 98vw;
+  padding: 5px;
   left: 50%;
   top: 50%;
   background: white;
-  border: 1px solid #382826;
+  opacity: 0.98;
+  /*border: 0.9px solid #000;*/
   position: fixed;
   display: none;
 }
@@ -199,55 +304,67 @@ figcaption{
 .save-overlay {
   font-family: 'Inter', sans-serif;
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
-  max-width: 1630px;
+  /*max-width: 100vw;*/
+
+  width: 100vw;
+  height: 92%;
   left: 50%;
-  top: 50%;
+  top: 49.5%;
   background: white;
-  border: 1px solid #382826;
+  opacity: 0.98;
+  /*border: 0.9px solid #000;*/
   position: fixed;
   display: none;
 }
 
 .content-overlay{
-   margin: 0 auto;
-  display: grid;
-  padding: 3rem 1rem 0rem 1rem;
+  margin: 0 auto;
+  /*display: grid;*/
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 820px;
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
   grid-template-columns: repeat(1, 1fr);
 }
 
 .info-modal{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
-  max-width: 550px;
+  max-width: 560px;
   left: 50%;
   top: 50%;
   background: white;
-  border: 1px solid #382826;
+  /*border: 0.9px solid #382826;*/
   position: fixed;
   display: none;
 }
 
 .info-text{
   display: grid;
-  padding: 3rem 6.5rem 1.5rem 1.5rem;
+  /*padding: 3rem 6.5rem 1.5rem 1.5rem;*/
   font-size: 17px;
-  line-height: 22px;
+  line-height: 24px;
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   display: none;
+  text-align: center;
 }
 
 .close{
-  font-size: 17px;
+  /*font-size: 17px;
   font-family: 'Inter', sans-serif;
   position: absolute;
   padding-top: 20px;
-  padding-right: 28px;
+  padding-right: 1.5rem;
   right: 0;
   top: 0;
   color: black;
   cursor: pointer;
   text-decoration: none;
-  z-index: 4000;
+  z-index: 4000;*/
 }
 
 
@@ -297,35 +414,64 @@ figcaption{
 
 
 #info{
-  font-size: 17px;
+  font-size: 15px;
   font-family:'Inter', sans-serif;
-  font-weight: 400;
+ /* font-weight: 400;
   color: black;
   text-decoration: none;
-  padding: 5px;
-  /*padding: 46px;*/
-  margin-left: 250px;
-  position: fixed;
   cursor: pointer;
-
+  height: 100%;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  border-left: 0.9px solid;*/
+  align-items: center;
+  position: relative;
+    z-index: 1;
+    height: 100%;
+    width: 50%;
+    background: #fff;
+   /* box-shadow: 0.9px 0 0 0 #000000, 0 0.9px 0 0 #000000, 0.9px 0.9px 0 0 #000000, 0.9px 0 0 0 #000000 inset, 0 0.9px 0 0 #000000 inset;*/
+    justify-content: center;
+    cursor: pointer !important;
+    color: #000000;
+    line-height: 1.96;
+    display: flex;
 }
 
+.selected {
+  background-color: #000;
+  color: white;
+}
+
+#info:hover {
+   background-color: #000;
+   color: white;
+}
+
+
 #gallery{
-  font-size: 17px;
+/*  font-size: 17px;
   font-family:'Inter', sans-serif;
   font-weight: 400;
   color: black;
   text-decoration: none;
-  float: right;
-  padding: 5px;
-  right: 0;
-  position: fixed;
+  padding-right: 10px;
+  cursor: pointer;*/
+  /*margin: 0 10px 0px;*/
+  /*padding: 8px 16px 8px 16px;*/
+  border: none;
+  font-size: 15px;
+  font-family:'Inter', sans-serif;
+  font-weight: 400;
+  background-color: white;
   cursor: pointer;
 }
 
 
 .actions{
-    display: flex;
+   /* display: flex;
     align-items: center;
     justify-content: center;
     width: 50%;
@@ -334,14 +480,29 @@ figcaption{
     bottom: 0;
     right: 50%;
     margin: 0 auto;
-    transform: translate(50%, 0);
+    transform: translate(50%, 0);*/
+
+    display: flex;
+    /*align-items: center;*/
+    justify-content: space-between;
+    width: 100%;
+    /*padding:5px;*/
+    height: 34px;
+    position: fixed;
+    bottom: 0;
+    border-top: 0.9px solid;
+    background: white;
 }
 
 .buttons_list{
-  display: block;
-  flex: 0 1 auto; /* Default */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*flex: 0 1 auto; /* Default */*/
   list-style-type: none;
-  margin-bottom: 5px;
+  /*margin-bottom: 5px;*/
+  flex-grow: 1;
+  border-right: 0.9px solid;
 }
 
 #on_start{
@@ -370,16 +531,18 @@ figcaption{
 }
 
 .colors_list{
-  display: block;
+  display: flex;
+  align-items: center;
   flex: 0 1 auto; /* Default */
   list-style-type: none;
-  margin: 2px 3px 2px 4px;
+  /*margin: 0px 0px 0px 10px;*/
 
 }
 
 #btn{
   padding: 12px;
   cursor: pointer;
+  margin-right: 12px;
   background-color: #F26945;
 }
 
@@ -391,7 +554,9 @@ figcaption{
 #btn_01{
   padding: 12px;
   cursor: pointer;
+  margin-left: 0;
   background-color: #FAE80B;
+  margin-right: 12px;
 }
 
 .yellow{
@@ -403,6 +568,7 @@ figcaption{
   padding: 12px;
   cursor: pointer;
   background-color:#CF2133;
+  margin-right: 12px;
 }
 
 .red{
@@ -414,6 +580,7 @@ figcaption{
   padding: 12px;
   cursor: pointer;
   background-color:#0E8142;
+  margin-right: 12px;
 }
 
 .green{
@@ -425,6 +592,7 @@ figcaption{
   padding: 12px;
   cursor: pointer;
   background-color:#4D3292;
+  margin-right: 12px;
 }
 
 .purple{
@@ -436,6 +604,7 @@ figcaption{
   padding: 12px;
   cursor: pointer;
   background-color:#2D63AF;
+  margin-right: 12px;
 }
 
 .blue{
@@ -446,6 +615,7 @@ figcaption{
   padding: 12px;
   cursor: pointer;
   background-color:#81592F;
+  margin-right: 12px;
 }
 
 .brown{
@@ -467,8 +637,8 @@ figcaption{
 }
 
 #uploadButton{
-  padding: 8px 16px 8px 16px;
-  border: 1px solid #000;
+  /*padding: 8px 16px 8px 16px;*/
+  border: none;
   font-size: 15px;
   font-family:'Inter', sans-serif;
   font-weight: 400;
@@ -476,14 +646,9 @@ figcaption{
   cursor: pointer;
 }
 
-/*#uploadButton:hover{
-  background-color: #eee;
-}*/
 
 #downloadButton{
-  padding: 8px 16px 8px 16px;
-  margin: 0 10px 0px;
-  border: 1px solid #000;
+  border: none;
   background-color: white;
   font-size: 15px;
   font-family:'Inter', sans-serif;
@@ -491,25 +656,19 @@ figcaption{
   cursor: pointer;
 }
 
-/*#downloadButton:hover{
- background-color: #eee;
-}*/
 #Submit{
-  border: 1px solid #000;
+  border: 0.9px solid #000;
   font-size: 15px;
   font-family:'Inter', sans-serif;
   font-weight: 400;
   padding: 1px 10px;
   flex-grow: 1;
-  max-width: 150px;
+  max-width: 300px;
   position: relative;
   background-color: white;
   cursor: pointer;
 }
 
-/*#Submit:hover{
-  background-color: #eee;
-}*/
 
 input{
   height: 32px;
@@ -517,7 +676,7 @@ input{
   min-width: 30px;
   padding: 1px 5px;
   background-color: white;
-  border: 1.4px solid #000;
+  border: 0.9px solid #000;
   flex-grow: 1;
   fill: black;
 }
@@ -529,9 +688,9 @@ input{
 
 .form{
   display: flex;
-  column-gap: 10px;
+  column-gap: 8px;
   position: relative;
-  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+  padding: 0.1rem 0.5rem 0rem 0.5rem;
   /*transform: translate(0%, 170%);*/
 }
 
@@ -541,6 +700,7 @@ input{
   font-size: 17px;
   font-family:'Inter', sans-serif;
   font-weight: 400;
+  text-align: center;
   /*position: absolute;*/
   /*left: 24px;*/
   margin: 0rem 0.5rem 1rem 0.5rem;
@@ -548,8 +708,7 @@ input{
 }
 
 #clearButton{
-  padding: 8px 16px 8px 16px;
-  border: 1px solid #000;
+  border: none;
   font-size: 15px;
   font-family:'Inter', sans-serif;
   font-weight: 400;
@@ -557,17 +716,30 @@ input{
   cursor: pointer;
 }
 
-/*#clearButton:hover{
-  background-color: #eee;
-}*/
-
 .name{
-  padding: 5px;
-  margin: 0;
-  font-size: 17px;
-  position: fixed;
+  /*margin: 0;*/
+  font-size: 15px;
   font-family:'Inter', sans-serif;
   font-weight: 400;
+
+   display: flex;
+  position: relative;
+    z-index: 1;
+    height: 100%;
+    width: 50%;
+    background: #fff;
+   border-right: 0.9px solid;
+    justify-content: center;
+    cursor: pointer !important;
+    color: #000000;
+    line-height: 1.96;
+    text-decoration: none;
+    align-items: center;
+}
+
+.name a{
+    text-decoration: none;
+    color: black;
 }
 
 
@@ -602,6 +774,10 @@ input{
     display: none;
   }
   @media only screen and (max-width: 900px){
+  
+    video{
+      display: none;
+    }
 
   .actions{
       display: none;
@@ -623,31 +799,41 @@ input{
     width: 100vw;
     height: 100vh;
     position: fixed;
-    inset: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 999;
-    background: rgb(255, 255, 255);
+    background: #fff;
 } 
 
 .desktop_view {
-    font-size: 25px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    place-content: center;
+    font-size: 20px;
     width: 100vw;
-    height: 100vh;
-    margin: 0px;
-    padding: 0px;
+    margin: 0 auto;
     font-family: 'Inter', sans-serif;
+    position: fixed;
+    top: 50%;
+    left: -50%;
+    transform: translate(50%, -50%);
+    text-align: center;
  }   
-   #on_start{
+  
+  #on_start{
     display: none;
-    } 
+  } 
+
+  #hand_pointer{
+    display: none;
+  }
 
 }
 </style>
 
 <script type="text/javascript">
+
+if ($(window).width() > 900) {
+  
 
 class FingerPoseEstimator {
 
@@ -1035,7 +1221,8 @@ class FingerPoseEstimator {
   var is_raised_fist = false;
   var is_open_hand = false;
   var is_finger_up = false;
-  var is_draw = true;
+  var is_draw = false;
+  var is_gallery_open = false;
 
   const raisedDescription = new fp.GestureDescription('raised_fist');
 
@@ -1199,8 +1386,12 @@ const btn_05 = document.getElementById('btn_05');
 const btn_06 = document.getElementById('btn_06');
 const btn_07 = document.getElementById('btn_07');
 
-
 var color = "#F26945";
+
+const info_button = document.getElementById('info');
+info_button.addEventListener('click', function onClick() {
+  $("#info").toggleClass("selected");  
+});
 
 // let index = 0;
 // var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
@@ -1339,7 +1530,7 @@ let canvas;
 var line_count = 0;
 var database;
 var counter = 0;
-var interval;
+var is_waiting = false;
 // var drawing = [];
 var current_blob;
 var last_points = [];
@@ -1353,8 +1544,6 @@ let sketch = function(p){
   p.setup = function(){
     canvas = p.createCanvas(p.windowWidth,p.windowHeight);
     canvas.parent('canvascontainer');
-    interval = setInterval(timeIt, 50);
-
     // for (var i = 0; i < num; i++) {
     //   points[i] = p.createVector(p.random(p.windowWidth), p.random(p.windowHeight));
     // }
@@ -1397,34 +1586,33 @@ let sketch = function(p){
   //modals
 
   $("#gallery").on("click", function() {
-        // changeCursor = false;
-        $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").addClass("active_overlay");
-        $(".drawinglist").addClass("active_gallery");
-        });
-        $("#info, #uploadButton, .close").on("click", function() {
-          // changeCursor = true;
-        $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").removeClass("active_overlay");
-        $(".drawinglist").removeClass("active_gallery");
+        $(".info-modal, .info-text, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+
+        $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").toggleClass("active_overlay");
+
+        $(".drawinglist").toggleClass("active_gallery");
   });
+  
+
+  $(".target").on("click", function() {
+        $(this).toggleClass("selected");
+  });
+    
 
   $("#info").on("click", function() {
-        // changeCursor = false;
-        $(".info-modal, .info-text").addClass("active_overlay");
-        });
-        $("#gallery, #uploadButton, .close").on("click", function() {
-          // changeCursor = true;
-        $(".info-modal, .info-text").removeClass("active_overlay");
+        $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+
+        $(".info-modal, .info-text").toggleClass("active_overlay");
   });
+    
 
   $("#uploadButton").on("click", function() {
-        // changeCursor = false;
-        $(".save-overlay, .content-overlay, .modal").addClass("active_overlay");
-        });
-        $("#info, #gallery, .save-overlay__close, #Submit").on("click", function() {
-          // changeCursor = true;
-        $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
-  });      
+    $(".info-modal, .info-text, .g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").removeClass("active_overlay");
+    
+    $(".save-overlay, .content-overlay, .modal").toggleClass("active_overlay");
 
+   });
+        
   function clearCanvas(){
     p.clear();
     p.background(255);
@@ -1448,8 +1636,8 @@ let sketch = function(p){
         var preview = document.createElement('img');
         document.querySelector('#preview').appendChild(preview);
         preview.src = objectURL;
-        preview.width = 480;
-        preview.height = 270;
+        preview.width = 800;
+        preview.height = 480;
     });
   }
 
@@ -1511,8 +1699,8 @@ let sketch = function(p){
       var label = document.createElement('figcaption');
       label.innerHTML = name;
       img.src = url;
-      img.width = 409;
-      img.height = 231;
+      img.width = 395;
+      img.height = 237;
       li.appendChild(img);
       li.appendChild(label);
     }
@@ -1529,9 +1717,14 @@ let sketch = function(p){
     }
   }
 
-  p.draw = function(){
-  
 
+  p.draw = function(){
+    var is_open = $( ".save-overlay" ).hasClass( "active_overlay" )
+    || $( ".gallery-modal" ).hasClass( "active_overlay" )
+    || $( ".info-modal" ).hasClass( "active_overlay" );
+
+    if (!is_open) {
+    
     if (detections != undefined) {
       if (detections.multiHandLandmarks != undefined) {
         if (is_draw) {
@@ -1546,35 +1739,25 @@ let sketch = function(p){
           line_count = 0;
         }
         if (is_finger_up) {
+          if (is_draw==false) {
+            is_waiting=true;
+            clearTimeout(timeIt);
+            setTimeout(timeIt, 2000);
+          }
           is_draw = true;
           $( "#on_start" ).hide();
-          clearInterval(interval);
         }
       }
-    }  
+    } 
+         
   }
+
+}
 
   function timeIt(){
-    counter++;
+    is_waiting=false;
+    $( "#hand_pointer" ).hide();
   }
-
-// p.drawHands = function(){
-//   p.stroke(colors[index]);
-//   p.strokeWeight(10);
-
-//   for (var i =0; i<detections.multiHandLandmarks.length; i++) {
-//     for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
-      
-//       let x = detections.multiHandLandmarks[i][j].x * p.width;
-//       let y = detections.multiHandLandmarks[i][j].y * p.height;
-//       let z = detections.multiHandLandmarks[i][j].z;
-
-//       p.point(x, y, z);
-
-//       }
-//     }
-//   }
-
 
 // draw lines
 
@@ -1591,13 +1774,6 @@ p.drawHands = function(){
       let x = (1- detections.multiHandLandmarks[i][j].x) * p.width;
       let y = detections.multiHandLandmarks[i][j].y * p.height;
 
-
-      if (interval) {
-        p.stroke(color);
-        p.strokeWeight(6);
-        p.point(x,y);
-      }
-
       if(lastX==0 && lastY==0){
         lastX = x;
         lastY = y;
@@ -1608,6 +1784,16 @@ p.drawHands = function(){
 
       if(j==8){
         let d = p.dist(lastX, lastY, x, y);
+
+        // const pointer = document.getElementsByClassName("hand_pointer");
+        if (is_waiting==true) {
+          $( "#hand_pointer" ).show();
+          var div_element = document.getElementById('hand_pointer');
+          div_element.style.top = String(y) + "px";
+          div_element.style.left = String(x) + "px";
+          div_element.style.backgroundColor = color;
+          return;
+        }
 
         if (true) {
           line_count++;
@@ -1641,5 +1827,6 @@ p.drawHands = function(){
 }
 let myp5 = new p5(sketch);
 
+}
 
 </script>

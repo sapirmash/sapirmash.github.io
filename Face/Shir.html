@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+</head>
+  <body>
+    <h1>Assemble</h1>
+    <button class="shop"> <a href="#">Shop</a></button>
+
+    <section class="panner">
+      <div class="world">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+        <img src="vase3.jpg">
+      </div>
+    </section>
+  </body>
+</html>
+
+<style type="text/css">
+
+  body{
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: KernTrial-Bold;
+  }
+
+    @font-face {
+  font-family: KernTrial-Bold;
+  src: url(KernTrial-Bold.otf);
+}
+
+  h1{
+    font-size: 40px;
+    color: black;
+    top: 50%;
+    transform: translate(50%, -50%);
+    position: fixed;
+    width: 50%;
+    text-align: center;
+    z-index: 9999;
+  }
+
+  a{
+    color: black;
+    text-decoration: none;
+    font-size: 17px;
+
+  }
+
+  .shop{
+
+    top: 57%;
+    width: 104px;
+    right: -50%;
+    left: 47%;
+    text-align: center;
+    z-index: 9999;
+    border: 1px solid #000;
+    background-color: white;
+    font-size: 15px;
+    padding: 10px 8px;
+    position: fixed;
+
+  }
+
+  img{
+    width: 600px;
+    height: 800px;
+    border: 1px solid #000;
+  }
+
+  section.panner{
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  section.panner div.world{
+
+    position: absolute;
+    top: 0;
+    left: -400px;
+    display: grid;
+    /*grid-template-columns: 1fr 1fr 1fr;*/
+    grid-template-columns: 600px 600px 600px 600px;
+    grid-gap: 40px;
+    padding: 40px;
+  }
+</style>
+
+<script type="text/javascript">
+
+  const panTag = document.querySelector("section.panner div.world");
+
+  let currentX = 0;
+  let currentY = 0;
+  let aimX = 0;
+  let aimY = 0;
+
+  document.addEventListener("mousemove", function(event){
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    const worldWidth = panTag.clientWidth;
+    const worldHeight = panTag.clientHeight;
+
+    const mouseX = event.pageX;
+    const mouseY = event.pageY;
+
+    const panWidth = worldWidth - windowWidth;
+    const panHeight = worldHeight - windowHeight;
+
+    const perecntageX = mouseX / windowWidth;
+    const perecntageY = mouseY / windowHeight;
+
+    aimX = -1 * panWidth * perecntageX;
+    aimY = -1 * panHeight * perecntageY;
+    
+  })
+
+  const animate = function(){
+
+    currentX += (aimX - currentX) * 0.05;
+    currentY += (aimY - currentY) * 0.05;
+
+    panTag.style.left = currentX + "px";
+    panTag.style.top = currentY + "px";
+
+    requestAnimationFrame(animate);
+
+  }
+
+  animate();
+
+  
+</script>
