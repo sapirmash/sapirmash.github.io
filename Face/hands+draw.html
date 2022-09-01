@@ -26,7 +26,7 @@
 
     <div class="nav">
     <a class="name" href='hands+draw.html'>Back to Kindergarten</a>
-    <a class="target" id="info">Info</a>
+    <a class="selected" id="info">Info</a>
     </div>
 
     <span id="on_start">
@@ -413,6 +413,7 @@ figcaption{
 }
 
 
+
 #info{
   font-size: 15px;
   font-family:'Inter', sans-serif;
@@ -431,7 +432,7 @@ figcaption{
     z-index: 1;
     height: 100%;
     width: 50%;
-    background: #fff;
+    /*background: #fff;*/
    /* box-shadow: 0.9px 0 0 0 #000000, 0 0.9px 0 0 #000000, 0.9px 0.9px 0 0 #000000, 0.9px 0 0 0 #000000 inset, 0 0.9px 0 0 #000000 inset;*/
     justify-content: center;
     cursor: pointer !important;
@@ -445,10 +446,10 @@ figcaption{
   color: white;
 }
 
-#info:hover {
+/*#info:hover {
    background-color: #000;
    color: white;
-}
+}*/
 
 
 #gallery{
@@ -1388,11 +1389,6 @@ const btn_07 = document.getElementById('btn_07');
 
 var color = "#F26945";
 
-const info_button = document.getElementById('info');
-info_button.addEventListener('click', function onClick() {
-  $("#info").toggleClass("selected");  
-});
-
 // let index = 0;
 // var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
 // btn.style.borderStyle = colors[index];
@@ -1592,17 +1588,13 @@ let sketch = function(p){
 
         $(".drawinglist").toggleClass("active_gallery");
   });
-  
-
-  $(".target").on("click", function() {
-        $(this).toggleClass("selected");
-  });
-    
 
   $("#info").on("click", function() {
         $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
 
+
         $(".info-modal, .info-text").toggleClass("active_overlay");
+        $("#info").toggleClass("selected");
   });
     
 
