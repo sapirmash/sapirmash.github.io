@@ -25,7 +25,7 @@
     <div id="hand_pointer"></div>
 
     <div class="nav">
-    <a class="name" href='hands+draw.html'>Back to Kindergarten</a>
+    <a class="name">Back to Kindergarten</a>
     <a class="target selected" id="info">Info</a>
     </div>
 
@@ -422,25 +422,12 @@ figcaption{
 #info{
   font-size: 15px;
   font-family:'Inter', sans-serif;
- /* font-weight: 400;
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-  height: 100%;
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-  border-left: 0.9px solid;*/
   align-items: center;
   position: relative;
     z-index: 1;
     height: 100%;
     width: 50%;
-    /*background: #fff;*/
-   /* box-shadow: 0.9px 0 0 0 #000000, 0 0.9px 0 0 #000000, 0.9px 0.9px 0 0 #000000, 0.9px 0 0 0 #000000 inset, 0 0.9px 0 0 #000000 inset;*/
     justify-content: center;
-    cursor: pointer !important;
     color: #000000;
     line-height: 1.96;
     display: flex;
@@ -448,11 +435,10 @@ figcaption{
 
 .selected {
   background-color: #F7F6F5;
-  /*color: white;*/
-  /*opacity: 0.3;*/
 }
 
 #info:hover {
+  cursor: pointer !important;
   /* background-color: #000;
    color: white;*/
 
@@ -739,7 +725,7 @@ input{
     background: #fff;
    border-right: 0.9px solid;
     justify-content: center;
-    cursor: pointer !important;
+    cursor: pointer;
     color: #000000;
     line-height: 1.96;
     text-decoration: none;
@@ -1404,8 +1390,19 @@ var bkcolor = "#fffff";
 const info_btn = document.getElementById('info');
 info_btn.addEventListener('click', function onClick() {
   bkcolor = "#fffff";
-  $("#info").toggleClass("selected");  
+  
+  // $("#info").toggleClass("selected");
+  var $this = $(this); 
+  if($this.hasClass('selected')){
+    $this.text('Info');
+    $("#info").removeClass("selected");
+  } 
+  else {
+    $("#info").addClass("selected");
+    $this.text('Canvas');
+  }
 });
+
 
 // let index = 0;
 // var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
@@ -1611,9 +1608,7 @@ let sketch = function(p){
   $("#info").on("click", function() {
         $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
 
-
         $(".info-modal, .info-text").toggleClass("active_overlay");
-        // $("#info").toggleClass("selected");
   });
     
 
@@ -1626,6 +1621,10 @@ let sketch = function(p){
 
   $("#Submit").on("click", function() {
     $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+   });
+
+  $(".name").on("click", function() {
+    $(".info-modal, .info-text, .g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
    });
         
   function clearCanvas(){
