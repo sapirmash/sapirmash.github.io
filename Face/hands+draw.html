@@ -26,7 +26,8 @@
 
     <div class="nav">
     <a class="name">Back to Kindergarten</a>
-    <a class="target selected" id="info">Info</a>
+    <a class="target" id="info"> 
+      <img class="close_img" style="display:none; width: 12px; padding-right: 4px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/> Info</a>
     </div>
 
     <span id="on_start">
@@ -43,9 +44,12 @@
 
     <div class="actions">
     <span class="buttons_list">
-    <button id="gallery" class="close_me">Gallery</button>
+    <img class="close_gallery" style="display:none; width: 12px; padding-right: -2px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/>
+    <button class="close_me" id="gallery">Gallery</button>
     </span>
+
     <span class="buttons_list"> 
+    <img class="close_upload" style="display:none; width: 12px; padding-right: -2px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/>  
     <button id="uploadButton">Upload</button>
     </span>
 
@@ -195,7 +199,7 @@ figcaption{
   position: fixed;
   z-index: 1;
   width: calc(100vw - (100vw - 100%) + 1px);
-  height: 34px;
+  height: 36px;
   transform: translate(-1px, -1px);
 }
 
@@ -284,7 +288,7 @@ figcaption{
 .gallery-modal{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
   width: 100vw;
-  height: 92.8vh;
+  height: 92.4vh;
   left: 50%;
   top: 49.9%;
   background: white;
@@ -300,7 +304,7 @@ figcaption{
   /*max-width: 100vw;*/
 
   width: 100vw;
-  height: 92.8%;
+  height: 92.4%;
   left: 50%;
   top: 49.9%;
   background: white;
@@ -327,7 +331,7 @@ figcaption{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
   /*max-width: 560px;*/
   width: 100vw;
-  height: 92.6%;
+  height: 92.2%;
   left: 50%;
   top: 50%;
   background: white;
@@ -357,21 +361,6 @@ figcaption{
   transform: translateY(-50%);
   grid-template-columns: repeat(1, 1fr);
 }
-
-.close{
-  /*font-size: 17px;
-  font-family: 'Inter', sans-serif;
-  position: absolute;
-  padding-top: 20px;
-  padding-right: 1.5rem;
-  right: 0;
-  top: 0;
-  color: black;
-  cursor: pointer;
-  text-decoration: none;
-  z-index: 4000;*/
-}
-
 
 .modal{
   height: 100%;
@@ -424,25 +413,32 @@ figcaption{
   font-family:'Inter', sans-serif;
   align-items: center;
   position: relative;
-    z-index: 1;
-    height: 100%;
-    width: 50%;
-    justify-content: center;
-    color: #000000;
-    line-height: 1.96;
-    display: flex;
+  z-index: 1;
+  height: 100%;
+  width: 50%;
+  justify-content: center;
+  /*color: #000000;*/
+  line-height: 1.96;
+  display: flex;
+  cursor: pointer;
 }
 
-.selected {
-  background-color: #F7F6F5;
+.selected{
+  /*display: block;*/
+  /*color: white;*/
+  /*background-color: #F7F6F5;*/
+  /*background-color: #000;*/
+/*  background-image: url("close.svg");
+  background-repeat: no-repeat;
+  width: 12px;
+  stroke-width:0.5px;*/
+  /*<img style="width: 12px; stroke-width:0.5px;" src="close.svg"> */
 }
 
 #info:hover {
   cursor: pointer !important;
-  /* background-color: #000;
-   color: white;*/
-
-   /*opacity: 0.3;*/
+ /* background-color: #000;
+  color: white;*/
 }
 
 
@@ -482,7 +478,7 @@ figcaption{
     justify-content: space-between;
     width: 100%;
     /*padding:5px;*/
-    height: 34px;
+    height: 36px;
     position: fixed;
     bottom: 0;
     border-top: 0.9px solid;
@@ -1386,20 +1382,46 @@ const btn_07 = document.getElementById('btn_07');
 var color = "#F26945";
 
 var bkcolor = "#fffff";
+var textcolor = "#000";
 
 const info_btn = document.getElementById('info');
 info_btn.addEventListener('click', function onClick() {
   bkcolor = "#fffff";
-  
-  // $("#info").toggleClass("selected");
   var $this = $(this); 
   if($this.hasClass('selected')){
-    $this.text('Info');
+    $(".close_img").css("display", "none");
     $("#info").removeClass("selected");
   } 
   else {
     $("#info").addClass("selected");
-    $this.text('Canvas');
+    $(".close_img").css("display", "block");
+  }
+});
+
+const gallery_btn = document.getElementById('gallery');
+gallery_btn.addEventListener('click', function onClick() {
+  var $this = $(this); 
+  if($this.hasClass('selected')){
+    $("#gallery").removeClass("selected");
+    $(".close_gallery").css("display", "none"); 
+  } 
+  else {
+    $("#gallery").addClass("selected");
+    $(".close_gallery").css("display", "block");
+  }
+});
+
+const upload_btn = document.getElementById('uploadButton');
+upload_btn.addEventListener('click', function onClick() {
+  bkcolor = "#fffff";
+  var $this = $(this); 
+  if($this.hasClass('selected')){
+    $(".close_upload").css("display", "none");
+    $("#uploadButton").removeClass("selected");
+  } 
+  else {
+    $("#uploadButton").addClass("selected");
+    $(".close_upload").css("display", "block");
   }
 });
 
@@ -1603,12 +1625,24 @@ let sketch = function(p){
         $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").toggleClass("active_overlay");
 
         $(".drawinglist").toggleClass("active_gallery");
+
+          $(".close_img").css("display", "none");
+          $("#info").removeClass("selected");
+
+          $(".close_upload").css("display", "none");
+          $("#uploadButton").removeClass("selected");
   });
 
   $("#info").on("click", function() {
         $(".g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
 
         $(".info-modal, .info-text").toggleClass("active_overlay");
+
+        $("#gallery").removeClass("selected");
+        $(".close_gallery").css("display", "none");
+
+        $(".close_upload").css("display", "none");
+          $("#uploadButton").removeClass("selected"); 
   });
     
 
@@ -1616,6 +1650,12 @@ let sketch = function(p){
     $(".info-modal, .info-text, .g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img").removeClass("active_overlay");
     
     $(".save-overlay, .content-overlay, .modal").toggleClass("active_overlay");
+
+    $(".close_img").css("display", "none");
+    $("#info").removeClass("selected");
+
+    $("#gallery").removeClass("selected");
+    $(".close_gallery").css("display", "none"); 
 
    });
 
