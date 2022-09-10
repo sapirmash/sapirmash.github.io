@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8" />
+
+</head>
+  <body>
+    <video class="input_video"></video>
+  </body>
+</html>
+
+<style type="text/css">
+ html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  canvas {
+    display: block;
+  }
+  
+  video{
+    position: fixed;
+    bottom: 0;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+  }
+</style>
+
+<script type="text/javascript">
+
+let detections = {};
+const videoElement = document.getElementsByClassName('input_video')[0];
+
+function gotHands(results) {
+  detections= results;
+  console.log(detections);
+}
+
+
+const hands = new Hands({locateFile: (file) => {
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+}});
+
+
+hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  hands.onResults(gotHands);
+
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await hands.send({image: videoElement});
+    },
+    width: 320,
+    height: 240
+  });
+  camera.start();
+
+
+var px;
+var py;
+let canvas;
+
+let sketch = function(p){
+  p.setup = function(){
+    canvas = p.createCanvas(p.windowWidth,p.windowHeight);
+    p.background(0);
+  }
+
+  p.draw = function(){
+
+  if (detections != undefined) {
+    if (detections.multiHandLandmarks != undefined) {
+      p.drawHands();
+      }
+    }  
+  }
+
+
+p.drawHands = function(){
+  p.stroke(255);
+  p.strokeWeight(1);
+
+
+  for (var i =0; i<detections.multiHandLandmarks.length; i++) {
+    for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
+      let x = (1- detections.multiHandLandmarks[i][j].x) * p.width;
+      let y = detections.multiHandLandmarks[i][j].y * p.height; 
+      p.fill(0);
+
+      if(j==8){
+            
+          p.ellipse(x,y,x,y);
+      }
+      // p.point(x,y);  
+
+      }
+    }
+  }
+}
+let myp5 = new p5(sketch);
+
+
+</script>

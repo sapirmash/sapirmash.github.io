@@ -26,7 +26,7 @@
 
     <div class="nav">
     <a class="name" href='hands+draw.html'>Back to Kindergarten</a>
-    <a class="selected" id="info">Info</a>
+    <a class="target selected" id="info">Info</a>
     </div>
 
     <span id="on_start">
@@ -319,7 +319,6 @@ figcaption{
 
 .content-overlay{
   margin: 0 auto;
-  /*display: grid;*/
   display: flex;
   justify-content: center;
   align-items: center;
@@ -333,10 +332,13 @@ figcaption{
 
 .info-modal{
   transform:translateX(-50%) translateY(-50%) scale(1) translateZ(0px);
-  max-width: 560px;
+  /*max-width: 560px;*/
+  width: 100vw;
+  height: 92%;
   left: 50%;
   top: 50%;
   background: white;
+  opacity: 0.98;
   /*border: 0.9px solid #382826;*/
   position: fixed;
   display: none;
@@ -351,6 +353,16 @@ figcaption{
   font-weight: 400;
   display: none;
   text-align: center;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 560px;
+  position: relative;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  grid-template-columns: repeat(1, 1fr);
 }
 
 .close{
@@ -442,14 +454,17 @@ figcaption{
 }
 
 .selected {
-  background-color: #000;
-  color: white;
+  background-color: #F7F6F5;
+  /*color: white;*/
+  /*opacity: 0.3;*/
 }
 
-/*#info:hover {
-   background-color: #000;
-   color: white;
-}*/
+#info:hover {
+  /* background-color: #000;
+   color: white;*/
+
+   /*opacity: 0.3;*/
+}
 
 
 #gallery{
@@ -765,8 +780,9 @@ input{
   
   video{
     position: fixed;
-    right: 0;
-    display: none;
+    bottom: 35px;
+    left: 0;
+    /*display: none;*/
     -webkit-filter: grayscale(100%); 
     filter: grayscale(100%);
   }
@@ -1389,6 +1405,14 @@ const btn_07 = document.getElementById('btn_07');
 
 var color = "#F26945";
 
+var bkcolor = "#fffff";
+
+const info_btn = document.getElementById('info');
+info_btn.addEventListener('click', function onClick() {
+  bkcolor = "#fffff";
+  $("#info").toggleClass("selected");  
+});
+
 // let index = 0;
 // var colors = ["#F26945", "#FAE80B", "#CF2133", "#0E8142", "#4D3292", "#2D63AF", "#000000", "#81592F"];
 // btn.style.borderStyle = colors[index];
@@ -1422,6 +1446,7 @@ var color = "#F26945";
 window.onload=function(){
     // document.getElementById('btn').focus();
     $("#btn").addClass("color_selected");
+    $("#info").removeClass("selected");
 }
 
 btn.addEventListener('click', function onClick() {
@@ -1594,7 +1619,7 @@ let sketch = function(p){
 
 
         $(".info-modal, .info-text").toggleClass("active_overlay");
-        $("#info").toggleClass("selected");
+        // $("#info").toggleClass("selected");
   });
     
 
@@ -1604,6 +1629,10 @@ let sketch = function(p){
     $(".save-overlay, .content-overlay, .modal").toggleClass("active_overlay");
 
    });
+
+  $("#Submit").on("click", function() {
+    $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+   });
         
   function clearCanvas(){
     p.clear();
@@ -1612,7 +1641,7 @@ let sketch = function(p){
   }
 
   function downloadCanvas() {
-    p.saveCanvas('BackToKindergarten', 'jpg');
+    p.saveCanvas('BacktoKindergarten', 'jpg');
   }
 
   

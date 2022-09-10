@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8" />
+
+</head>
+  <body>
+    <video class="input_video"></video>
+  </body>
+</html>
+
+<style type="text/css">
+ html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  canvas {
+    display: block;
+  }
+  
+  video{
+    position: fixed;
+    bottom: 0;
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+  }
+</style>
+
+<script type="text/javascript">
+
+let detections = {};
+const videoElement = document.getElementsByClassName('input_video')[0];
+
+let font;
+let fSize // font size
+let msg // text to write
+let pts = [] // store path data
+let r = 0;
+
+
+
+function gotHands(results) {
+  detections= results;
+  console.log(detections);
+}
+
+
+const hands = new Hands({locateFile: (file) => {
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+}});
+
+
+hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  hands.onResults(gotHands);
+
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await hands.send({image: videoElement});
+    },
+    width: 320,
+    height: 240
+  });
+  camera.start();
+
+
+var px;
+var py;
+let canvas;
+
+let sketch = function(p){
+
+  p.preload = function() {
+  // preload OTF font file
+  font = p.loadFont('CommonSans-Regular 2.otf');
+  }
+
+  p.setup = function(){
+    canvas = p.createCanvas(p.windowWidth,p.windowHeight);
+    
+    fSize = 356;
+    p.textFont(font);
+    p.textSize(fSize);
+    msg = 'WORD';
+    pts = font.textToPoints(msg, 0, 0, fSize, {
+      sampleFactor: 0.1, // increase for more points
+      simplifyThreshold: 0 // increase to remove collinear points
+    })
+  console.log(pts) // { x, y, path angle }
+  }
+
+  p.draw = function(){
+  p.background(0);
+  if (detections != undefined) {
+    if (detections.multiHandLandmarks != undefined) {
+      p.drawHands();
+      }
+    }
+
+
+    // for (let i = 0; i < pts.length; i++) {
+    // // ellipse(pts[i].x, pts[i].y, 20, 20);
+    //   p.push();
+    //   p.translate(pts[i].x, pts[i].y);
+    //   p.strokeWeight(1);
+    //   p.line(-20,-20,20,20);
+    //   p.pop();
+    // }  
+  }
+
+
+p.drawHands = function(){
+  p.stroke(0);
+  // p.strokeWeight(1);
+  p.fill(255);
+  p.translate(260, 580);
+
+  for (var i =0; i<detections.multiHandLandmarks.length; i++) {
+    for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
+      let x = (1- detections.multiHandLandmarks[i][j].x) * p.width - 0.5 *p.width;
+      let y = detections.multiHandLandmarks[i][j].y * p.height - 0.5 *p.height; 
+
+      let rotX = (1- detections.multiHandLandmarks[i][j].x) * p.sin(p.frameCount/40) * 1;
+      let rotY = detections.multiHandLandmarks[i][j].y * p.cos(p.frameCount/40) * 15; 
+      console.log(x);
+      
+      
+      if(j==8){
+      p.beginShape();
+          // let rotX = p.sin(p.frameCount/40) * 15;
+          // let rotY = p.cos(p.frameCount/40) * 15;  
+          for (let i = 0; i < pts.length; i++) {
+            // p.line(pts[i].x-20, pts[i].y-20, pts[i].x + rotX, pts[i].y + rotY);
+
+            // chnaging the line based on the hand movmennt
+            // p.noFill();
+            // p.line(pts[i].x+x/3, pts[i].y+y/3, pts[i].x, pts[i].y);
+
+      
+            // let c = p.cos(x);
+            // p.push();
+            
+            // p.translate(pts[i].x, pts[i].y);
+            // p.rotate(y);
+            // p.strokeWeight(1);
+            // p.line(-20,-20,20,20);
+            // p.rotate(y);
+            
+            p.rect( pts[i].x, pts[i].y, x, y);
+            // p.pop();
+          }    
+          // p.ellipse(x,y,x,y);
+           p.endShape(p.CLOSE);
+      }
+     
+      // p.point(x,y);  
+
+      }
+    }
+  }
+}
+let myp5 = new p5(sketch);
+
+
+</script>
