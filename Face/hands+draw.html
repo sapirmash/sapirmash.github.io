@@ -44,12 +44,12 @@
 
     <div class="actions">
     <span class="buttons_list">
-    <img class="close_gallery" style="display:none; width: 12px; padding-right: -2px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/>
+    <img class="close_gallery" style="display:none; width: 12px; padding-right: 0px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/>
     <button class="close_me" id="gallery">Gallery</button>
     </span>
 
     <span class="buttons_list"> 
-    <img class="close_upload" style="display:none; width: 12px; padding-right: -2px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/>  
+    <img class="close_upload" style="display:none; width: 12px; padding-right: 0px; padding-top: 1px; stroke-width:0.5px;" src="close.svg"/>  
     <button id="uploadButton">Upload</button>
     </span>
 
@@ -1661,10 +1661,22 @@ let sketch = function(p){
 
   $("#Submit").on("click", function() {
     $(".save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+
+     $(".close_upload").css("display", "none");
+     $("#uploadButton").removeClass("selected"); 
    });
 
   $(".name").on("click", function() {
     $(".info-modal, .info-text, .g_modal, .gallery-modal, .gallery-content, figcaption, .preview_img, .save-overlay, .content-overlay, .modal").removeClass("active_overlay");
+
+    $(".close_img").css("display", "none");
+    $("#info").removeClass("selected");
+
+    $("#gallery").removeClass("selected");
+    $(".close_gallery").css("display", "none"); 
+
+     $(".close_upload").css("display", "none");
+     $("#uploadButton").removeClass("selected"); 
    });
         
   function clearCanvas(){
