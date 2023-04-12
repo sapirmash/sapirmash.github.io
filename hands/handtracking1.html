@@ -138,7 +138,6 @@ let sketch = function(p){
   p.preload = function() {
   // preload OTF font file
   font = p.loadFont('CommonSans-Regular 2.otf');
-  img = p.loadImage('arrow_right1.png');
   }
 
   p.setup = function(){
@@ -169,7 +168,7 @@ let sketch = function(p){
       p.cursor('arrow_left.png');
     }
     else {
-      p.cursor('arrow_right2.png');
+      p.cursor('arrow_right.png');
   }
     
     // for (let i = 0; i < pts.length; i++) {
@@ -184,9 +183,10 @@ let sketch = function(p){
 
   p.mousePressed = function() {
   if (p.mouseX < p.windowWidth/2) {
+      window.location.href = "https://sapirmash.github.io/hands/handtracking3.html";
     }
     else {
-      window.location.href = "https://p5js.org/reference/#/p5/createA";
+      window.location.href = "https://sapirmash.github.io/hands/handtracking2.html";
   }
 }
 
