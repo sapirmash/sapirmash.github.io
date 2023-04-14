@@ -2,130 +2,176 @@
 <html lang="en">
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/addons/p5.sound.min.js"></script>
+    <script src="https://unpkg.com/handsfree@8.1.1/build/lib/handsfree.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/handsfree@8.1.1/build/lib/assets/handsfree.css">
+    <meta charset="utf-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-  <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-  <meta charset="utf-8" />
-
-</head>
+    <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+</style>
+  </head>
   <body>
-    <video class="input_video"></video>
-    <span id="on_start">Start playing by moving your hand</span>
+   <span id="on_start">Start playing by moving your hand</span>
+   <div class="name">Hand Tracking Expt.03</div>
+  <div class="counter">3/3</div>
   </body>
 </html>
 
 <style type="text/css">
- html, body {
-    margin: 0;
-    padding: 0;
-  }
-  
-  canvas {
-    display: block;
-  }
-  
-  video{
-    display: none;
+  html, body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+
+.handsfree-debugger{
+  display: none;
+  position: fixed;
+  width: 20%;
+  bottom: 0;
+  z-index: 2;
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+#web{
+  display: none;
+  position: fixed;
+  /*width: 20%;*/
+  width: 240px;
+  height: 320px;
+  bottom: -70px;
+  z-index: 2;
+  -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+  filter: grayscale(100%);
+}
+
+#on_start{
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  transform: translate(50%, 50%);
+  text-align: center;
+  color: white;
+}
+  .name{
     position: fixed;
-    bottom: 0;
-    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(100%);
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    font-size: 20px;
+    font-family: 'Inter', sans-serif;
+
   }
 
-  #on_start{
-    font-size: 17px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    position: absolute;
-    width: 50%;
-    top: 50%;
-    transform: translate(50%, 50%);
-    text-align: center;
+  .counter{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
     color: white;
-  }
+    font-size: 20px;
+    font-family: 'Inter', sans-serif;
+  }  
+
 </style>
 
 <script type="text/javascript">
+let handsfree;
+var px;
+var py;
+let video;
 
-let detections = {};
-const videoElement = document.getElementsByClassName('input_video')[0];
+var finger_x;
+var finger_y;
 
-function gotHands(results) {
-  detections= results;
-  console.log(detections);
+function setup() {
+  // createCanvas(640, 480);
+  // createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  background(0);
+  // video = createCapture(VIDEO);
+  // video.id('web');
+  handsfree = new Handsfree({
+    showDebug: false,
+    hands: {
+    enabled: true,
+    // The maximum number of hands to detect [0 - 4]
+    maxNumHands: 1,
+
+    // Minimum confidence [0 - 1] for a hand to be considered detected
+    minDetectionConfidence: 0.5,
+
+    // Minimum confidence [0 - 1] for the landmark tracker to be considered detected
+    // Higher values are more robust at the expense of higher latency
+    minTrackingConfidence: 0.5
+  }
+  })
+  handsfree.start();
 }
 
 
-const hands = new Hands({locateFile: (file) => {
-  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-}});
+function draw() {
+  // background(0);
 
-
-hands.setOptions({
-    maxNumHands: 1,
-    modelComplexity: 1,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
-  });
-  hands.onResults(gotHands);
-
-  const camera = new Camera(videoElement, {
-    onFrame: async () => {
-      await hands.send({image: videoElement});
-    },
-    width: 320,
-    height: 240
-  });
-  camera.start();
-
-
-var px;
-var py;
-let canvas;
-
-let sketch = function(p){
-  p.setup = function(){
-    canvas = p.createCanvas(p.windowWidth,p.windowHeight);
-    p.background(0);
+  if (mouseX < windowWidth/2) {
+      cursor('left_arrow.png');
+    }
+    else {
+      cursor('right_arrow.png');
   }
 
-  p.draw = function(){
+  drawHand();
+}
 
-  if (detections != undefined) {
-    if (detections.multiHandLandmarks != undefined) {
-      p.drawHands();
-      }
-    }  
+  function mousePressed() {
+  if (mouseX < windowWidth/2) {
+      window.location.href = "https://sapirmash.github.io/hands/handtracking2.html";
+    }
+    else {
+      window.location.href = "https://sapirmash.github.io/hands/handtracking1.html";
   }
+}
 
+function drawHand() {
+  fill(0);
+  // noStroke();
 
-p.drawHands = function(){
-  p.stroke(255);
-  p.strokeWeight(1);
+  if (handsfree.data.hands) {
+    if (handsfree.data.hands.multiHandLandmarks) {
+      var landmarks = handsfree.data.hands.multiHandLandmarks;   
+      var nHands = landmarks.length; 
+      // for (var h = 0; h < nHands; h++) {
+        for (var i = 0; i <= 20; i++) {
+          if(i==8){
+            px = landmarks[0][i].x;
+            py = landmarks[0][i].y;
 
+            px = map(px, 0, 1, width, 0);
+            py = map(py, 0, 1, 0, height);
 
-  for (var i =0; i<detections.multiHandLandmarks.length; i++) {
-    for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
-      let x = (1- detections.multiHandLandmarks[i][j].x) * p.width;
-      let y = detections.multiHandLandmarks[i][j].y * p.height; 
-      p.fill(0);
+    
+            stroke(255);
 
-      if(j==8){
-            
-          p.ellipse(x,y,x,y);
-      }
-      $( "#on_start" ).hide();
-      // p.point(x,y);  
+            rotateX(millis() / 2000);
+            rotateY(millis() / 2000);
+            box(px/2,py/2);
+            // ellipse(px,py,px/2,py);
+            // rect(px,py,px,py);
+            // circle(px,py,30);
+            // line(px,py,200,200);
+          }
+          $( "#on_start" ).hide();
+        }
+      // }
 
-      }
     }
   }
 }
-let myp5 = new p5(sketch);
-
-
 </script>
