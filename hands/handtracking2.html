@@ -165,11 +165,11 @@ let sketch = function(p){
       }
     }
     
-    if (mouseX < windowWidth/2) {
-      cursor('left_arrow.png');
+    if (p.mouseX < p.windowWidth/2) {
+      p.cursor('left_arrow.png');
     }
     else {
-      cursor('right_arrow.png');
+      p.cursor('right_arrow.png');
     } 
     
     // for (let i = 0; i < pts.length; i++) {
