@@ -105,6 +105,13 @@ hands.setOptions({
     height: 240
   });
   camera.start();
+  
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+          videoElement.srcObject = stream;
+          videoElement.play();
+        });
+   }
 
 
 var px;
