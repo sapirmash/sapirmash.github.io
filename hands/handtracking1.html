@@ -103,20 +103,6 @@ hands.setOptions({
   });
   camera.start();
   
-   // getUsermedia parameters.
-  const constraints = {
-    video: true
-  };
-
-  // Activate the webcam stream.
-  navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-    videoElement.srcObject = stream;
-  });
-
-  if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
-  // ok, browser supports it
-}
-
 
 const constraints = {
   video: {
