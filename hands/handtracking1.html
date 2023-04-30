@@ -100,18 +100,19 @@ hands.setOptions({
   const camera = new Camera(videoElement, {
     onFrame: async () => {
       await hands.send({image: videoElement});
-    },
-    width: 320,
-    height: 240
+    }
   });
   camera.start();
   
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-          videoElement.srcObject = stream;
-          videoElement.play();
-        });
-   }
+   // getUsermedia parameters.
+  const constraints = {
+    video: true
+  };
+
+  // Activate the webcam stream.
+  navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+    videoElement.srcObject = stream;
+  });
 
 
 var px;
