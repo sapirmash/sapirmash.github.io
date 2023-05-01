@@ -14,7 +14,7 @@
 </style>
 </head>
   <body>
-    <video class="input_video"></video>
+    <video autoplay muted hidden playsinline class="input_video"></video>
     <div class="name">Hand Tracking Expt.02</div>
     <div class="counter">2/3</div>
     <span id="on_start">Start playing by moving your hand</span>
@@ -33,12 +33,13 @@
     background-color: black;
   }
   
-  video{
-    display: none;
-    position: fixed;
-    bottom: 0;
+   video {
     -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
     filter: grayscale(100%);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    width: auto;
+    height: auto;
   }
 
   #on_start{
@@ -93,14 +94,6 @@ function gotHands(results) {
 }
 
 
-// $("canvas").mousemove(function(e){
-//     if (e.pageX > 50 && e.pageY > 50 && e.pageX < 100 && e.pageY < 100)
-//         $("canvas").css("cursor", "pointer");
-//     else
-//         $("canvas").css("cursor", "default");
-// });  
-
-
 const hands = new Hands({locateFile: (file) => {
   return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
 }});
@@ -117,11 +110,16 @@ hands.setOptions({
   const camera = new Camera(videoElement, {
     onFrame: async () => {
       await hands.send({image: videoElement});
-    },
-    width: 320,
-    height: 240
+    }
   });
   camera.start();
+  
+   const videoStream = {
+    onFrame: async () => {
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      videoElement.srcObject = videoStream;
+    }
+  };
 
 
 var px;
