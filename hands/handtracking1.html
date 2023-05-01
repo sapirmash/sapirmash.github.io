@@ -96,17 +96,20 @@ hands.setOptions({
   });
   hands.onResults(gotHands);
 
-  const camera = new Camera(videoElement, {
+   const camera = new Camera(videoElement, {
     onFrame: async () => {
       await hands.send({image: videoElement});
+      console.log("new frame");
     }
   });
   camera.start();
 
+   
    const videoStream = {
     onFrame: async () => {
       await navigator.mediaDevices.getUserMedia({ video: true });
       videoElement.srcObject = videoStream;
+      console.log("video ready");
     }
   };
 
