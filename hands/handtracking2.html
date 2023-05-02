@@ -18,6 +18,8 @@
     <div class="name">Hand Tracking Expt.02</div>
     <div class="counter">2/3</div>
     <span id="on_start">Start playing by moving your hand</span>
+    <div class="right_arrow"><img src="right_arrow.png"></div>
+    <div class="left_arrow"><img src="left_arrow.png"></div>
   </body>
 </html>
 
@@ -70,6 +72,66 @@
     color: white;
     font-size: 20px;
     font-family: 'Inter', sans-serif;
+  }
+  
+  .left_arrow{
+    display: none;
+  }
+  .right_arrow{
+    display: none;
+  }
+  
+  
+  @media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+  #on_start{
+    font-size: 30px;
+    font-family: 'Inter', sans-serif;
+    position: absolute;
+    width: 50%;
+    top: 50%;
+    transform: translate(50%, 50%);
+    text-align: center;
+    color: white;
+  }
+  
+  .name{
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    font-size: 30px;
+    font-family: 'Inter', sans-serif;
+
+  }
+
+  .counter{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    color: white;
+    font-size: 30px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .left_arrow{
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  .right_arrow{
+    display: block;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
+
   }
 
 </style>
