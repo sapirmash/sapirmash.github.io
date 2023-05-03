@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-    <meta charset="utf-8" />
+  <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,500,0,0" />
+  <meta charset="utf-8" />
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
 </style>
@@ -18,8 +19,8 @@
     <div class="name">Hand Tracking Expt.02</div>
     <div class="counter">2/3</div>
     <span id="on_start">Start playing by moving your hand</span>
-    <div class="right_arrow"><img src="right_arrow.png"></div>
-    <div class="left_arrow"><img src="left_arrow.png"></div>
+    <div class="right_arrow"></div>
+    <span class="material-symbols-outlined"></span>
   </body>
 </html>
 
@@ -74,7 +75,7 @@
     font-family: 'Inter', sans-serif;
   }
   
-  .left_arrow{
+  .material-symbols-outlined{
     display: none;
   }
   .right_arrow{
@@ -117,14 +118,14 @@
     font-family: 'Inter', sans-serif;
   }
 
-  .left_arrow{
+  .material-symbols-outlined{
     display: block;
     position: fixed;
     top: 20px;
     left: 20px;
-    width: 40px;
-    height: 40px;
+    content: "e5c4";
   }
+    
   .right_arrow{
     display: block;
     position: fixed;
