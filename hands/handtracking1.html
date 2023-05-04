@@ -199,10 +199,9 @@ let sketch = function(p){
   }
 
   p.mousePressed = function() {
-  if (p.windowWidth < 500) {
+  if (p.displayWidth < 500) {
     return;
-    console.log(p.windowWidth);
-  }    
+  }  
   if (p.mouseX < p.windowWidth/2) {
       window.location.href = "https://sapirmash.github.io/hands/handtracking3.html";
     }
