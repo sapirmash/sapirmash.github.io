@@ -243,6 +243,9 @@ let sketch = function(p){
   }
 
   p.mousePressed = function() {
+  if (p.displayWidth < 500) {
+    return;
+  }    
   if (p.mouseX < p.windowWidth/2) {
       window.location.href = "https://sapirmash.github.io/hands/handtracking1.html";
     }
