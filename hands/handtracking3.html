@@ -192,6 +192,9 @@ function draw() {
 }
 
   function mousePressed() {
+  if (p.displayWidth < 500) {
+    return;
+  }    
   if (mouseX < windowWidth/2) {
       window.location.href = "https://sapirmash.github.io/hands/handtracking2.html";
     }
