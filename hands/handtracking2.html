@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+    <meta charset="utf-8" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+</style>
+</head>
+  <body>
+    <video autoplay muted hidden playsinline class="input_video"></video>
+    <div class="name">Hand Tracking Expt.02</div>
+    <div class="counter">2 / 3</div>
+    <span id="on_start">Start playing by moving your hand</span>
+    <div class="left_arrow"><a href="https://sapirmash.github.io/hands/handtracking1.html"><img style="width: 68px; height:68px;" src="arrow_f.png"></a></div>
+    <div class="right_arrow"><a href="https://sapirmash.github.io/hands/handtracking3.html"><img style="width: 68px; height:68px;" src="arrow_n.png"></a></div>
+  </body>
+</html>
+
+<style type="text/css">
+ html, body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  canvas {
+    display: block;
+  }
+  
+  video{
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    width: auto;
+    height: auto;
+  }
+
+   #on_start{
+  font-size: 20px;
+  font-family: 'Inter', sans-serif;
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  transform: translate(50%, 50%);
+  text-align: center;
+  color: white;
+  }
+
+  .name{
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+    font-size: 20px;
+    font-family: 'Inter', sans-serif;
+
+  }
+
+  .counter{
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    color: white;
+    font-size: 20px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .left_arrow{
+    display: none;
+  }
+
+  .right_arrow{
+    display: none;
+  }
+  
+  @media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+  body{
+    overflow: none;
+  }
+
+  #on_start{
+    font-size: 42px;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+    color: white;
+    width: 708px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    font-weight: 500;
+  }
+  
+  .name{
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    font-size: 42px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+
+  }
+
+  .counter{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+    font-size: 42px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+
+  .left_arrow{
+    display: block;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    width: 68px;
+    height: 68px;
+    filter: invert(100%);
+  }
+
+  .right_arrow{
+    display: block;
+    position: fixed;
+    top: 15px;
+    right:15px;
+    width: 68px;
+    height: 68px;
+    filter: invert(100%);
+  }
+
+  }
+</style>
+
+<script type="text/javascript">
+
+let detections = {};
+const videoElement = document.getElementsByClassName('input_video')[0];
+
+let font;
+let img;
+let fSize // font size
+let fSizeM
+let msg // text to write
+let pts = [] // store path data
+let r = 0;
+
+
+
+function gotHands(results) {
+  detections= results;
+  // console.log(detections);
+}
+
+document.ontouchmove = function(event) {
+    event.preventDefault();
+};
+ 
+const hands = new Hands({locateFile: (file) => {
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+}});
+
+
+hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  hands.onResults(gotHands);
+
+ const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await hands.send({image: videoElement});
+    }
+  });
+  camera.start();
+  
+  const videoStream = {
+    onFrame: async () => {
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      videoElement.srcObject = videoStream;
+    }
+  };
+
+var px;
+var py;
+let canvas;
+let bounds;
+let a;
+
+let sketch = function(p){
+
+  p.preload = function() {
+  // preload OTF font file
+  font = p.loadFont('CommonSans-Regular 2.otf');
+  }
+
+  p.setup = function(){
+    canvas = p.createCanvas(p.windowWidth,p.windowHeight);
+    fSize = 356;
+    if (p.displayWidth < 500) {
+          fSize = 240;
+      }
+    p.textFont(font);
+    p.textSize(fSize);
+    // p.textAlign(p.CENTER, p.CENTER);
+    msg = 'HELLO';
+    pts = font.textToPoints(msg, 0, 0, fSize, {
+      sampleFactor: 0.1, // increase for more points
+      simplifyThreshold: 0 // increase to remove collinear points
+    })
+
+    bounds = font.textBounds(msg, 0, 0, fSize);
+    // p.mousePressed(redirect);
+  // console.log(pts) // { x, y, path angle }
+  }
+
+  p.draw = function(){
+  p.background(0);
+  if (detections != undefined) {
+    if (detections.multiHandLandmarks != undefined) {
+      p.drawHands();
+      }
+    }
+    
+    if (p.mouseX < p.windowWidth/2) {
+      p.cursor('left_arrow.png');
+    }
+    else {
+      p.cursor('right_arrow.png');
+    } 
+    
+    // for (let i = 0; i < pts.length; i++) {
+    // // ellipse(pts[i].x, pts[i].y, 20, 20);
+    //   p.push();
+    //   p.translate(pts[i].x, pts[i].y);
+    //   p.strokeWeight(1);
+    //   p.line(-20,-20,20,20);
+    //   p.pop();
+    // }  
+  }
+
+
+
+  p.mousePressed = function() {
+
+  if (p.displayWidth < 500) {
+    return;
+  }  
+  if (p.mouseX < p.windowWidth/2) {
+      window.location.href = "https://sapirmash.github.io/hands/handtracking1.html";
+    }
+    else {
+      window.location.href = "https://sapirmash.github.io/hands/handtracking3.html";
+  }
+}
+
+p.drawHands = function(){
+  p.stroke(255);
+  p.strokeWeight(1);
+  // p.fill(255);
+
+  if (p.displayWidth < 500) {
+    p.translate(bounds.w - p.windowWidth/1.48, p.windowHeight/2+bounds.h/2);
+  }
+  else{
+    p.translate(bounds.w - p.windowWidth/2, p.windowHeight/2+bounds.h/2);
+  }
+
+  for (var i =0; i<detections.multiHandLandmarks.length; i++) {
+    for (var j =0; j<detections.multiHandLandmarks[i].length; j++) {
+      let x = (1- detections.multiHandLandmarks[i][j].x) * p.width - 0.5 *p.width;
+      let y = detections.multiHandLandmarks[i][j].y * p.height - 0.5 *p.height; 
+
+      let rotX = (1- detections.multiHandLandmarks[i][j].x) * p.sin(p.frameCount/40) * 1;
+      let rotY = detections.multiHandLandmarks[i][j].y * p.cos(p.frameCount/40) * 15; 
+      // console.log(x);
+      
+      
+      if(j==8){
+      p.beginShape();
+          let rotX = p.sin(p.frameCount/40) * 15;
+          let rotY = p.cos(p.frameCount/40) * 15;  
+          for (let i = 0; i < pts.length; i++) {
+            // p.line(pts[i].x-20, pts[i].y-20, pts[i].x + rotX, pts[i].y + rotY);
+
+            // chnaging the line based on the hand movmennt
+            p.noFill();
+            p.line(pts[i].x+x/3, pts[i].y+y/3, pts[i].x, pts[i].y);
+
+      
+            // let c = p.cos(x);
+            // p.push();
+            
+            // p.translate(pts[i].x, pts[i].y);
+            // p.rotate(y);
+            // p.strokeWeight(1);
+            // p.line(-20,-20,20,20);
+            // p.rotate(y);
+            
+            // p.rect( pts[i].x, pts[i].y, x, y);
+            // p.pop();
+          }    
+          // p.ellipse(x,y,x,y);
+           p.endShape(p.CLOSE);
+           $( "#on_start" ).hide();
+           
+      }
+
+      }
+    }
+  }
+
+  p.windowResized = function() {
+  p.resizeCanvas(p.windowWidth, p.windowHeight);
+}
+
+  window.addEventListener("resize", p.windowResized);
+
+}
+
+let myp5 = new p5(sketch);
+
+</script>
