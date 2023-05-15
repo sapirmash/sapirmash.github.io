@@ -18,8 +18,8 @@
     <div class="name">Hand Tracking Expt.02</div>
     <div class="counter">2 / 3</div>
     <span id="on_start">Start playing by moving your hand</span>
-   <div class="left_arrow"><a href="https://sapirmash.github.io/hands/handtracking1.html"><img style="width: 72px; height:72px; border:0px;" src="arrow_f.png"></a></div>
-  <div class="right_arrow"><a href="https://sapirmash.github.io/hands/handtracking3.html"><img style="width: 72px; height:72px; border:0px;" src="arrow_n.png"></a></div>
+   <div class="left_arrow"><a href="https://sapirmash.github.io/hands/handtracking1.html"><img style="width: 72px; height:72px; border:0px;" src="arrow_f.svg"></a></div>
+  <div class="right_arrow"><a href="https://sapirmash.github.io/hands/handtracking3.html"><img style="width: 72px; height:72px; border:0px;" src="arrow_f.svg"></a></div>
   </body>
 </html>
 
@@ -84,8 +84,10 @@
   and (min-device-width: 320px) 
   and (max-device-width: 480px)
   and (-webkit-min-device-pixel-ratio: 2) {
-
-  body{
+    
+  html, body {
+    margin: 0;
+    padding: 0;
     overflow: none;
   }
 
@@ -122,25 +124,25 @@
     font-family: 'Inter', sans-serif;
     font-weight: 500;
   }
-
+    
   .left_arrow{
     display: block;
     position: fixed;
-    top: 12px;
-    left: 12px;
-    width: 72px;
-    height: 72px;
-    filter: invert(100%);
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50x;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
   }
 
   .right_arrow{
     display: block;
     position: fixed;
-    top: 12px;
-    right:12px;
-    width: 72px;
-    height: 72px;
-    filter: invert(100%);
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
   }
 
   }
