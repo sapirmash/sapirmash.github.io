@@ -17,8 +17,8 @@
    <span id="on_start">Start playing by moving your hand</span>
    <div class="name">Hand Tracking Expt.03</div>
   <div class="counter">3 / 3</div>
-  <div class="left_arrow"><a href="https://sapirmash.github.io/hands/handtracking2.html"><img style="width: 72px; height:72px; border:none" src="arrow_f.png"></a></div>
-  <div class="right_arrow"><a href="https://sapirmash.github.io/hands/handtracking1.html"><img style="width: 72px; height:72px; border:none" src="arrow_n.png"></a></div>
+  <div class="left_arrow"><a href="https://sapirmash.github.io/hands/handtracking2.html"><img style="width: 50px; height:50px; border:none" src="arrow_f.svg"></a></div>
+  <div class="right_arrow"><a href="https://sapirmash.github.io/hands/handtracking1.html"><img style="width: 50px; height:50px; border:none" src="arrow_f.svg"></a></div>
   </body>
 </html>
 
@@ -137,27 +137,25 @@ canvas {
   .left_arrow{
     display: block;
     position: fixed;
-    top: 12px;
-    left: 12px;
-    width: 72px;
-    height: 72px;
-    filter: invert(100%);
-    border: none;
+    top: 20px;
+    left: 20px;
+    width: 50px;
+    height: 50x;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
     box-shadow: none;
   }
 
   .right_arrow{
     display: block;
     position: fixed;
-    top: 12px;
-    right:12px;
-    width: 72px;
-    height: 72px;
-    filter: invert(100%);
-    border:none;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
     box-shadow: none;
   }
-
+    
   }
 
 </style>
