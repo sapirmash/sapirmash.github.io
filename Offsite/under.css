@@ -1,0 +1,94 @@
+body{
+  font-family: CommonSans-Regular, sans-serif;
+  background-color: '#F1ECE8';
+  margin: 0;
+  padding: 0;
+}
+
+
+.about{
+  font-size: 25px;
+  line-height: 30px;
+  color: black;
+  z-index: 100;
+  position: fixed;
+  top: 20px;
+  left: 20px;  
+  font-family: 'CommonSans-Regular';
+}
+
+a{
+text-decoration: none;
+color: black;
+}
+
+a:hover{
+color: rgb(14, 255, 0);
+}
+.contact{
+
+  font-size: 25px;
+  line-height: 30px;
+  color: black;
+  z-index: 100;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-family: 'CommonSans-Regular';
+}
+.contact:hover{
+	color: '#0EFF00'
+}
+
+.instagram{
+  font-size: 25px;
+  line-height: 30px;
+  color: black;
+  z-index: 100;
+  position: fixed;
+  top: 50px;
+  right: 20px;
+  font-family: 'CommonSans-Regular';
+}
+
+#mobileView{
+	display: none;
+}
+
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+ .instagram{
+  display: none;
+}
+
+.contact{
+	display: none;
+}
+
+.about{
+	display: none;
+}
+
+#mobileView{
+  display: block;
+  font-size: 22px;
+  line-height: 27px;
+  color: black;
+  width: 80%;
+  z-index: 100;
+  position: fixed;
+  z-index: 100;
+  top: 20px;
+  left: 20px;
+  font-family: 'CommonSans-Regular';
+
+}
+
+
+
+
+}
