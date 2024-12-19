@@ -184,6 +184,7 @@ function draw() {
       imageMode(CENTER);
       image(img1,wordWith-80, (fontSize-(fontSize/4))/2);
       txt1 = "";
+      updatePixels();
     }
     else if (txt1=="*") {
       noFill();
@@ -191,13 +192,14 @@ function draw() {
       imageMode(CENTER);
       image(img2,wordWith-80, (fontSize-(fontSize/4))/2);
       txt1 = "";
+      updatePixels();
     }
     else{
       fill("#F1ECE8");
       stroke('black');
       strokeWeight(1);
     }
-
+    updatePixels();
     //x,y,w,h
     rect(0, 0, wordWith, fontSize);
     // set text
