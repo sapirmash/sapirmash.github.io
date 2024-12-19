@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.rawgit.com/konvajs/konva/1.7.6/konva.min.js"></script>
+   <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script src="matter.min.js"></script>
+    <script src="matter.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="sketch.js"></script>
+       <script type="text/javascript" async>
+        google.load("jquery", "1.4.4");
+        google.load("jqueryui", "1.7.2");
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@300..700&family=Sedan:ital@0;1&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+<!--   <link rel="icon" type="image/png" href="icon.ico"/> -->
+  <link rel="stylesheet" type="text/css" href="under.css" media="screen">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui">
+</head>
+<body>
+</body>
+
+<script type="text/javascript">
+Array.prototype.sample = function(){
+  return this[Math.floor(Math.random()*this.length)];
+}
+
+var Engine = Matter.Engine;
+var Render = Matter.Render;
+var World = Matter.World;
+var Bodies = Matter.Bodies;
+var Composite = Matter.Composite;
+var Composites = Matter.Composites;
+
+var Mouse = Matter.Mouse;
+var MouseConstraint = Matter.MouseConstraint;
+
+var engine;
+var world;
+var bodies;
+
+var canvas;
+var mouseConstraint;
+var myFont;
+
+var w = window.innerWidth;
+var h = window.innerHeight;
+var first = true;
+
+let f;
+let img1;
+let img2;
+function preload(){
+  f = loadFont('CommonSans-Regular.otf');
+  img1 =loadImage("pasta.png");
+  img2 =loadImage("pasta.png");
+}
+
+
+// Make elements
+function makeRec(x, y) {
+    var params = {
+      restitution: 0.5,
+      friction: 0.01,
+      density: 0.5
+    }
+    var fontSize = 40 + w/15;
+    return Bodies.rectangle(x, y, 200, fontSize, params);
+}
+
+const createShape = function(x,y){
+
+  const randomNum = Math.random(0,1);
+  // Adding images
+
+  if (randomNum > 0.9) {
+  return Bodies.rectangle(x, y, 38, 50 , {
+    frictionAir: 0.01,    
+    render: {
+    
+    sprite:{
+      texture: "pasta.png",
+      xScale: 0.7,
+      yScale: 0.7
+     }
+    }
+  });
+
+  }
+  else{
+  return Bodies.rectangle(x, y, 38, 50 , {
+    frictionAir: 0.01,    
+    render: {
+    sprite:{
+      texture: "pasta.png",
+      xScale: 0.8,
+      yScale: 0.8
+     }
+    }
+  });
+  }
+}
+
+
+// function createEmoji(x, y) {
+//   return Bodies.rectangle(x, y, 38, 50 , {
+//     frictionAir: 0.01,    
+//     render: {
+    
+//     sprite:{
+//       texture: "pasta.png",
+//       xScale: 0.7,
+//       yScale: 0.7
+//      }
+//     }
+//   });
+// }
+
+function windowResized(){
+  w = window.innerWidth;
+  h = window.innerHeight;
+  resizeCanvas(w , h, true);
+}
+
+function setup() {
+  canvas = createCanvas(w, h);
+  // canvas.position(0, 0);
+  canvas.style('z-index', '-3');
+  noCursor();
+ 
+  // myFont = loadFont('CommonSans-Regular.otf');
+  // textFont(myFont);
+  // create an engine
+  engine = Engine.create();
+  world = engine.world;
+  
+  // initiate mouse
+  var mouse = Mouse.create(canvas.elt);
+  var mouseParams = {
+    mouse: mouse,
+    constraint: {
+      stiffness: 0.1,
+    }
+  }
+  
+  mouseConstraint = MouseConstraint.create(engine, mouseParams);
+  mouseConstraint.mouse.pixelRatio = pixelDensity();
+  World.add(world, mouseConstraint);
+
+  // Set walls 
+  var params = {
+    isStatic: true
+  }
+  
+  w = window.innerWidth;
+  h = window.innerHeight;
+  var ground = Bodies.rectangle(w / 2, h, width, 1, params);
+  var wall1 = Bodies.rectangle(0, h / 2, 1, height, params);
+  var wall2 = Bodies.rectangle(w, h / 2, 1, height, params);
+  var top = Bodies.rectangle(w / 2, 0, width, 1, params);
+  
+  // World.add(world, ground);
+  // World.add(world, wall1);
+  // World.add(world, wall2);
+  // World.add(world, top);
+
+  // x, y, columns, rows, column gap, row gap
+  // var stack = Composites.stack(w/2-100, 50, 1, 5, 0, 0, makeRec);
+  var stack = Composites.stack(w/2-100, 0, 1, 8, 0, 0, makeRec);
+  bodies = stack.bodies;
+
+
+  // var stack1 = Composites.stack(w/2-100, 50, 1, 5, 0, 0, createEmoji);
+  // bodies = stack1.bodies;
+
+
+  // add all of the bodies to the world
+  World.add(world, [stack,ground,wall1,wall2, top]);
+
+
+  // run the engine
+  Engine.run(engine);
+
+}
+
+
+function draw() {
+  background("#00000");
+  strokeWeight(0);
+
+  var sentence = "PDs & CDs,OFFSITE,22.12,10:00-13:00,TEL-AVIV,_,*"
+  var words = sentence.split(',');
+  var fontSize = 40 + w/15;
+  textFont(f,fontSize);
+  
+  for (var i = 0; i < bodies.length; i++) {
+    
+    var rectL = bodies[i];
+    var pos = rectL.position;
+    var r = rectL.circleRadius;
+    var angle = rectL.angle;
+    
+    var fontSize = 40 + w/15;
+    textSize(fontSize);
+    
+
+    var txt1 = words[i % words.length];
+    var wordWith = textWidth(txt1);
+        
+    push();
+    translate(pos.x, pos.y);    
+    rotate(angle);
+    
+    // set rectangle 
+    rectMode(CENTER);
+
+    if (txt1=="TEL-AVIV") {
+      wordWith+=25;
+    }
+    
+    if (txt1=="_") {
+      noFill();
+      noStroke();
+      imageMode(CENTER);
+      image(img1,wordWith-80, (fontSize-(fontSize/4))/2);
+      image(img2,wordWith-80, (fontSize-(fontSize/4))/2);
+      txt1 = "";
+    }
+    else if (txt1=="*") {
+      noFill();
+      noStroke();
+      imageMode(CENTER);
+      image(img2,wordWith-80, (fontSize-(fontSize/4))/2);
+      txt1 = "";
+    }
+    else{
+      fill("#F1ECE8");
+      stroke('black');
+      strokeWeight(1);
+    }
+
+    //x,y,w,h
+    rect(0, 0, wordWith, fontSize);
+    // set text
+    fill(0);
+    textAlign(CENTER);
+    text(txt1, 0, (fontSize-(fontSize/4))/2);
+    pop();
+  }
+
+
+  // set cursor
+  // fill("#0EFF00");
+  // ellipse(mouseX, mouseY, 30, 30);
+  var min = 480;
+
+  if (w<min) {
+    fill("#F1ECE8");
+  }
+  else{
+  fill("#0EFF00");
+  ellipse(mouseX, mouseY, 30, 30);
+  }
+
+}
+
+</script>
