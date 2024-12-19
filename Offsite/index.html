@@ -79,7 +79,7 @@ function windowResized(){
 
 function setup() {
   canvas = createCanvas(w, h);
-  pixelDensity(4);
+  img1.resize(width,height);
   // canvas.position(0, 0);
   canvas.style('z-index', '-3');
   noCursor();
@@ -152,19 +152,7 @@ function draw() {
   var words = sentence.split(',');
   var fontSize = 30 + w/15;
   textFont(f,fontSize);
-
-  function drawScaledImage(img, x, y, scale=1) {
-  img1.loadPixels();
-  push();
-  noStroke();
-  for (let i = 0; i < img1.width; i++) {
-    for (let j = 0; j < img1.height; j++) {
-      fill(img1.get(i, j));
-      rect(x + i*scale, y + j*scale, scale, scale);
-    }
-  }
-  pop();
-};
+  
   for (var i = 0; i < bodies.length; i++) {
     
     var rectL = bodies[i];
@@ -194,14 +182,14 @@ function draw() {
       noFill();
       noStroke();
       imageMode(CENTER);
-      image(img1,wordWith-80, (fontSize-(fontSize/4))/2);
+      image(img1,0,0);
       txt1 = "";
     }
     else if (txt1=="*") {
       noFill();
       noStroke();
       imageMode(CENTER);
-      image(img2,wordWith-80, (fontSize-(fontSize/4))/2);
+      image(img2,0,0);
       txt1 = "";
     }
     else{
