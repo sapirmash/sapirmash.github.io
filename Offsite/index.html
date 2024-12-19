@@ -67,57 +67,9 @@ function makeRec(x, y) {
       friction: 0.01,
       density: 0.5
     }
-    var fontSize = 40 + w/15;
+    var fontSize = 30 + w/15;
     return Bodies.rectangle(x, y, 200, fontSize, params);
 }
-
-const createShape = function(x,y){
-
-  const randomNum = Math.random(0,1);
-  // Adding images
-
-  if (randomNum > 0.9) {
-  return Bodies.rectangle(x, y, 38, 50 , {
-    frictionAir: 0.01,    
-    render: {
-    
-    sprite:{
-      texture: "pasta.png",
-      xScale: 0.7,
-      yScale: 0.7
-     }
-    }
-  });
-
-  }
-  else{
-  return Bodies.rectangle(x, y, 38, 50 , {
-    frictionAir: 0.01,    
-    render: {
-    sprite:{
-      texture: "pasta.png",
-      xScale: 0.8,
-      yScale: 0.8
-     }
-    }
-  });
-  }
-}
-
-
-// function createEmoji(x, y) {
-//   return Bodies.rectangle(x, y, 38, 50 , {
-//     frictionAir: 0.01,    
-//     render: {
-    
-//     sprite:{
-//       texture: "pasta.png",
-//       xScale: 0.7,
-//       yScale: 0.7
-//      }
-//     }
-//   });
-// }
 
 function windowResized(){
   w = window.innerWidth;
@@ -168,8 +120,7 @@ function setup() {
   // World.add(world, top);
 
   // x, y, columns, rows, column gap, row gap
-  // var stack = Composites.stack(w/2-100, 50, 1, 5, 0, 0, makeRec);
-  var stack = Composites.stack(w/2-100, 0, 1, 8, 0, 0, makeRec);
+  var stack = Composites.stack(w/2-100, 0, 1, 7, 0, 0, makeRec);
   bodies = stack.bodies;
 
 
@@ -193,7 +144,7 @@ function draw() {
 
   var sentence = "PDs & CDs,OFFSITE,22.12,10:00-13:00,TEL-AVIV,_,*"
   var words = sentence.split(',');
-  var fontSize = 40 + w/15;
+  var fontSize = 30 + w/15;
   textFont(f,fontSize);
   
   for (var i = 0; i < bodies.length; i++) {
@@ -203,7 +154,7 @@ function draw() {
     var r = rectL.circleRadius;
     var angle = rectL.angle;
     
-    var fontSize = 40 + w/15;
+    var fontSize = 30 + w/15;
     textSize(fontSize);
     
 
