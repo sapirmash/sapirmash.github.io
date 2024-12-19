@@ -152,7 +152,19 @@ function draw() {
   var words = sentence.split(',');
   var fontSize = 30 + w/15;
   textFont(f,fontSize);
-  
+
+  function drawScaledImage(img, x, y, scale=1) {
+  img1.loadPixels();
+  push();
+  noStroke();
+  for (let i = 0; i < img1.width; i++) {
+    for (let j = 0; j < img1.height; j++) {
+      fill(img1.get(i, j));
+      rect(x + i*scale, y + j*scale, scale, scale);
+    }
+  }
+  pop();
+};
   for (var i = 0; i < bodies.length; i++) {
     
     var rectL = bodies[i];
@@ -184,7 +196,6 @@ function draw() {
       imageMode(CENTER);
       image(img1,wordWith-80, (fontSize-(fontSize/4))/2);
       txt1 = "";
-      updatePixels();
     }
     else if (txt1=="*") {
       noFill();
@@ -192,14 +203,13 @@ function draw() {
       imageMode(CENTER);
       image(img2,wordWith-80, (fontSize-(fontSize/4))/2);
       txt1 = "";
-      updatePixels();
     }
     else{
       fill("#F1ECE8");
       stroke('black');
       strokeWeight(1);
     }
-    updatePixels();
+
     //x,y,w,h
     rect(0, 0, wordWith, fontSize);
     // set text
