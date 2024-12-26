@@ -128,12 +128,12 @@ Render.run(iRender);
 Runner.run(iRunner, iEngine);
 
 window.addEventListener('resize', () => { 
-  render.bounds.max.x = element.clientWidth;
-  render.bounds.max.y = element.clientHeight;
-  render.options.width = element.clientWidth;
-  render.options.height = element.clientHeight;
-  render.canvas.width = element.clientWidth;
-  render.canvas.height = element.clientHeight;
+  iRender.bounds.max.x = element.clientWidth;
+  iRender.bounds.max.y = element.clientHeight;
+  iRender.options.width = element.clientWidth;
+  iRender.options.height = element.clientHeight;
+  iRender.canvas.width = element.clientWidth;
+  iRender.canvas.height = element.clientHeight;
   Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
 });    
 </script>
