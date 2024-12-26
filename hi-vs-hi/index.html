@@ -33,7 +33,8 @@ let iRender = Render.create({
     width: w,
     height: h,
     wireframes: false,
-    background: "#FFF9F1"
+    background: "#FFF9F1",
+    pixelRatio: window.devicePixelRatio
   }
 });
 
@@ -125,4 +126,14 @@ const bodies = Matter.Composite.allBodies(iEngine.world);
 Render.run(iRender);
 
 Runner.run(iRunner, iEngine);
+
+window.addEventListener('resize', () => { 
+  render.bounds.max.x = element.clientWidth;
+  render.bounds.max.y = element.clientHeight;
+  render.options.width = element.clientWidth;
+  render.options.height = element.clientHeight;
+  render.canvas.width = element.clientWidth;
+  render.canvas.height = element.clientHeight;
+  Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
+});    
 </script>
