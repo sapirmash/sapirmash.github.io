@@ -5,6 +5,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
+<canvas id="cnv"></canvas>
 <body></body>
 </html>
 
@@ -34,17 +35,17 @@ let iRender = Render.create({
     height: h,
     wireframes: false,
     background: "#FFF9F1",
-    pixelRatio: window.devicePixelRatio
+    pixelRatio: window.devicePixelRatio // here
   }
 });
 
-let savivon = Bodies.rectangle(800, 0, 200, 450, {
+let savivon = Bodies.rectangle(800, 50, 200, 450, {
         frictionAir: 0.001,      
         render: {
         sprite:{
             texture: "savivon.svg",
-            xScale: 3,
-            yScale: 3
+            xScale: 2,
+            yScale: 2
          }
         }
     });
@@ -53,28 +54,28 @@ let dount = Bodies.rectangle(450, 0, 300, 650, {
         render: {
         sprite:{
             texture: "dount.svg",
-            xScale: 3,
-            yScale: 3
+            xScale: 2,
+            yScale: 2
          }
         }
     });
-let candle = Bodies.rectangle(150, 0, 45, 895, {
+let candle = Bodies.rectangle(150, 300, 38, 895, {
         frictionAir: 0.001,      
         render: {
         sprite:{
             texture: "candle.svg",
-            xScale: 2.5,
-            yScale: 2.5
+            xScale: 1.5,
+            yScale: 1.5
          }
         }
     });
-let happy = Bodies.rectangle(w/2, 0, 222, 200, {
+let happy = Bodies.rectangle(w/2, 900, 222, 200, {
         frictionAir: 0.001,      
         render: {
         sprite:{
             texture: "happy.svg",
-            xScale: 3.5,
-            yScale: 3.5
+            xScale: 2.5,
+            yScale: 2.5
          }
         }
     });
@@ -127,13 +128,4 @@ Render.run(iRender);
 
 Runner.run(iRunner, iEngine);
 
-// window.addEventListener('resize', () => { 
-//   iRender.bounds.max.x = element.clientWidth;
-//   iRender.bounds.max.y = element.clientHeight;
-//   iRender.options.width = element.clientWidth;
-//   iRender.options.height = element.clientHeight;
-//   iRender.canvas.width = element.clientWidth;
-//   iRender.canvas.height = element.clientHeight;
-//   Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
-// });    
 </script>
