@@ -127,13 +127,13 @@ Render.run(iRender);
 
 Runner.run(iRunner, iEngine);
 
-window.addEventListener('resize', () => { 
-  iRender.bounds.max.x = element.clientWidth;
-  iRender.bounds.max.y = element.clientHeight;
-  iRender.options.width = element.clientWidth;
-  iRender.options.height = element.clientHeight;
-  iRender.canvas.width = element.clientWidth;
-  iRender.canvas.height = element.clientHeight;
-  Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
-});    
+// window.addEventListener('resize', () => { 
+//   iRender.bounds.max.x = element.clientWidth;
+//   iRender.bounds.max.y = element.clientHeight;
+//   iRender.options.width = element.clientWidth;
+//   iRender.options.height = element.clientHeight;
+//   iRender.canvas.width = element.clientWidth;
+//   iRender.canvas.height = element.clientHeight;
+//   Matter.Render.setPixelRatio(render, window.devicePixelRatio); // added this
+// });    
 </script>
