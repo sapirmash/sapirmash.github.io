@@ -142,13 +142,6 @@ function getRandomElement(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 }
-
-var init = function() {
-    document.addEventListener('touchstart', handler, true);
-    document.addEventListener('touchmove', handler, true);
-    document.addEventListener('touchend', handler, true);
-    document.addEventListener('touchcancel', handler, true);        
-};
     
 // when we click the page add a new shape
 document.addEventListener("touchstart", function(event){
@@ -191,22 +184,8 @@ let new_candle = Bodies.rectangle(150, 300, 38, 750, {
         }
     });
 Composite.add(iEngine.world, new_candle);
-}
-event.preventDefault();   
-});
-
-var handler = function(event) {
-    var touch = event.changedTouches[0],
-        simulatedEvent = document.createEvent('MouseEvent');
-
-    simulatedEvent.initMouseEvent(
-         { touchstart: 'mousedown', touchmove: 'mousemove', touchend: 'mouseup' } [event.type],
-         true, true, window, 1, 
-         touch.screenX, touch.screenY, touch.clientX, touch.clientY,
-         false, false, false, false, 0, null);
-
-    touch.target.dispatchEvent(simulatedEvent);
-};        
+}  
+});  
 
 Render.run(iRender);
 
