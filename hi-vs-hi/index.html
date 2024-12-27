@@ -134,6 +134,60 @@ Composite.add(iEngine.world, mouseConstraint);
 
 const bodies = Matter.Composite.allBodies(iEngine.world);
 
+let elements = ['savivon', 'dount', 'candle'];
+function getRandomElement(array) {
+  if (array.length === 0) {
+    return null; // Handle empty arrays
+  }
+  const randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+
+// when we click the page add a new shape
+document.addEventListener("click", function(event){
+  const randomElement = getRandomElement(elements);
+  if (randomElement==='savivon') {
+  let new_savivon = Bodies.rectangle(event.pageX, event.pageY, 200, 400, {
+        frictionAir: 0.001,      
+        render: {
+        sprite:{
+            texture: "savivon.svg",
+            xScale: 2.5,
+            yScale: 2.5
+         }
+        }
+    });
+  Composite.add(iEngine.world, new_savivon);
+  }
+  if (randomElement==='dount') {
+  let new_dount = Bodies.rectangle(450, 0, 300, 450, {
+        frictionAir: 0.001,      
+        render: {
+        sprite:{
+            texture: "dount.svg",
+            xScale: 2.5,
+            yScale: 2.5
+         }
+        }
+    });
+  Composite.add(iEngine.world, new_dount);
+  }
+  if (randomElement==='candle') {
+let new_candle = Bodies.rectangle(150, 300, 38, 750, {
+        frictionAir: 0.001,      
+        render: {
+        sprite:{
+            texture: "candle.svg",
+            xScale: 2,
+            yScale: 2
+         }
+        }
+    });
+Composite.add(iEngine.world, new_candle);
+}
+   
+});    
+
 Render.run(iRender);
 
 Runner.run(iRunner, iEngine);
