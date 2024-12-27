@@ -144,7 +144,7 @@ function getRandomElement(array) {
 }
 
 // when we click the page add a new shape
-document.addEventListener("mousedown", function(event){
+document.addEventListener("touchstart", function(event){
   const randomElement = getRandomElement(elements);
   if (randomElement==='savivon') {
   let new_savivon = Bodies.rectangle(event.pageX, event.pageY, 200, 400, {
