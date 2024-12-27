@@ -142,9 +142,13 @@ function getRandomElement(array) {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 }
-
+  document.addEventListener('pointerdown', () => drag = false);
+  
+  document.addEventListener('pointermove', () => drag = true);
+  
+  document.addEventListener('pointerup', onPointerUp);
 // when we click the page add a new shape
-document.addEventListener("touchstart", function(event){
+document.addEventListener("pointerdown", function(event){
   const randomElement = getRandomElement(elements);
   if (randomElement==='savivon') {
   let new_savivon = Bodies.rectangle(event.pageX, event.pageY, 200, 400, {
@@ -186,7 +190,13 @@ let new_candle = Bodies.rectangle(150, 300, 38, 750, {
 Composite.add(iEngine.world, new_candle);
 }
 event.preventDefault();   
-});    
+});
+
+function onPointerUp(e){
+  if (!drag) {
+    pointerdown(e);
+  }
+}    
 
 Render.run(iRender);
 
