@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5.xr@latest/dist/p5xr.min.js"></script>
+    <script src="https://unpkg.com/p5.xr"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+
+  </head>
+  <body>
+    <script src="sketch.js"></script>
+  </body>
+</html>
+
+<script type="text/javascript">
+  function setup() {
+  createARCanvas();
+}
+
+let rot = 0;
+let rotSpeed = 0.1;
+
+function draw() {
+  rot += rotSpeed;
+  rotateY(rot);
+  fill(100, 240, 100);
+
+  box(20);
+
+  translate(-20, 0, 0);
+  fill(240, 100, 100);
+  box(20);
+
+  translate(40, 0, 0);
+  fill(100, 100, 240);
+  box(20);
+}
+
+</script>
