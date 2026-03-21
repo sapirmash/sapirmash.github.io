@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cloth Simulation</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; font-family: monospace; }
+    #info {
+      position: absolute; top: 10px; width: 100%;
+      text-align: center; color: #fff; font-size: 13px;
+      pointer-events: none; z-index: 10;
+    }
+  </style>
+</head>
+<body>
+<div id="info"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
+
+<script>
+  // ── Letter definitions ─────────────────────────────────────────────
+  var LETTERS = {
+    'A': {
+      viewBox: [0, 0, 20, 21],
+      offsetY: 0,
+      path: 'M19.0498 20.8203H15.9902L14.1211 16.1104H4.88574L3 20.8203H0L8.51953 0H10.5596L19.0498 20.8203ZM5.87012 13.6504H13.1445L9.52246 4.52637L5.87012 13.6504Z'
+    },
+    'B': {
+      viewBox: [0, 0, 15, 21],
+      offsetY: 0,
+      scale: 0.88,
+      path: 'M7.7998 0C9.15981 0 10.2904 0.25 11.1904 0.75C12.1102 1.2299 12.7998 1.87018 13.2598 2.66992C13.7398 3.46992 13.9805 4.35055 13.9805 5.31055C13.9804 6.43041 13.6697 7.41008 13.0498 8.25C12.6502 8.80948 12.1198 9.28577 11.4629 9.68555C12.404 10.1456 13.1635 10.7568 13.7402 11.5205C14.5001 12.4805 14.8799 13.6205 14.8799 14.9404C14.8799 16.0403 14.6102 17.0302 14.0703 17.9102C13.5304 18.79 12.7502 19.5001 11.7305 20.04C10.7305 20.56 9.50002 20.8203 8.04004 20.8203H0V0H7.7998ZM2.82031 18.3604H8.19043C9.3901 18.3603 10.3299 18.0103 11.0098 17.3105C11.6897 16.5906 12.0303 15.7304 12.0303 14.7305C12.0303 14.0505 11.8801 13.4404 11.5801 12.9004C11.2801 12.3404 10.8398 11.9001 10.2598 11.5801C9.6999 11.2602 9.04002 11.1006 8.28027 11.1006H2.82031V18.3604ZM2.82031 8.64062H7.86035C8.86019 8.64056 9.65054 8.38029 10.2305 7.86035C10.8302 7.32044 11.1298 6.55043 11.1299 5.55078C11.1299 4.55088 10.8201 3.7905 10.2002 3.27051C9.58024 2.73055 8.76013 2.46 7.74023 2.45996H2.82031V8.64062Z'
+    },
+    'K': {
+      viewBox: [0, 0, 17, 21],
+      offsetY: 0,
+      scale: 1,
+      path: 'M2.82031 9.52344L12.6602 0H16.3203L6.00391 9.9248L16.6201 20.8203H12.8701L2.82031 10.4248V20.8203H0V0H2.82031V9.52344Z'
+    },
+    'W': {
+      viewBox: [0, 0, 28, 21],
+      offsetY: 0,
+      scale: 1,
+      path: 'M7.81152 15.6963L12.7197 0H14.7598L19.6826 15.7432L24.6904 0H27.4805L20.7002 20.8203H18.6904L13.7402 5.11133L8.82031 20.8203H6.80957L0 0H2.82031L7.81152 15.6963Z'
+    },
+    'M': {
+      viewBox: [0, 0, 21, 21],
+      offsetY: 0,
+      scale: 1,
+      path: 'M10.125 13.3809L18.2695 0H20.25V20.8203H17.4297V6.21387L11.1299 16.5605H9.15039L2.82031 6.16406V20.8203H0V0H1.98047L10.125 13.3809Z'
+    },
+    'X': {
+      viewBox: [0, 0, 19, 21],
+      offsetY: 0,
+      scale: 1,
+      path: 'M9.63574 8.18945L15.4199 0H18.5996L11.4316 10.0117L18.9297 20.8203H15.6299L9.58008 11.9951L3.17969 20.8203H0L7.76758 10.165L0.360352 0H3.71973L9.63574 8.18945Z'
+    },
+    'R': {
+      viewBox: [0, 0, 16, 21],
+      offsetY: 0,
+      scale: 1,
+      path: 'M7.65039 0C8.97007 5.12067e-05 10.1198 0.260447 11.0996 0.780273C12.0796 1.28027 12.8296 1.97059 13.3496 2.85059C13.8895 3.73046 14.1601 4.74008 14.1602 5.87988C14.1602 7.05988 13.8896 8.0907 13.3496 8.9707C12.8296 9.8505 12.0795 10.5401 11.0996 11.04C10.2304 11.4658 9.22754 11.7019 8.09082 11.75L15.5703 20.8203H12L4.65918 11.7607H2.82031V20.8203H0V0H7.65039ZM2.82031 9.39062H7.53027C8.75014 9.39058 9.68966 9.07991 10.3496 8.45996C11.0096 7.83997 11.3398 7.0004 11.3398 5.94043C11.3398 4.94043 11.0096 4.1102 10.3496 3.4502C9.70962 2.79038 8.7794 2.45996 7.55957 2.45996H2.82031V9.39062Z'
+    }
+  };
+
+  // ── Cotton weave texture via canvas ───────────────────────────────
+  function makeCottonTexture() {
+    var size = 128;
+    var canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = '#e8e0d8';
+    ctx.fillRect(0, 0, size, size);
+
+    // Horizontal threads
+    for (var y = 0; y < size; y += 4) {
+      ctx.beginPath();
+      ctx.strokeStyle = y % 8 === 0 ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.08)';
+      ctx.lineWidth = 1.5;
+      ctx.moveTo(0, y); ctx.lineTo(size, y);
+      ctx.stroke();
+    }
+    // Vertical threads
+    for (var x = 0; x < size; x += 4) {
+      ctx.beginPath();
+      ctx.strokeStyle = x % 8 === 0 ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.08)';
+      ctx.lineWidth = 1.5;
+      ctx.moveTo(x, 0); ctx.lineTo(x, size);
+      ctx.stroke();
+    }
+    // Subtle noise for fiber texture
+    var imgData = ctx.getImageData(0, 0, size, size);
+    for (var i = 0; i < imgData.data.length; i += 4) {
+      var n = (Math.random() - 0.5) * 18;
+      imgData.data[i]   = Math.min(255, Math.max(0, imgData.data[i]   + n));
+      imgData.data[i+1] = Math.min(255, Math.max(0, imgData.data[i+1] + n));
+      imgData.data[i+2] = Math.min(255, Math.max(0, imgData.data[i+2] + n));
+    }
+    ctx.putImageData(imgData, 0, 0);
+
+    var tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(6, 6);
+    return tex;
+  }
+
+  function makeCottonNormal() {
+    var size = 128;
+    var canvas = document.createElement('canvas');
+    canvas.width = canvas.height = size;
+    var ctx = canvas.getContext('2d');
+
+    // Flat blue-ish base (normal pointing out)
+    ctx.fillStyle = 'rgb(128,128,255)';
+    ctx.fillRect(0, 0, size, size);
+
+    // Horizontal thread bumps
+    for (var y = 0; y < size; y += 4) {
+      var bright = y % 8 === 0;
+      ctx.beginPath();
+      ctx.strokeStyle = bright ? 'rgba(160,160,255,0.6)' : 'rgba(100,100,255,0.5)';
+      ctx.lineWidth = 2;
+      ctx.moveTo(0, y); ctx.lineTo(size, y);
+      ctx.stroke();
+    }
+    // Vertical thread bumps
+    for (var x = 0; x < size; x += 4) {
+      var bright = x % 8 === 0;
+      ctx.beginPath();
+      ctx.strokeStyle = bright ? 'rgba(160,160,255,0.6)' : 'rgba(100,100,255,0.5)';
+      ctx.lineWidth = 2;
+      ctx.moveTo(x, 0); ctx.lineTo(x, size);
+      ctx.stroke();
+    }
+
+    var tex = new THREE.CanvasTexture(canvas);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(6, 6);
+    return tex;
+  }
+
+  // ── Subdivide for cloth resolution ────────────────────────────────
+  function subdivideGeo(geo, times) {
+    for (var pass = 0; pass < times; pass++) {
+      var op  = geo.attributes.position;
+      var oi  = geo.index;
+      var pts = [], ni = [], cache = {};
+
+      for (var i = 0; i < op.count; i++) pts.push(op.getX(i), op.getY(i), 0);
+
+      function mid(a, b) {
+        var k = Math.min(a,b)+'_'+Math.max(a,b);
+        if (cache[k] !== undefined) return cache[k];
+        var id = pts.length / 3;
+        pts.push((pts[a*3]+pts[b*3])/2, (pts[a*3+1]+pts[b*3+1])/2, 0);
+        return (cache[k] = id);
+      }
+
+      for (var t = 0; t < oi.count; t += 3) {
+        var a = oi.getX(t), b = oi.getX(t+1), c = oi.getX(t+2);
+        var ab = mid(a,b), bc = mid(b,c), ca = mid(c,a);
+        ni.push(a,ab,ca,  ab,b,bc,  ca,bc,c,  ab,bc,ca);
+      }
+
+      var g2 = new THREE.BufferGeometry();
+      g2.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pts), 3));
+      g2.setIndex(ni);
+      geo = g2;
+    }
+    return geo;
+  }
+
+  // ── Physics ────────────────────────────────────────────────────────
+  var DRAG = 1 - 0.03, MASS = 0.1;
+  var gravity   = new THREE.Vector3(0, -981*1.4, 0).multiplyScalar(MASS);
+  var TIMESTEP  = 18/1000, TS2 = TIMESTEP*TIMESTEP;
+  var diff = new THREE.Vector3(), tmpF = new THREE.Vector3(), windF = new THREE.Vector3();
+  var params = { enableWind: true, iterations: 20, staticMode: false };
+
+  function Particle(x, y) {
+    this.position = new THREE.Vector3(x, y, 0);
+    this.previous = new THREE.Vector3(x, y, 0);
+    this.original = new THREE.Vector3(x, y, 0);
+    this.a = new THREE.Vector3();
+    this.invMass = 1 / MASS;
+    this.tmp = new THREE.Vector3(); this.tmp2 = new THREE.Vector3();
+  }
+  Particle.prototype.addForce = function(f) {
+    this.a.add(this.tmp2.copy(f).multiplyScalar(this.invMass));
+  };
+  Particle.prototype.integrate = function(tsq) {
+    var n = this.tmp.subVectors(this.position, this.previous);
+    n.multiplyScalar(DRAG).add(this.position).add(this.a.multiplyScalar(tsq));
+    this.tmp = this.previous; this.previous = this.position; this.position = n;
+    this.a.set(0,0,0);
+  };
+
+  function satisfy(p1, p2, rest) {
+    diff.subVectors(p2.position, p1.position);
+    var d = diff.length(); if (!d) return;
+    var c = diff.multiplyScalar(1 - rest/d).multiplyScalar(0.5);
+    p1.position.add(c); p2.position.sub(c);
+  }
+
+  // ── Build one cloth instance ───────────────────────────────────────
+  function buildCloth(key, offsetX) {
+    var SIZE = 600;
+    var data = LETTERS[key];
+    var vb   = data.viewBox;
+    var vbW  = vb[2], vbH = vb[3];
+
+    var svgStr =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb.join(' ') + '">' +
+      '<path fill-rule="evenodd" d="' + data.path + '"/>' +
+      '</svg>';
+
+    var loader    = new THREE.SVGLoader();
+    var parsed    = loader.parse(svgStr);
+    var allShapes = [];
+    for (var i = 0; i < parsed.paths.length; i++) {
+      var shapes = THREE.SVGLoader.createShapes(parsed.paths[i]);
+      for (var j = 0; j < shapes.length; j++) allShapes.push(shapes[j]);
+    }
+
+    var geo     = new THREE.ShapeGeometry(allShapes, 12);
+    var scale   = SIZE / vbH / 1.2 * (data.scale || 1);
+    var offsetY = data.offsetY || 0;
+
+    geo.applyMatrix4(new THREE.Matrix4().set(
+       scale,  0, 0, -vbW / 2 * scale + offsetX,
+       0, -scale, 0,  vbH / 2 * scale + offsetY,
+       0,      0, 1,  0,
+       0,      0, 0,  1
+    ));
+
+    geo = subdivideGeo(geo, 3);
+
+    // Compute UVs from position for texture mapping
+    geo.computeBoundingBox();
+    var bbox = geo.boundingBox;
+    var bw = bbox.max.x - bbox.min.x;
+    var bh = bbox.max.y - bbox.min.y;
+    var pos = geo.attributes.position;
+    var uvs = new Float32Array(pos.count * 2);
+    for (var i = 0; i < pos.count; i++) {
+      uvs[i*2]   = (pos.getX(i) - bbox.min.x) / bw;
+      uvs[i*2+1] = (pos.getY(i) - bbox.min.y) / bh;
+    }
+    geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+
+    var basePos = geo.attributes.position;
+    var nV      = basePos.count;
+
+    var particles = [];
+    for (var i = 0; i < nV; i++) particles.push(new Particle(basePos.getX(i), basePos.getY(i)));
+
+    var edgeSet = {}, edgeOpp = {}, constraints = [];
+    var sidx = geo.index;
+    for (var t = 0; t < sidx.count; t += 3) {
+      var tri = [sidx.getX(t), sidx.getX(t+1), sidx.getX(t+2)];
+      for (var e = 0; e < 3; e++) {
+        var va = tri[e], vb2 = tri[(e+1)%3], opp = tri[(e+2)%3];
+        var ek = Math.min(va,vb2)+'_'+Math.max(va,vb2);
+        if (!edgeSet[ek]) {
+          edgeSet[ek] = true;
+          constraints.push([particles[va], particles[vb2], particles[va].position.distanceTo(particles[vb2].position)]);
+        }
+        if (!edgeOpp[ek]) edgeOpp[ek] = [];
+        edgeOpp[ek].push(opp);
+      }
+    }
+    for (var k in edgeOpp) {
+      var o = edgeOpp[k];
+      if (o.length === 2) constraints.push([particles[o[0]], particles[o[1]], particles[o[0]].position.distanceTo(particles[o[1]].position)]);
+    }
+
+    var pins = [], maxY = -Infinity;
+    for (var i = 0; i < nV; i++) maxY = Math.max(maxY, basePos.getY(i));
+    for (var i = 0; i < nV; i++) if (basePos.getY(i) > maxY - 2) pins.push(i);
+
+    var dynPos = new Float32Array(nV * 3);
+    for (var i = 0; i < nV; i++) { dynPos[i*3]=basePos.getX(i); dynPos[i*3+1]=basePos.getY(i); dynPos[i*3+2]=0; }
+    var clothGeo = new THREE.BufferGeometry();
+    clothGeo.setAttribute('position', new THREE.BufferAttribute(dynPos, 3));
+    clothGeo.setAttribute('uv', geo.attributes.uv);
+    clothGeo.setIndex(geo.index);
+    clothGeo.computeVertexNormals();
+
+    return { particles: particles, constraints: constraints, pins: pins, geo: clothGeo };
+  }
+
+  // ── Init ───────────────────────────────────────────────────────────
+  var keys   = Object.keys(LETTERS);
+  var chosen = keys[Math.floor(Math.random() * keys.length)];
+
+  var cloths = [ buildCloth(chosen, 0) ];
+
+  // Scene
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111111);
+  var camera = new THREE.PerspectiveCamera(30, innerWidth/innerHeight, 1, 10000);
+  camera.position.set(0, 0, 1600);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  var sun = new THREE.DirectionalLight(0xffffff, 1.5);
+  sun.position.set(300, 500, 600);
+  scene.add(sun);
+  var back = new THREE.DirectionalLight(0xffffff, 0.3);
+  back.position.set(-300, -200, -400);
+  scene.add(back);
+
+  var mat = new THREE.MeshLambertMaterial({
+    color: 0xffffff,
+    side:  THREE.DoubleSide
+  });
+
+  for (var li = 0; li < cloths.length; li++) scene.add(new THREE.Mesh(cloths[li].geo, mat));
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(devicePixelRatio);
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.physicallyCorrectLights = true;
+  document.body.appendChild(renderer.domElement);
+  new THREE.OrbitControls(camera, renderer.domElement);
+
+  var gui = new dat.GUI();
+  gui.add(params, 'staticMode').name('Static mode');
+  gui.add(params, 'enableWind').name('Enable wind');
+  gui.add(params, 'iterations', 1, 30, 1).name('Stiffness');
+
+  window.addEventListener('resize', function() {
+    camera.aspect = innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+
+  function simulate(now) {
+    if (params.staticMode) return;
+    windF.set(Math.sin(now/2000), Math.cos(now/3000), Math.sin(now/1000))
+         .normalize().multiplyScalar(Math.cos(now/7000)*20+40);
+
+    for (var li = 0; li < cloths.length; li++) {
+      var cl = cloths[li];
+
+      if (params.enableWind) {
+        var n = new THREE.Vector3(), ia = cl.geo.index, na = cl.geo.attributes.normal;
+        for (var i = 0; i < ia.count; i += 3) {
+          for (var j = 0; j < 3; j++) {
+            var vi = ia.getX(i+j);
+            n.fromBufferAttribute(na, vi);
+            tmpF.copy(n).normalize().multiplyScalar(n.dot(windF));
+            cl.particles[vi].addForce(tmpF);
+          }
+        }
+      }
+
+      for (var i = 0; i < cl.particles.length; i++) { cl.particles[i].addForce(gravity); cl.particles[i].integrate(TS2); }
+      for (var it = 0; it < params.iterations; it++) for (var i = 0; i < cl.constraints.length; i++) satisfy(cl.constraints[i][0], cl.constraints[i][1], cl.constraints[i][2]);
+      for (var i = 0; i < cl.pins.length; i++) { var p = cl.particles[cl.pins[i]]; p.position.copy(p.original); p.previous.copy(p.original); }
+    }
+  }
+
+  function animate(now) {
+    requestAnimationFrame(animate);
+    simulate(now);
+    for (var li = 0; li < cloths.length; li++) {
+      var cl = cloths[li];
+      var pa = cl.geo.attributes.position;
+      for (var i = 0; i < cl.particles.length; i++) pa.setXYZ(i, cl.particles[i].position.x, cl.particles[i].position.y, cl.particles[i].position.z);
+      pa.needsUpdate = true;
+      cl.geo.computeVertexNormals();
+    }
+    renderer.render(scene, camera);
+  }
+
+  animate(0);
+</script>
+</body>
+</html>
