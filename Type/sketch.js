@@ -29,6 +29,14 @@ let secondaryRadiusMax = 145;
 
 
 // ----------------------------------------
+// SCREEN BOUNDARY
+// ----------------------------------------
+
+let screenMargin = 12;
+let slowdownDistance = 50;
+
+
+// ----------------------------------------
 // AUDIO
 // ----------------------------------------
 
@@ -133,7 +141,7 @@ function draw() {
   drawWord();
 
 
-  // Optional debug:
+  // Uncomment for testing:
   // drawAudioDebug();
 }
 
@@ -267,7 +275,7 @@ function beginBreath(letter) {
 
 
   // ----------------------------------------
-  // CURRENT BOUNDS
+  // CURRENT LETTER BOUNDS
   // ----------------------------------------
 
   let minX = Infinity;
@@ -636,6 +644,8 @@ function updateBreath() {
 
   // ----------------------------------------
   // NORMALIZE BREATH
+  //
+  // More sensitive for phone microphone
   // ----------------------------------------
 
   breathLevel =
@@ -744,19 +754,48 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // MOVE SMEAR
+  // SCREEN LIMITS
+  // ----------------------------------------
+
+  let limits =
+    getScreenMovementLimits(
+      letter
+    );
+
+
+  let mainWall =
+    getWallMultiplier(
+      activeDrag.angle,
+      limits
+    );
+
+
+  let secondaryWall =
+    getWallMultiplier(
+      secondaryDrag.angle,
+      limits
+    );
+
+
+  // ----------------------------------------
+  // MOVE SMEARS
+  //
+  // Movement gradually slows near screen
+  // boundaries instead of jumping.
   // ----------------------------------------
 
   activeDrag.distance +=
     breathLevel *
     dragSpeed *
-    activeDrag.strength;
+    activeDrag.strength *
+    mainWall;
 
 
   secondaryDrag.distance +=
     breathLevel *
     dragSpeed *
-    secondaryDrag.strength;
+    secondaryDrag.strength *
+    secondaryWall;
 
 
   // ----------------------------------------
@@ -977,6 +1016,243 @@ function updateBreath() {
         0.14
       );
   }
+}
+
+
+/* ----------------------------------------
+   SCREEN MOVEMENT LIMITS
+---------------------------------------- */
+
+function getScreenMovementLimits(
+  letter
+) {
+
+  let minX = Infinity;
+  let maxX = -Infinity;
+
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+
+  for (let p of letter.points) {
+
+    minX =
+      min(
+        minX,
+        p.hx
+      );
+
+
+    maxX =
+      max(
+        maxX,
+        p.hx
+      );
+
+
+    minY =
+      min(
+        minY,
+        p.hy
+      );
+
+
+    maxY =
+      max(
+        maxY,
+        p.hy
+      );
+  }
+
+
+  let leftSpace =
+    minX -
+    screenMargin;
+
+
+  let rightSpace =
+    width -
+    screenMargin -
+    maxX;
+
+
+  let topSpace =
+    minY -
+    screenMargin;
+
+
+  let bottomSpace =
+    height -
+    screenMargin -
+    maxY;
+
+
+  return {
+
+    left:
+      smoothWallValue(
+        leftSpace
+      ),
+
+    right:
+      smoothWallValue(
+        rightSpace
+      ),
+
+    top:
+      smoothWallValue(
+        topSpace
+      ),
+
+    bottom:
+      smoothWallValue(
+        bottomSpace
+      )
+  };
+}
+
+
+/* ----------------------------------------
+   SMOOTH WALL VALUE
+
+   Far away:
+   1 = full movement
+
+   Near wall:
+   gradually approaches 0
+---------------------------------------- */
+
+function smoothWallValue(
+  space
+) {
+
+  let t =
+    constrain(
+      space /
+      slowdownDistance,
+      0,
+      1
+    );
+
+
+  // smoothstep
+  // softer than a linear transition
+
+  return (
+    t *
+    t *
+    (
+      3 -
+      2 * t
+    )
+  );
+}
+
+
+/* ----------------------------------------
+   WALL MULTIPLIER
+---------------------------------------- */
+
+function getWallMultiplier(
+  angle,
+  limits
+) {
+
+  let dx =
+    cos(
+      angle
+    );
+
+
+  let dy =
+    sin(
+      angle
+    );
+
+
+  let horizontal =
+    1;
+
+
+  let vertical =
+    1;
+
+
+  // ----------------------------------------
+  // HORIZONTAL DIRECTION
+  // ----------------------------------------
+
+  if (dx > 0) {
+
+    horizontal =
+      limits.right;
+
+  } else if (dx < 0) {
+
+    horizontal =
+      limits.left;
+  }
+
+
+  // ----------------------------------------
+  // VERTICAL DIRECTION
+  // ----------------------------------------
+
+  if (dy > 0) {
+
+    vertical =
+      limits.bottom;
+
+  } else if (dy < 0) {
+
+    vertical =
+      limits.top;
+  }
+
+
+  // ----------------------------------------
+  // WEIGHT BASED ON DIRECTION
+  //
+  // Mostly horizontal smear:
+  // horizontal wall matters more.
+  //
+  // Mostly vertical smear:
+  // vertical wall matters more.
+  // ----------------------------------------
+
+  let xAmount =
+    abs(
+      dx
+    );
+
+
+  let yAmount =
+    abs(
+      dy
+    );
+
+
+  let total =
+    xAmount +
+    yAmount;
+
+
+  if (total === 0) {
+    return 1;
+  }
+
+
+  let multiplier =
+    (
+      horizontal *
+      xAmount +
+      vertical *
+      yAmount
+    ) /
+    total;
+
+
+  return multiplier;
 }
 
 
@@ -1272,13 +1548,6 @@ function updateCalibration() {
     return;
   }
 
-
-  // ----------------------------------------
-  // SORT SAMPLES
-  //
-  // Using the median makes calibration
-  // less sensitive to one sudden noise.
-  // ----------------------------------------
 
   calibrationSamples.sort(
     function(a, b) {
