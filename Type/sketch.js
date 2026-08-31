@@ -29,10 +29,12 @@ let secondaryRadiusMax = 145;
 
 
 // ----------------------------------------
-// SCREEN SAFE AREA
+// SAFE DRAWING AREA
 // ----------------------------------------
 
-let screenMargin = 12;
+let canvasPaddingX = 24;
+let canvasPaddingTop = 80;
+let canvasPaddingBottom = 110;
 
 
 // ----------------------------------------
@@ -146,6 +148,22 @@ function draw() {
 
 
 /* ----------------------------------------
+   RESPONSIVE FONT SIZE
+---------------------------------------- */
+
+function getResponsiveFontSize() {
+
+  if (width < 500) {
+
+    return width * 0.72;
+  }
+
+
+  return 350;
+}
+
+
+/* ----------------------------------------
    BUILD WORD
 ---------------------------------------- */
 
@@ -154,7 +172,12 @@ function buildWord() {
   letters = [];
 
 
+  fontSize =
+    getResponsiveFontSize();
+
+
   textFont(font);
+
   textSize(fontSize);
 
 
@@ -167,8 +190,25 @@ function buildWord() {
     totalWidth / 2;
 
 
+  // center inside the safe vertical area
+
+  let safeTop =
+    canvasPaddingTop;
+
+
+  let safeBottom =
+    height -
+    canvasPaddingBottom;
+
+
+  let safeHeight =
+    safeBottom -
+    safeTop;
+
+
   let baselineY =
-    height / 2 +
+    safeTop +
+    safeHeight / 2 +
     fontSize * 0.35;
 
 
@@ -207,6 +247,7 @@ function buildLetter(
 
 
   let processedContours = [];
+
   let allPoints = [];
 
 
@@ -262,8 +303,6 @@ function beginBreath(letter) {
   breathBase = [];
 
 
-  // snapshot current deformed shape
-
   for (let p of letter.points) {
 
     breathBase.push({
@@ -272,10 +311,6 @@ function beginBreath(letter) {
     });
   }
 
-
-  // ----------------------------------------
-  // CURRENT LETTER BOUNDS
-  // ----------------------------------------
 
   let minX = Infinity;
   let maxX = -Infinity;
@@ -324,10 +359,6 @@ function beginBreath(letter) {
     maxY -
     minY;
 
-
-  // ----------------------------------------
-  // EACH BREATH CHOOSES ONE REGION
-  // ----------------------------------------
 
   let region =
     floor(
@@ -625,10 +656,6 @@ function updateBreath() {
     letters[0];
 
 
-  // ----------------------------------------
-  // LEVEL ABOVE AMBIENT
-  // ----------------------------------------
-
   let aboveAmbient =
     max(
       smoothLevel -
@@ -638,7 +665,7 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // MORE RESPONSIVE PHONE MAPPING
+  // RESPONSIVE BREATH
   // ----------------------------------------
 
   breathLevel =
@@ -667,7 +694,7 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // START NEW BREATH
+  // START
   // ----------------------------------------
 
   if (
@@ -691,7 +718,7 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // STOP BREATH
+  // STOP
   // ----------------------------------------
 
   if (isBlowing) {
@@ -752,7 +779,7 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // ADVANCE SMEAR
+  // ADVANCE SMEARS
   // ----------------------------------------
 
   activeDrag.distance +=
@@ -768,10 +795,11 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // CALCULATE PROPOSED SHAPE FIRST
+  // PROPOSED TARGETS
   // ----------------------------------------
 
-  let proposedTargets = [];
+  let proposedTargets =
+    [];
 
 
   for (
@@ -914,7 +942,7 @@ function updateBreath() {
 
 
     // ----------------------------------------
-    // SUBTLE LOCAL SMEAR VARIATION
+    // SUBTLE VARIATION
     // ----------------------------------------
 
     let variationX =
@@ -979,7 +1007,7 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // ONE GLOBAL SAFE SCALE
+  // SAFE SCALE
   // ----------------------------------------
 
   let safeScale =
@@ -990,7 +1018,7 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // APPLY SAFE DEFORMATION
+  // APPLY
   // ----------------------------------------
 
   for (
@@ -1065,6 +1093,24 @@ function getSafeDeformationScale(
     1;
 
 
+  let leftBoundary =
+    canvasPaddingX;
+
+
+  let rightBoundary =
+    width -
+    canvasPaddingX;
+
+
+  let topBoundary =
+    canvasPaddingTop;
+
+
+  let bottomBoundary =
+    height -
+    canvasPaddingBottom;
+
+
   for (
     let i = 0;
     i <
@@ -1090,15 +1136,13 @@ function getSafeDeformationScale(
       base.y;
 
 
-    // ----------------------------------------
     // LEFT
-    // ----------------------------------------
 
     if (dx < 0) {
 
       let available =
         base.x -
-        screenMargin;
+        leftBoundary;
 
 
       if (available <= 0) {
@@ -1118,15 +1162,12 @@ function getSafeDeformationScale(
     }
 
 
-    // ----------------------------------------
     // RIGHT
-    // ----------------------------------------
 
     if (dx > 0) {
 
       let available =
-        width -
-        screenMargin -
+        rightBoundary -
         base.x;
 
 
@@ -1147,15 +1188,13 @@ function getSafeDeformationScale(
     }
 
 
-    // ----------------------------------------
     // TOP
-    // ----------------------------------------
 
     if (dy < 0) {
 
       let available =
         base.y -
-        screenMargin;
+        topBoundary;
 
 
       if (available <= 0) {
@@ -1175,15 +1214,12 @@ function getSafeDeformationScale(
     }
 
 
-    // ----------------------------------------
     // BOTTOM
-    // ----------------------------------------
 
     if (dy > 0) {
 
       let available =
-        height -
-        screenMargin -
+        bottomBoundary -
         base.y;
 
 
@@ -1233,7 +1269,7 @@ function updatePhysics() {
 
 
   // ----------------------------------------
-  // CALCULATE NEXT FRAME
+  // PROPOSE NEXT FRAME
   // ----------------------------------------
 
   for (let p of letter.points) {
@@ -1290,11 +1326,29 @@ function updatePhysics() {
 
 
   // ----------------------------------------
-  // GLOBAL SAFE PHYSICS SCALE
+  // SAFE PHYSICS SCALE
   // ----------------------------------------
 
   let physicsScale =
     1;
+
+
+  let leftBoundary =
+    canvasPaddingX;
+
+
+  let rightBoundary =
+    width -
+    canvasPaddingX;
+
+
+  let topBoundary =
+    canvasPaddingTop;
+
+
+  let bottomBoundary =
+    height -
+    canvasPaddingBottom;
 
 
   for (
@@ -1328,7 +1382,7 @@ function updatePhysics() {
 
       let available =
         p.x -
-        screenMargin;
+        leftBoundary;
 
 
       if (available <= 0) {
@@ -1353,8 +1407,7 @@ function updatePhysics() {
     if (dx > 0) {
 
       let available =
-        width -
-        screenMargin -
+        rightBoundary -
         p.x;
 
 
@@ -1381,7 +1434,7 @@ function updatePhysics() {
 
       let available =
         p.y -
-        screenMargin;
+        topBoundary;
 
 
       if (available <= 0) {
@@ -1406,8 +1459,7 @@ function updatePhysics() {
     if (dy > 0) {
 
       let available =
-        height -
-        screenMargin -
+        bottomBoundary -
         p.y;
 
 
@@ -1438,7 +1490,7 @@ function updatePhysics() {
 
 
   // ----------------------------------------
-  // APPLY NEXT FRAME
+  // APPLY
   // ----------------------------------------
 
   for (
