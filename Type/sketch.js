@@ -19,7 +19,7 @@ let damping = 0.82;
 // DEFORMATION
 // ----------------------------------------
 
-let dragSpeed = 1;
+let dragSpeed = 0.9;
 
 let mainRadiusMin = 125;
 let mainRadiusMax = 175;
@@ -29,11 +29,10 @@ let secondaryRadiusMax = 145;
 
 
 // ----------------------------------------
-// SCREEN BOUNDARY
+// SCREEN SAFE AREA
 // ----------------------------------------
 
 let screenMargin = 12;
-let slowdownDistance = 50;
 
 
 // ----------------------------------------
@@ -141,7 +140,7 @@ function draw() {
   drawWord();
 
 
-  // Uncomment for testing:
+  // Uncomment while testing:
   // drawAudioDebug();
 }
 
@@ -627,25 +626,19 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // LEVEL ABOVE AMBIENT NOISE
+  // LEVEL ABOVE AMBIENT
   // ----------------------------------------
 
   let aboveAmbient =
-    smoothLevel -
-    ambientLevel;
-
-
-  aboveAmbient =
     max(
-      aboveAmbient,
+      smoothLevel -
+      ambientLevel,
       0
     );
 
 
   // ----------------------------------------
-  // NORMALIZE BREATH
-  //
-  // More sensitive for phone microphone
+  // MORE RESPONSIVE PHONE MAPPING
   // ----------------------------------------
 
   breathLevel =
@@ -683,9 +676,12 @@ function updateBreath() {
     startThreshold
   ) {
 
-    isBlowing = true;
+    isBlowing =
+      true;
 
-    quietFrames = 0;
+
+    quietFrames =
+      0;
 
 
     beginBreath(
@@ -709,7 +705,8 @@ function updateBreath() {
 
     } else {
 
-      quietFrames = 0;
+      quietFrames =
+        0;
     }
 
 
@@ -726,11 +723,16 @@ function updateBreath() {
         0;
 
 
-      breathBase = [];
+      breathBase =
+        [];
 
-      activeDrag = null;
 
-      secondaryDrag = null;
+      activeDrag =
+        null;
+
+
+      secondaryDrag =
+        null;
 
 
       return;
@@ -738,12 +740,8 @@ function updateBreath() {
   }
 
 
-  if (!isBlowing) {
-    return;
-  }
-
-
   if (
+    !isBlowing ||
     !activeDrag ||
     !secondaryDrag ||
     breathBase.length === 0
@@ -754,53 +752,27 @@ function updateBreath() {
 
 
   // ----------------------------------------
-  // SCREEN LIMITS
-  // ----------------------------------------
-
-  let limits =
-    getScreenMovementLimits(
-      letter
-    );
-
-
-  let mainWall =
-    getWallMultiplier(
-      activeDrag.angle,
-      limits
-    );
-
-
-  let secondaryWall =
-    getWallMultiplier(
-      secondaryDrag.angle,
-      limits
-    );
-
-
-  // ----------------------------------------
-  // MOVE SMEARS
-  //
-  // Movement gradually slows near screen
-  // boundaries instead of jumping.
+  // ADVANCE SMEAR
   // ----------------------------------------
 
   activeDrag.distance +=
     breathLevel *
     dragSpeed *
-    activeDrag.strength *
-    mainWall;
+    activeDrag.strength;
 
 
   secondaryDrag.distance +=
     breathLevel *
     dragSpeed *
-    secondaryDrag.strength *
-    secondaryWall;
+    secondaryDrag.strength;
 
 
   // ----------------------------------------
-  // DEFORM LETTER
+  // CALCULATE PROPOSED SHAPE FIRST
   // ----------------------------------------
+
+  let proposedTargets = [];
+
 
   for (
     let i = 0;
@@ -808,10 +780,6 @@ function updateBreath() {
     letter.points.length;
     i++
   ) {
-
-    let p =
-      letter.points[i];
-
 
     let base =
       breathBase[i];
@@ -841,8 +809,10 @@ function updateBreath() {
 
     let mainDistance =
       sqrt(
-        mainDX * mainDX +
-        mainDY * mainDY
+        mainDX *
+        mainDX +
+        mainDY *
+        mainDY
       );
 
 
@@ -997,14 +967,77 @@ function updateBreath() {
       2.5;
 
 
-    // ----------------------------------------
-    // SOFT TARGET
-    // ----------------------------------------
+    proposedTargets.push({
+
+      x:
+        targetX,
+
+      y:
+        targetY
+    });
+  }
+
+
+  // ----------------------------------------
+  // ONE GLOBAL SAFE SCALE
+  // ----------------------------------------
+
+  let safeScale =
+    getSafeDeformationScale(
+      breathBase,
+      proposedTargets
+    );
+
+
+  // ----------------------------------------
+  // APPLY SAFE DEFORMATION
+  // ----------------------------------------
+
+  for (
+    let i = 0;
+    i <
+    letter.points.length;
+    i++
+  ) {
+
+    let p =
+      letter.points[i];
+
+
+    let base =
+      breathBase[i];
+
+
+    let proposed =
+      proposedTargets[i];
+
+
+    let dx =
+      proposed.x -
+      base.x;
+
+
+    let dy =
+      proposed.y -
+      base.y;
+
+
+    let safeTargetX =
+      base.x +
+      dx *
+      safeScale;
+
+
+    let safeTargetY =
+      base.y +
+      dy *
+      safeScale;
+
 
     p.hx =
       lerp(
         p.hx,
-        targetX,
+        safeTargetX,
         0.14
       );
 
@@ -1012,7 +1045,7 @@ function updateBreath() {
     p.hy =
       lerp(
         p.hy,
-        targetY,
+        safeTargetY,
         0.14
       );
   }
@@ -1020,239 +1053,163 @@ function updateBreath() {
 
 
 /* ----------------------------------------
-   SCREEN MOVEMENT LIMITS
+   SAFE DEFORMATION SCALE
 ---------------------------------------- */
 
-function getScreenMovementLimits(
-  letter
+function getSafeDeformationScale(
+  basePoints,
+  targetPoints
 ) {
 
-  let minX = Infinity;
-  let maxX = -Infinity;
-
-  let minY = Infinity;
-  let maxY = -Infinity;
+  let scale =
+    1;
 
 
-  for (let p of letter.points) {
+  for (
+    let i = 0;
+    i <
+    basePoints.length;
+    i++
+  ) {
 
-    minX =
-      min(
-        minX,
-        p.hx
-      );
-
-
-    maxX =
-      max(
-        maxX,
-        p.hx
-      );
+    let base =
+      basePoints[i];
 
 
-    minY =
-      min(
-        minY,
-        p.hy
-      );
+    let target =
+      targetPoints[i];
 
 
-    maxY =
-      max(
-        maxY,
-        p.hy
-      );
+    let dx =
+      target.x -
+      base.x;
+
+
+    let dy =
+      target.y -
+      base.y;
+
+
+    // ----------------------------------------
+    // LEFT
+    // ----------------------------------------
+
+    if (dx < 0) {
+
+      let available =
+        base.x -
+        screenMargin;
+
+
+      if (available <= 0) {
+
+        scale =
+          0;
+
+      } else {
+
+        scale =
+          min(
+            scale,
+            available /
+            -dx
+          );
+      }
+    }
+
+
+    // ----------------------------------------
+    // RIGHT
+    // ----------------------------------------
+
+    if (dx > 0) {
+
+      let available =
+        width -
+        screenMargin -
+        base.x;
+
+
+      if (available <= 0) {
+
+        scale =
+          0;
+
+      } else {
+
+        scale =
+          min(
+            scale,
+            available /
+            dx
+          );
+      }
+    }
+
+
+    // ----------------------------------------
+    // TOP
+    // ----------------------------------------
+
+    if (dy < 0) {
+
+      let available =
+        base.y -
+        screenMargin;
+
+
+      if (available <= 0) {
+
+        scale =
+          0;
+
+      } else {
+
+        scale =
+          min(
+            scale,
+            available /
+            -dy
+          );
+      }
+    }
+
+
+    // ----------------------------------------
+    // BOTTOM
+    // ----------------------------------------
+
+    if (dy > 0) {
+
+      let available =
+        height -
+        screenMargin -
+        base.y;
+
+
+      if (available <= 0) {
+
+        scale =
+          0;
+
+      } else {
+
+        scale =
+          min(
+            scale,
+            available /
+            dy
+          );
+      }
+    }
   }
 
 
-  let leftSpace =
-    minX -
-    screenMargin;
-
-
-  let rightSpace =
-    width -
-    screenMargin -
-    maxX;
-
-
-  let topSpace =
-    minY -
-    screenMargin;
-
-
-  let bottomSpace =
-    height -
-    screenMargin -
-    maxY;
-
-
-  return {
-
-    left:
-      smoothWallValue(
-        leftSpace
-      ),
-
-    right:
-      smoothWallValue(
-        rightSpace
-      ),
-
-    top:
-      smoothWallValue(
-        topSpace
-      ),
-
-    bottom:
-      smoothWallValue(
-        bottomSpace
-      )
-  };
-}
-
-
-/* ----------------------------------------
-   SMOOTH WALL VALUE
-
-   Far away:
-   1 = full movement
-
-   Near wall:
-   gradually approaches 0
----------------------------------------- */
-
-function smoothWallValue(
-  space
-) {
-
-  let t =
-    constrain(
-      space /
-      slowdownDistance,
-      0,
-      1
-    );
-
-
-  // smoothstep
-  // softer than a linear transition
-
-  return (
-    t *
-    t *
-    (
-      3 -
-      2 * t
-    )
+  return constrain(
+    scale,
+    0,
+    1
   );
-}
-
-
-/* ----------------------------------------
-   WALL MULTIPLIER
----------------------------------------- */
-
-function getWallMultiplier(
-  angle,
-  limits
-) {
-
-  let dx =
-    cos(
-      angle
-    );
-
-
-  let dy =
-    sin(
-      angle
-    );
-
-
-  let horizontal =
-    1;
-
-
-  let vertical =
-    1;
-
-
-  // ----------------------------------------
-  // HORIZONTAL DIRECTION
-  // ----------------------------------------
-
-  if (dx > 0) {
-
-    horizontal =
-      limits.right;
-
-  } else if (dx < 0) {
-
-    horizontal =
-      limits.left;
-  }
-
-
-  // ----------------------------------------
-  // VERTICAL DIRECTION
-  // ----------------------------------------
-
-  if (dy > 0) {
-
-    vertical =
-      limits.bottom;
-
-  } else if (dy < 0) {
-
-    vertical =
-      limits.top;
-  }
-
-
-  // ----------------------------------------
-  // WEIGHT BASED ON DIRECTION
-  //
-  // Mostly horizontal smear:
-  // horizontal wall matters more.
-  //
-  // Mostly vertical smear:
-  // vertical wall matters more.
-  // ----------------------------------------
-
-  let xAmount =
-    abs(
-      dx
-    );
-
-
-  let yAmount =
-    abs(
-      dy
-    );
-
-
-  let total =
-    xAmount +
-    yAmount;
-
-
-  if (total === 0) {
-    return 1;
-  }
-
-
-  let multiplier =
-    (
-      horizontal *
-      xAmount +
-      vertical *
-      yAmount
-    ) /
-    total;
-
-
-  return multiplier;
 }
 
 
@@ -1270,6 +1227,14 @@ function updatePhysics() {
   let letter =
     letters[0];
 
+
+  let nextPositions =
+    [];
+
+
+  // ----------------------------------------
+  // CALCULATE NEXT FRAME
+  // ----------------------------------------
 
   for (let p of letter.points) {
 
@@ -1289,7 +1254,7 @@ function updatePhysics() {
       springK;
 
 
-    p.vx =
+    let nextVX =
       (
         p.vx +
         ax
@@ -1297,12 +1262,208 @@ function updatePhysics() {
       damping;
 
 
-    p.vy =
+    let nextVY =
       (
         p.vy +
         ay
       ) *
       damping;
+
+
+    nextPositions.push({
+
+      x:
+        p.x +
+        nextVX,
+
+      y:
+        p.y +
+        nextVY,
+
+      vx:
+        nextVX,
+
+      vy:
+        nextVY
+    });
+  }
+
+
+  // ----------------------------------------
+  // GLOBAL SAFE PHYSICS SCALE
+  // ----------------------------------------
+
+  let physicsScale =
+    1;
+
+
+  for (
+    let i = 0;
+    i <
+    letter.points.length;
+    i++
+  ) {
+
+    let p =
+      letter.points[i];
+
+
+    let next =
+      nextPositions[i];
+
+
+    let dx =
+      next.x -
+      p.x;
+
+
+    let dy =
+      next.y -
+      p.y;
+
+
+    // LEFT
+
+    if (dx < 0) {
+
+      let available =
+        p.x -
+        screenMargin;
+
+
+      if (available <= 0) {
+
+        physicsScale =
+          0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available /
+            -dx
+          );
+      }
+    }
+
+
+    // RIGHT
+
+    if (dx > 0) {
+
+      let available =
+        width -
+        screenMargin -
+        p.x;
+
+
+      if (available <= 0) {
+
+        physicsScale =
+          0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available /
+            dx
+          );
+      }
+    }
+
+
+    // TOP
+
+    if (dy < 0) {
+
+      let available =
+        p.y -
+        screenMargin;
+
+
+      if (available <= 0) {
+
+        physicsScale =
+          0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available /
+            -dy
+          );
+      }
+    }
+
+
+    // BOTTOM
+
+    if (dy > 0) {
+
+      let available =
+        height -
+        screenMargin -
+        p.y;
+
+
+      if (available <= 0) {
+
+        physicsScale =
+          0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available /
+            dy
+          );
+      }
+    }
+  }
+
+
+  physicsScale =
+    constrain(
+      physicsScale,
+      0,
+      1
+    );
+
+
+  // ----------------------------------------
+  // APPLY NEXT FRAME
+  // ----------------------------------------
+
+  for (
+    let i = 0;
+    i <
+    letter.points.length;
+    i++
+  ) {
+
+    let p =
+      letter.points[i];
+
+
+    let next =
+      nextPositions[i];
+
+
+    p.vx =
+      next.vx *
+      physicsScale;
+
+
+    p.vy =
+      next.vy *
+      physicsScale;
 
 
     p.x +=
@@ -1569,10 +1730,6 @@ function updateCalibration() {
     ];
 
 
-  // ----------------------------------------
-  // ADAPTIVE THRESHOLDS
-  // ----------------------------------------
-
   startThreshold =
     max(
       0.012,
@@ -1634,7 +1791,8 @@ function updateMicLevel() {
   );
 
 
-  let sum = 0;
+  let sum =
+    0;
 
 
   for (
