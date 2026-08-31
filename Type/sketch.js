@@ -19,7 +19,7 @@ let damping = 0.82;
 // DEFORMATION
 // ----------------------------------------
 
-let dragSpeed = 0.48;
+let dragSpeed = 0.9;
 
 let mainRadiusMin = 125;
 let mainRadiusMax = 175;
@@ -642,7 +642,7 @@ function updateBreath() {
     map(
       aboveAmbient,
       stopThreshold,
-      startThreshold * 4,
+      startThreshold * 2.2,
       0,
       1
     );
@@ -659,7 +659,7 @@ function updateBreath() {
   breathLevel =
     pow(
       breathLevel,
-      1.3
+      0.85
     );
 
 
