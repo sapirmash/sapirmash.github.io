@@ -173,6 +173,15 @@ function getResponsiveFontSize() {
   return 350;
 }
 
+function getVisibleHeight() {
+
+  if (window.visualViewport) {
+    return window.visualViewport.height;
+  }
+
+  return window.innerHeight;
+}
+
 
 /* ----------------------------------------
    BUILD WORD
@@ -249,8 +258,11 @@ function buildWord() {
       : 20;
 
 
-  let desiredBottom =
-    height - bottomGap;
+  let visibleHeight =
+  getVisibleHeight();
+
+let desiredBottom =
+  visibleHeight - bottomGap;
 
 
   let shiftY =
