@@ -433,136 +433,121 @@ function getAvailableSpace(letter) {
 function chooseRegion(letter) {
 
   let space =
-    getAvailableSpace(
-      letter
+    getAvailableSpace(letter);
+
+
+  // Give each region a score based on
+  // how much actual room exists in
+  // the direction it wants to move.
+
+  let regions = [
+
+    // upper-left
+    {
+      id: 0,
+      score:
+        max(space.left, 0) +
+        max(space.top, 0)
+    },
+
+    // upper-right
+    {
+      id: 1,
+      score:
+        max(space.right, 0) +
+        max(space.top, 0)
+    },
+
+    // middle-left
+    {
+      id: 2,
+      score:
+        max(space.left, 0) * 2
+    },
+
+    // middle-right
+    {
+      id: 3,
+      score:
+        max(space.right, 0) * 2
+    },
+
+    // lower-left
+    {
+      id: 4,
+      score:
+        max(space.left, 0) +
+        max(space.bottom, 0)
+    },
+
+    // lower-right
+    {
+      id: 5,
+      score:
+        max(space.right, 0) +
+        max(space.bottom, 0)
+    }
+  ];
+
+
+  // Don't immediately repeat
+  // the same region.
+
+  let available =
+    regions.filter(
+      r =>
+        r.id !== lastRegion &&
+        r.score > 10
     );
 
 
-  let candidates =
-    [];
+  // If we're very constrained,
+  // allow the previous region too.
 
+  if (available.length === 0) {
 
-  // ----------------------------------------
-  // REGION 0
-  // upper-left
-  // ----------------------------------------
-
-  if (
-    space.left > 20 ||
-    space.top > 20
-  ) {
-
-    candidates.push(0);
+    available =
+      regions.filter(
+        r => r.score > 5
+      );
   }
 
 
-  // ----------------------------------------
-  // REGION 1
-  // upper-right
-  // ----------------------------------------
+  // Absolute fallback
 
-  if (
-    space.right > 20 ||
-    space.top > 20
-  ) {
+  if (available.length === 0) {
 
-    candidates.push(1);
+    available = regions;
   }
 
 
-  // ----------------------------------------
-  // REGION 2
-  // middle-left
-  // ----------------------------------------
+  // Find the largest amount of space
 
-  if (
-    space.left > 20
-  ) {
-
-    candidates.push(2);
-  }
-
-
-  // ----------------------------------------
-  // REGION 3
-  // middle-right
-  // ----------------------------------------
-
-  if (
-    space.right > 20
-  ) {
-
-    candidates.push(3);
-  }
-
-
-  // ----------------------------------------
-  // REGION 4
-  // lower-left
-  // ----------------------------------------
-
-  if (
-    space.left > 20 ||
-    space.bottom > 20
-  ) {
-
-    candidates.push(4);
-  }
-
-
-  // ----------------------------------------
-  // REGION 5
-  // lower-right
-  // ----------------------------------------
-
-  if (
-    space.right > 20 ||
-    space.bottom > 20
-  ) {
-
-    candidates.push(5);
-  }
-
-
-  // fallback
-
-  if (candidates.length === 0) {
-
-    candidates =
-      [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5
-      ];
-  }
-
-
-  // try not to repeat previous region
-
-  let filtered =
-    candidates.filter(
-      function(region) {
-
-        return region !== lastRegion;
-      }
+  let maxScore =
+    max(
+      available.map(
+        r => r.score
+      )
     );
 
 
-  if (filtered.length > 0) {
+  // Prefer directions that have
+  // at least 55% of the best space.
 
-    candidates =
-      filtered;
-  }
+  let goodRegions =
+    available.filter(
+      r =>
+        r.score >=
+        maxScore * 0.55
+    );
 
 
-  return random(
-    candidates
-  );
+  let chosen =
+    random(goodRegions);
+
+
+  return chosen.id;
 }
-
 
 /* ----------------------------------------
    BEGIN NEW SMEAR
