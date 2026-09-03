@@ -34,7 +34,7 @@ let secondaryRadiusMax = 145;
 
 let canvasPaddingX = 20;
 let canvasPaddingTop = 70;
-let canvasPaddingBottom = 20;
+let canvasPaddingBottom = 90;
 
 
 // ----------------------------------------
@@ -182,80 +182,91 @@ function buildWord() {
 
   letters = [];
 
-
   fontSize =
     getResponsiveFontSize();
 
-
   textFont(font);
-
   textSize(fontSize);
 
 
-  let totalWidth =
-    textWidth(word);
-
-
-  let startX =
-    width / 2 -
-    totalWidth / 2;
-
-
   // ----------------------------------------
-  // BUILD LETTER NORMALLY FIRST
+  // BUILD AT A SAFE TEMPORARY POSITION
   // ----------------------------------------
-
-  let baselineY =
-    height / 2 +
-    fontSize * 0.35;
-
 
   let letter =
     buildLetter(
       word,
-      startX,
-      baselineY
+      0,
+      fontSize
     );
 
 
   // ----------------------------------------
-  // FIND ACTUAL GLYPH BOTTOM
+  // GET ACTUAL GLYPH BOUNDS
   // ----------------------------------------
 
-  let maxY =
-    -Infinity;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
 
 
   for (let p of letter.points) {
 
-    maxY =
-      max(
-        maxY,
-        p.hy
-      );
+    minX = min(minX, p.hx);
+    maxX = max(maxX, p.hx);
+
+    minY = min(minY, p.hy);
+    maxY = max(maxY, p.hy);
   }
 
 
+  let glyphWidth =
+    maxX - minX;
+
+
   // ----------------------------------------
-  // POSITION AT BOTTOM
+  // CENTER HORIZONTALLY
   // ----------------------------------------
 
+  let desiredLeft =
+    (width - glyphWidth) / 2;
+
+
+  let shiftX =
+    desiredLeft - minX;
+
+
+  // ----------------------------------------
+  // POSITION NEAR BOTTOM
+  // ----------------------------------------
+
+  // More breathing room for iPhone Safari.
+  // We can reduce this later.
+  let bottomGap =
+    width < 500
+      ? 90
+      : 20;
+
+
   let desiredBottom =
-    height -
-    canvasPaddingBottom;
+    height - bottomGap;
 
 
   let shiftY =
-    desiredBottom -
-    maxY;
+    desiredBottom - maxY;
 
 
-  // IMPORTANT:
-  // only move Y — do not change X
+  // ----------------------------------------
+  // MOVE COMPLETE GLYPH
+  // ----------------------------------------
 
   for (let p of letter.points) {
 
+    p.hx += shiftX;
     p.hy += shiftY;
+
+    p.x += shiftX;
     p.y += shiftY;
   }
 
