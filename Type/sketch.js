@@ -1400,7 +1400,7 @@ function getSafeDeformationScale(
   targetPoints
 ) {
 
-  let scale =
+  let safeScale =
     1;
 
 
@@ -1460,14 +1460,14 @@ function getSafeDeformationScale(
 
       if (available <= 0) {
 
-        scale =
+        safeScale =
           0;
 
       } else {
 
-        scale =
+        safeScale =
           min(
-            scale,
+            safeScale,
             available /
             -dx
           );
@@ -1488,14 +1488,14 @@ function getSafeDeformationScale(
 
       if (available <= 0) {
 
-        scale =
+        safeScale =
           0;
 
       } else {
 
-        scale =
+        safeScale =
           min(
-            scale,
+            safeScale,
             available /
             dx
           );
@@ -1521,9 +1521,9 @@ function getSafeDeformationScale(
 
       } else {
 
-        scale =
+        safeScale =
           min(
-            scale,
+            safeScale,
             available /
             -dy
           );
@@ -1544,14 +1544,14 @@ function getSafeDeformationScale(
 
       if (available <= 0) {
 
-        scale =
+        safeScale =
           0;
 
       } else {
 
-        scale =
+        safeScale =
           min(
-            scale,
+            safeScale,
             available /
             dy
           );
@@ -1561,7 +1561,7 @@ function getSafeDeformationScale(
 
 
   return constrain(
-    scale,
+    safeScale,
     0,
     1
   );
