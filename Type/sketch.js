@@ -1350,7 +1350,7 @@ function updateBreath() {
       lerp(
         p.hx,
         safeTargetX,
-        0.14
+        0.11
       );
 
 
@@ -1358,7 +1358,7 @@ function updateBreath() {
       lerp(
         p.hy,
         safeTargetY,
-        0.14
+        0.11
       );
   }
 }
