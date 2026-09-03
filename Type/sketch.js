@@ -202,14 +202,19 @@ function buildWord() {
 
 
   // ----------------------------------------
-  // BUILD TEMPORARILY
+  // BUILD LETTER NORMALLY FIRST
   // ----------------------------------------
+
+  let baselineY =
+    height / 2 +
+    fontSize * 0.35;
+
 
   let letter =
     buildLetter(
       word,
       startX,
-      0
+      baselineY
     );
 
 
@@ -245,90 +250,18 @@ function buildWord() {
     maxY;
 
 
-  // Move the whole letter down
+  // IMPORTANT:
+  // only move Y — do not change X
 
   for (let p of letter.points) {
 
-    p.hx += shiftY;
     p.hy += shiftY;
-
-    p.x += shiftY;
     p.y += shiftY;
   }
 
 
   letters.push(letter);
 }
-
-/* ----------------------------------------
-   BUILD LETTER
----------------------------------------- */
-
-function buildLetter(
-  char,
-  x,
-  y
-) {
-
-  let contours =
-    font.textToContours(
-      char,
-      x,
-      y,
-      {
-        sampleFactor: 0.35,
-        simplifyThreshold: 0
-      }
-    );
-
-
-  let processedContours = [];
-
-  let allPoints = [];
-
-
-  for (let contour of contours) {
-
-    let pts = [];
-
-
-    for (let p of contour) {
-
-      let pt = {
-
-        hx: p.x,
-        hy: p.y,
-
-        x: p.x,
-        y: p.y,
-
-        vx: 0,
-        vy: 0
-      };
-
-
-      pts.push(pt);
-
-      allPoints.push(pt);
-    }
-
-
-    processedContours.push(pts);
-  }
-
-
-  return {
-
-    char: char,
-
-    contours:
-      processedContours,
-
-    points:
-      allPoints
-  };
-}
-
 
 /* ----------------------------------------
    GET LETTER BOUNDS
