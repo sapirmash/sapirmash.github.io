@@ -263,6 +263,72 @@ function buildWord() {
   letters.push(letter);
 }
 
+function buildLetter(
+  char,
+  x,
+  y
+) {
+
+  let contours =
+    font.textToContours(
+      char,
+      x,
+      y,
+      fontSize,
+      {
+        sampleFactor: 0.35,
+        simplifyThreshold: 0
+      }
+    );
+
+
+  let processedContours = [];
+
+  let allPoints = [];
+
+
+  for (let contour of contours) {
+
+    let pts = [];
+
+
+    for (let p of contour) {
+
+      let pt = {
+
+        hx: p.x,
+        hy: p.y,
+
+        x: p.x,
+        y: p.y,
+
+        vx: 0,
+        vy: 0
+      };
+
+
+      pts.push(pt);
+
+      allPoints.push(pt);
+    }
+
+
+    processedContours.push(pts);
+  }
+
+
+  return {
+
+    char: char,
+
+    contours:
+      processedContours,
+
+    points:
+      allPoints
+  };
+}
+
 /* ----------------------------------------
    GET LETTER BOUNDS
 ---------------------------------------- */
