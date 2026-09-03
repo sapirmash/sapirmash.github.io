@@ -1277,7 +1277,7 @@ function updateBreath() {
 
   if (
     safeScale <
-    0.08
+    0.15
   ) {
 
     blockedFrames++;
