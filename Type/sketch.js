@@ -11,8 +11,8 @@ let fontSize = 350;
 // PHYSICS
 // ----------------------------------------
 
-let springK = 0.14;
-let damping = 0.82;
+let springK = 0.125;
+let damping = 0.85;
 
 
 // ----------------------------------------
