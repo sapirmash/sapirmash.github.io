@@ -33,7 +33,7 @@ let secondaryRadiusMax = 145;
 // ----------------------------------------
 
 let canvasPaddingX = 20;
-let canvasPaddingTop = 70;
+let canvasPaddingTop = 20;
 let canvasPaddingBottom = 90;
 
 
@@ -666,10 +666,10 @@ function beginBreath(letter) {
 
 
     angle =
-      random(
-        -2.8,
-        -2.1
-      );
+  random(
+    -2.45,
+    -1.55
+  );
   }
 
 
@@ -698,10 +698,10 @@ function beginBreath(letter) {
 
 
     angle =
-      random(
-        -1.0,
-        -0.25
-      );
+  random(
+    -1.55,
+    -0.65
+  );
   }
 
 
