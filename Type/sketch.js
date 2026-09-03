@@ -201,37 +201,64 @@ function buildWord() {
     totalWidth / 2;
 
 
-  let safeTop =
-    canvasPaddingTop;
-
-
-  let safeBottom =
-    height -
-    canvasPaddingBottom;
-
-
-  let safeHeight =
-    safeBottom -
-    safeTop;
-
-
-  let baselineY =
-    safeTop +
-    safeHeight / 2 +
-    fontSize * 0.35;
-
+  // ----------------------------------------
+  // BUILD TEMPORARILY
+  // ----------------------------------------
 
   let letter =
     buildLetter(
       word,
       startX,
-      baselineY
+      0
     );
+
+
+  // ----------------------------------------
+  // FIND ACTUAL GLYPH BOTTOM
+  // ----------------------------------------
+
+  let maxY =
+    -Infinity;
+
+
+  for (let p of letter.points) {
+
+    maxY =
+      max(
+        maxY,
+        p.hy
+      );
+  }
+
+
+  // ----------------------------------------
+  // POSITION AT BOTTOM
+  // ----------------------------------------
+
+  let desiredBottom =
+    height -
+    canvasPaddingBottom;
+
+
+  let shiftY =
+    desiredBottom -
+    maxY;
+
+
+  // Move the whole letter down
+
+  for (let p of letter.points) {
+
+    p.hx += shiftY;
+    p.hy += shiftY;
+
+    p.x += shiftY;
+    p.y += shiftY;
+  }
 
 
   letters.push(letter);
 }
-
 
 /* ----------------------------------------
    BUILD LETTER
