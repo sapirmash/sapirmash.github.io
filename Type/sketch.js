@@ -1449,7 +1449,7 @@ function getSafeDeformationScale(
 
       if (available <= 0) {
 
-        scale =
+        safeScale =
           0;
 
       } else {
