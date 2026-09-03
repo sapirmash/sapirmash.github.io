@@ -34,7 +34,7 @@ let secondaryRadiusMax = 145;
 
 let canvasPaddingX = 20;
 let canvasPaddingTop = 70;
-let canvasPaddingBottom = 90;
+let canvasPaddingBottom = 20;
 
 
 // ----------------------------------------
