@@ -1,7 +1,7 @@
 let font;
 
 let letters = [];
-let word = "A";
+let word = "a";
 
 let col = "#d11515";
 let fontSize = 350;
