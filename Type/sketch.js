@@ -254,7 +254,7 @@ function buildWord() {
   // We can reduce this later.
   let bottomGap =
     width < 500
-      ? 35
+      ? 25
       : 20;
 
 
