@@ -3,7 +3,7 @@ let font;
 let letters = [];
 let word = "a";
 
-let col = "#d11515";
+let col = "black";
 let fontSize = 350;
 
 
