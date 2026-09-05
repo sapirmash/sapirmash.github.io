@@ -1023,6 +1023,26 @@ function beginBreath(letter) {
   };
 }
 
+function getBottomFreedom(baseY) {
+  let bottom =
+    min(height, getVisibleHeight()) -
+    canvasPaddingBottom;
+
+  let pinHeight = fontSize * 0.20;
+
+  return constrain(
+    map(
+      baseY,
+      bottom - pinHeight,
+      bottom,
+      1,
+      0
+    ),
+    0,
+    1
+  );
+}
+
 
 // ==================================================
 // UPDATE BREATH
@@ -1390,15 +1410,30 @@ function updateBreath() {
       1.5;
 
 
-    proposedTargets.push({
+    // Softly anchor the bottom of the A
 
-      x:
-        targetX,
+let freedom =
+  getBottomFreedom(base.y);
 
-      y:
-        targetY
-    });
-  }
+let displacementX =
+  targetX - base.x;
+
+let displacementY =
+  targetY - base.y;
+
+targetX =
+  base.x +
+  displacementX * freedom;
+
+targetY =
+  base.y +
+  displacementY * freedom;
+
+
+proposedTargets.push({
+  x: targetX,
+  y: targetY
+});
 
 
   // ------------------------------------------
