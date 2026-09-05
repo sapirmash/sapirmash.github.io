@@ -1050,29 +1050,23 @@ function getBottomFreedom(baseY) {
 
 function updateBreath() {
 
-  if (
-    letters.length === 0
-  ) {
-
+  if (letters.length === 0) {
     return;
   }
 
+  let letter = letters[0];
 
-  let letter =
-    letters[0];
 
+  // --------------------------------------------------
+  // BREATH LEVEL
+  // --------------------------------------------------
 
   let aboveAmbient =
     max(
-      smoothLevel -
-      ambientLevel,
+      smoothLevel - ambientLevel,
       0
     );
 
-
-  // ------------------------------------------
-  // Breath strength
-  // ------------------------------------------
 
   breathLevel =
     map(
@@ -1099,87 +1093,64 @@ function updateBreath() {
     );
 
 
-  // ------------------------------------------
-  // Start breath
-  // ------------------------------------------
+  // --------------------------------------------------
+  // START BREATH
+  // --------------------------------------------------
 
   if (
     !isBlowing &&
-    aboveAmbient >
-    startThreshold
+    aboveAmbient > startThreshold
   ) {
 
-    isBlowing =
-      true;
+    isBlowing = true;
 
+    quietFrames = 0;
+    blockedFrames = 0;
 
-    quietFrames =
-      0;
-
-
-    blockedFrames =
-      0;
-
-
-    beginBreath(
-      letter
-    );
+    beginBreath(letter);
   }
 
 
-  // ------------------------------------------
-  // Stop breath
-  // ------------------------------------------
+  // --------------------------------------------------
+  // STOP BREATH
+  // --------------------------------------------------
 
   if (isBlowing) {
 
     if (
-      aboveAmbient <
-      stopThreshold
+      aboveAmbient < stopThreshold
     ) {
 
       quietFrames++;
 
     } else {
 
-      quietFrames =
-        0;
+      quietFrames = 0;
     }
 
 
     if (
-      quietFrames >
-      10
+      quietFrames > 10
     ) {
 
-      isBlowing =
-        false;
+      isBlowing = false;
 
+      quietFrames = 0;
+      blockedFrames = 0;
 
-      quietFrames =
-        0;
+      breathBase = [];
 
-
-      blockedFrames =
-        0;
-
-
-      breathBase =
-        [];
-
-
-      activeDrag =
-        null;
-
-
-      secondaryDrag =
-        null;
-
+      activeDrag = null;
+      secondaryDrag = null;
 
       return;
     }
   }
 
+
+  // --------------------------------------------------
+  // NOTHING TO UPDATE
+  // --------------------------------------------------
 
   if (
     !isBlowing ||
@@ -1192,9 +1163,9 @@ function updateBreath() {
   }
 
 
-  // ------------------------------------------
-  // Advance smear
-  // ------------------------------------------
+  // --------------------------------------------------
+  // ADVANCE SMEAR
+  // --------------------------------------------------
 
   activeDrag.distance +=
     breathLevel *
@@ -1208,12 +1179,11 @@ function updateBreath() {
     secondaryDrag.strength;
 
 
-  // ------------------------------------------
-  // Calculate target shape
-  // ------------------------------------------
+  // --------------------------------------------------
+  // CALCULATE TARGET SHAPE
+  // --------------------------------------------------
 
-  let proposedTargets =
-    [];
+  let proposedTargets = [];
 
 
   for (
@@ -1234,9 +1204,9 @@ function updateBreath() {
       base.y;
 
 
-    // ----------------------------------------
+    // ------------------------------------------------
     // MAIN SMEAR
-    // ----------------------------------------
+    // ------------------------------------------------
 
     let mainDX =
       base.x -
@@ -1269,8 +1239,7 @@ function updateBreath() {
       );
 
 
-    // Lower exponent =
-    // broader, softer propagation.
+    // Broader / softer influence
 
     mainInfluence =
       pow(
@@ -1295,9 +1264,9 @@ function updateBreath() {
       mainInfluence;
 
 
-    // ----------------------------------------
+    // ------------------------------------------------
     // SECONDARY SMEAR
-    // ----------------------------------------
+    // ------------------------------------------------
 
     let secondaryDX =
       base.x -
@@ -1353,9 +1322,9 @@ function updateBreath() {
       secondaryInfluence;
 
 
-    // ----------------------------------------
+    // ------------------------------------------------
     // SMALL ORGANIC VARIATION
-    // ----------------------------------------
+    // ------------------------------------------------
 
     let variationX =
       noise(
@@ -1393,9 +1362,6 @@ function updateBreath() {
       );
 
 
-    // Reduced from 2.5 to 1.5.
-    // This keeps the contour cleaner.
-
     targetX +=
       variationX *
       breathLevel *
@@ -1410,36 +1376,22 @@ function updateBreath() {
       1.5;
 
 
-    // Softly anchor the bottom of the A
+    // Store the unanchored target first
 
-let freedom =
-  getBottomFreedom(base.y);
+    proposedTargets.push({
+      x: targetX,
+      y: targetY
+    });
 
-let displacementX =
-  targetX - base.x;
-
-let displacementY =
-  targetY - base.y;
-
-targetX =
-  base.x +
-  displacementX * freedom;
-
-targetY =
-  base.y +
-  displacementY * freedom;
+  } // END FIRST LOOP
 
 
-proposedTargets.push({
-  x: targetX,
-  y: targetY
-});
-
-
-  // ------------------------------------------
-  // NEW:
+  // --------------------------------------------------
   // FLUID PROPAGATION
-  // ------------------------------------------
+  //
+  // First let the deformation flow smoothly
+  // through neighboring contour points.
+  // --------------------------------------------------
 
   proposedTargets =
     smoothFluidTargets(
@@ -1448,9 +1400,60 @@ proposedTargets.push({
     );
 
 
-  // ------------------------------------------
-  // Safe deformation
-  // ------------------------------------------
+  // --------------------------------------------------
+  // SOFT BOTTOM ANCHOR
+  //
+  // IMPORTANT:
+  // This happens AFTER smoothing so the fluid
+  // algorithm cannot move the bottom again.
+  // --------------------------------------------------
+
+  for (
+    let i = 0;
+    i < proposedTargets.length;
+    i++
+  ) {
+
+    let base =
+      breathBase[i];
+
+
+    let target =
+      proposedTargets[i];
+
+
+    let freedom =
+      getBottomFreedom(
+        base.y
+      );
+
+
+    let displacementX =
+      target.x -
+      base.x;
+
+
+    let displacementY =
+      target.y -
+      base.y;
+
+
+    proposedTargets[i].x =
+      base.x +
+      displacementX *
+      freedom;
+
+
+    proposedTargets[i].y =
+      base.y +
+      displacementY *
+      freedom;
+  }
+
+
+  // --------------------------------------------------
+  // SAFE DEFORMATION
+  // --------------------------------------------------
 
   let safeScale =
     getSafeDeformationScale(
@@ -1459,49 +1462,43 @@ proposedTargets.push({
     );
 
 
-  // ------------------------------------------
-  // Detect blocked direction earlier
-  // ------------------------------------------
+  // --------------------------------------------------
+  // DETECT BLOCKED DIRECTION
+  // --------------------------------------------------
 
   if (
-    safeScale <
-    0.15
+    safeScale < 0.15
   ) {
 
     blockedFrames++;
 
   } else {
 
-    blockedFrames =
-      0;
+    blockedFrames = 0;
   }
 
 
-  // ------------------------------------------
-  // Same breath can move into another region
-  // ------------------------------------------
+  // --------------------------------------------------
+  // IF BLOCKED, START A NEW SMEAR
+  // DURING THE SAME BREATH
+  // --------------------------------------------------
 
   if (
     blockedFrames >=
     blockedFramesBeforeNewDrag
   ) {
 
-    blockedFrames =
-      0;
+    blockedFrames = 0;
 
-
-    beginBreath(
-      letter
-    );
-
+    beginBreath(letter);
 
     return;
   }
 
 
-  // ------------------------------------------
-  // Apply target
-  // ------------------------------------------
+  // --------------------------------------------------
+  // APPLY TARGET
+  // --------------------------------------------------
 
   for (
     let i = 0;
@@ -1559,172 +1556,6 @@ proposedTargets.push({
       );
   }
 }
-
-
-// ==================================================
-// FLUID TARGET SMOOTHING
-//
-// Important:
-// This smooths the MOTION of neighboring contour
-// points, not the original shape of the A.
-// ==================================================
-
-function smoothFluidTargets(
-  letter,
-  targets
-) {
-
-  let result =
-    targets.map(
-      pt => ({
-        x: pt.x,
-        y: pt.y
-      })
-    );
-
-
-  // Point object -> index in letter.points
-
-  let pointIndex =
-    new Map();
-
-
-  for (
-    let i = 0;
-    i < letter.points.length;
-    i++
-  ) {
-
-    pointIndex.set(
-      letter.points[i],
-      i
-    );
-  }
-
-
-  // ------------------------------------------
-  // Multiple gentle smoothing passes
-  // ------------------------------------------
-
-  for (
-    let pass = 0;
-    pass < fluidPasses;
-    pass++
-  ) {
-
-    let previous =
-      result.map(
-        pt => ({
-          x: pt.x,
-          y: pt.y
-        })
-      );
-
-
-    for (
-      let contour
-      of letter.contours
-    ) {
-
-      let count =
-        contour.length;
-
-
-      if (
-        count < 3
-      ) {
-
-        continue;
-      }
-
-
-      for (
-        let j = 0;
-        j < count;
-        j++
-      ) {
-
-        let previousPoint =
-          contour[
-            (
-              j -
-              1 +
-              count
-            ) %
-            count
-          ];
-
-
-        let currentPoint =
-          contour[j];
-
-
-        let nextPoint =
-          contour[
-            (
-              j +
-              1
-            ) %
-            count
-          ];
-
-
-        let previousIndex =
-          pointIndex.get(
-            previousPoint
-          );
-
-
-        let currentIndex =
-          pointIndex.get(
-            currentPoint
-          );
-
-
-        let nextIndex =
-          pointIndex.get(
-            nextPoint
-          );
-
-
-        let averageX =
-          (
-            previous[previousIndex].x +
-            previous[currentIndex].x * 2 +
-            previous[nextIndex].x
-          ) / 4;
-
-
-        let averageY =
-          (
-            previous[previousIndex].y +
-            previous[currentIndex].y * 2 +
-            previous[nextIndex].y
-          ) / 4;
-
-
-        result[currentIndex].x =
-          lerp(
-            previous[currentIndex].x,
-            averageX,
-            fluidBlend
-          );
-
-
-        result[currentIndex].y =
-          lerp(
-            previous[currentIndex].y,
-            averageY,
-            fluidBlend
-          );
-      }
-    }
-  }
-
-
-  return result;
-}
-
 
 // ==================================================
 // SAFE DEFORMATION SCALE
