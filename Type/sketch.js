@@ -29,9 +29,6 @@ let secondaryRadiusMin = 120;
 let secondaryRadiusMax = 165;
 
 
-// Fluid propagation along the contour
-let fluidPasses = 3;
-let fluidBlend = 0.24;
 
 
 // --------------------------------------------------
@@ -1386,19 +1383,6 @@ function updateBreath() {
   } // END FIRST LOOP
 
 
-  // --------------------------------------------------
-  // FLUID PROPAGATION
-  //
-  // First let the deformation flow smoothly
-  // through neighboring contour points.
-  // --------------------------------------------------
-
-  proposedTargets =
-    smoothFluidTargets(
-      letter,
-      proposedTargets
-    );
-
 
   // --------------------------------------------------
   // SOFT BOTTOM ANCHOR
@@ -1555,136 +1539,6 @@ function updateBreath() {
         0.11
       );
   }
-}
-
-function smoothFluidTargets(letter, targets) {
-
-  let result =
-    targets.map(
-      pt => ({
-        x: pt.x,
-        y: pt.y
-      })
-    );
-
-
-  let pointIndex =
-    new Map();
-
-
-  for (
-    let i = 0;
-    i < letter.points.length;
-    i++
-  ) {
-
-    pointIndex.set(
-      letter.points[i],
-      i
-    );
-  }
-
-
-  for (
-    let pass = 0;
-    pass < fluidPasses;
-    pass++
-  ) {
-
-    let previous =
-      result.map(
-        pt => ({
-          x: pt.x,
-          y: pt.y
-        })
-      );
-
-
-    for (
-      let contour of letter.contours
-    ) {
-
-      let count =
-        contour.length;
-
-
-      if (count < 3) {
-        continue;
-      }
-
-
-      for (
-        let j = 0;
-        j < count;
-        j++
-      ) {
-
-        let previousPoint =
-          contour[
-            (j - 1 + count) % count
-          ];
-
-        let currentPoint =
-          contour[j];
-
-        let nextPoint =
-          contour[
-            (j + 1) % count
-          ];
-
-
-        let previousIndex =
-          pointIndex.get(
-            previousPoint
-          );
-
-        let currentIndex =
-          pointIndex.get(
-            currentPoint
-          );
-
-        let nextIndex =
-          pointIndex.get(
-            nextPoint
-          );
-
-
-        let averageX =
-          (
-            previous[previousIndex].x +
-            previous[currentIndex].x * 2 +
-            previous[nextIndex].x
-          ) / 4;
-
-
-        let averageY =
-          (
-            previous[previousIndex].y +
-            previous[currentIndex].y * 2 +
-            previous[nextIndex].y
-          ) / 4;
-
-
-        result[currentIndex].x =
-          lerp(
-            previous[currentIndex].x,
-            averageX,
-            fluidBlend
-          );
-
-
-        result[currentIndex].y =
-          lerp(
-            previous[currentIndex].y,
-            averageY,
-            fluidBlend
-          );
-      }
-    }
-  }
-
-
-  return result;
 }
 
 // ==================================================
