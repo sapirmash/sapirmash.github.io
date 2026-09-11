@@ -16,7 +16,7 @@ let currentLetterIndex = 0;
 
 let letters = [];
 
-let col = "#d11515";
+let col = "#000000";
 
 let fontSize = 350;
 
