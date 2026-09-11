@@ -1154,7 +1154,38 @@ function updateBreath() {
 
   let proposedTargets = [];
 
+  // --------------------------------------------------
+// FIND THE ORIGINAL VERTICAL RANGE OF THIS BREATH
+// --------------------------------------------------
 
+let breathTop = Infinity;
+let breathBottom = -Infinity;
+
+for (let base of breathBase) {
+
+  breathTop =
+    min(
+      breathTop,
+      base.y
+    );
+
+  breathBottom =
+    max(
+      breathBottom,
+      base.y
+    );
+}
+
+let breathHeight =
+  breathBottom -
+  breathTop;
+
+
+// Lowest 16% becomes gradually anchored
+
+let anchorHeight =
+  breathHeight * 0.16;
+  
   for (
     let i = 0;
     i < letter.points.length;
@@ -1344,7 +1375,45 @@ function updateBreath() {
       mainInfluence *
       1.5;
 
+    // --------------------------------------------------
+// SOFTLY PIN THE BOTTOM
+// --------------------------------------------------
 
+let freedom =
+  constrain(
+    map(
+      base.y,
+      breathBottom - anchorHeight,
+      breathBottom,
+      1,
+      0
+    ),
+    0,
+    1
+  );
+
+
+let displacementX =
+  targetX -
+  base.x;
+
+
+let displacementY =
+  targetY -
+  base.y;
+
+
+targetX =
+  base.x +
+  displacementX *
+  freedom;
+
+
+targetY =
+  base.y +
+  displacementY *
+  freedom;
+    
     proposedTargets.push({
 
       x: targetX,
