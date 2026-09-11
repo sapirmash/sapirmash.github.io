@@ -2043,8 +2043,8 @@ function getNavigationLayout() {
 
   let buttonSize =
     width < 500
-      ? 56
-      : 64;
+      ? 24
+      : 40;
 
 
   let margin =
