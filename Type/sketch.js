@@ -1,8 +1,9 @@
 let font;
 
-// --------------------------------------------------
+
+// ==================================================
 // ALPHABET
-// --------------------------------------------------
+// ==================================================
 
 let alphabet =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -10,9 +11,9 @@ let alphabet =
 let currentLetterIndex = 0;
 
 
-// --------------------------------------------------
+// ==================================================
 // LETTER
-// --------------------------------------------------
+// ==================================================
 
 let letters = [];
 
@@ -21,17 +22,17 @@ let col = "#000000";
 let fontSize = 350;
 
 
-// --------------------------------------------------
+// ==================================================
 // PHYSICS
-// --------------------------------------------------
+// ==================================================
 
 let springK = 0.125;
 let damping = 0.85;
 
 
-// --------------------------------------------------
+// ==================================================
 // DEFORMATION
-// --------------------------------------------------
+// ==================================================
 
 let dragSpeed = 0.9;
 
@@ -42,18 +43,20 @@ let secondaryRadiusMin = 120;
 let secondaryRadiusMax = 165;
 
 
-// --------------------------------------------------
+// ==================================================
 // SAFE AREA
-// --------------------------------------------------
+// ==================================================
 
 let canvasPaddingX = 20;
 let canvasPaddingTop = 20;
+
+// Letter can actually touch the bottom.
 let canvasPaddingBottom = 0;
 
 
-// --------------------------------------------------
+// ==================================================
 // AUDIO
-// --------------------------------------------------
+// ==================================================
 
 let audioContext;
 
@@ -67,9 +70,9 @@ let smoothLevel = 0;
 let audioStarted = false;
 
 
-// --------------------------------------------------
+// ==================================================
 // CALIBRATION
-// --------------------------------------------------
+// ==================================================
 
 let isCalibrating = false;
 
@@ -83,9 +86,9 @@ let ambientLevel = 0;
 let calibrated = false;
 
 
-// --------------------------------------------------
+// ==================================================
 // BREATH
-// --------------------------------------------------
+// ==================================================
 
 let breathLevel = 0;
 
@@ -102,9 +105,9 @@ let activeDrag = null;
 let secondaryDrag = null;
 
 
-// --------------------------------------------------
+// ==================================================
 // REGION / BOUNDARY LOGIC
-// --------------------------------------------------
+// ==================================================
 
 let blockedFrames = 0;
 
@@ -201,9 +204,6 @@ function getResponsiveFontSize() {
   textSize(maxSize);
 
 
-  // Leave space around the glyph.
-  // This is especially useful for M and W.
-
   let availableWidth =
     width - 80;
 
@@ -270,8 +270,6 @@ function buildWord() {
     getCurrentLetter();
 
 
-  // Build at a temporary position.
-
   let letter =
     buildLetter(
       currentLetter,
@@ -290,7 +288,7 @@ function buildWord() {
 
 
   // ------------------------------------------------
-  // ACTUAL GLYPH BOUNDS
+  // FIND ACTUAL GLYPH BOUNDS
   // ------------------------------------------------
 
   let minX = Infinity;
@@ -344,14 +342,8 @@ function buildWord() {
 
 
   // ------------------------------------------------
-  // BOTTOM POSITION
+  // PLACE LETTER DIRECTLY ON VISIBLE BOTTOM
   // ------------------------------------------------
-
-  let bottomGap =
-    width < 500
-      ? 35
-      : 20;
-
 
   let visibleBottom =
     min(
@@ -361,8 +353,7 @@ function buildWord() {
 
 
   let desiredBottom =
-    visibleBottom -
-    bottomGap;
+    visibleBottom;
 
 
   let shiftY =
@@ -1149,43 +1140,39 @@ function updateBreath() {
 
 
   // ------------------------------------------------
+  // FIND CURRENT BASELINE
+  //
+  // Only actual points touching this line will
+  // be vertically constrained.
+  // ------------------------------------------------
+
+  let bottomY =
+    -Infinity;
+
+
+  for (
+    let pt of breathBase
+  ) {
+
+    bottomY =
+      max(
+        bottomY,
+        pt.y
+      );
+  }
+
+
+  // Very small contact zone only.
+  let baselineZone = 4;
+
+
+  // ------------------------------------------------
   // PROPOSED TARGETS
   // ------------------------------------------------
 
   let proposedTargets = [];
 
-  // --------------------------------------------------
-// FIND THE ORIGINAL VERTICAL RANGE OF THIS BREATH
-// --------------------------------------------------
 
-let breathTop = Infinity;
-let breathBottom = -Infinity;
-
-for (let base of breathBase) {
-
-  breathTop =
-    min(
-      breathTop,
-      base.y
-    );
-
-  breathBottom =
-    max(
-      breathBottom,
-      base.y
-    );
-}
-
-let breathHeight =
-  breathBottom -
-  breathTop;
-
-
-// Lowest 16% becomes gradually anchored
-
-let anchorHeight =
-  breathHeight * 0.16;
-  
   for (
     let i = 0;
     i < letter.points.length;
@@ -1375,45 +1362,31 @@ let anchorHeight =
       mainInfluence *
       1.5;
 
-    // --------------------------------------------------
-// SOFTLY PIN THE BOTTOM
-// --------------------------------------------------
 
-let freedom =
-  constrain(
-    map(
-      base.y,
-      breathBottom - anchorHeight,
-      breathBottom,
-      1,
-      0
-    ),
-    0,
-    1
-  );
+    // ----------------------------------------------
+    // BASELINE CONTACT
+    //
+    // Only contour points already touching the floor
+    // keep their vertical position.
+    //
+    // X remains completely free.
+    // ----------------------------------------------
+
+    let distanceFromBottom =
+      bottomY -
+      base.y;
 
 
-let displacementX =
-  targetX -
-  base.x;
+    if (
+      distanceFromBottom <
+      baselineZone
+    ) {
+
+      targetY =
+        base.y;
+    }
 
 
-let displacementY =
-  targetY -
-  base.y;
-
-
-targetX =
-  base.x +
-  displacementX *
-  freedom;
-
-
-targetY =
-  base.y +
-  displacementY *
-  freedom;
-    
     proposedTargets.push({
 
       x: targetX,
@@ -1524,7 +1497,6 @@ targetY =
       );
   }
 }
-
 // ==================================================
 // SAFE DEFORMATION SCALE
 // ==================================================
@@ -1946,9 +1918,12 @@ function updatePhysics() {
       physicsScale;
 
 
-    p.x += p.vx;
+    p.x +=
+      p.vx;
 
-    p.y += p.vy;
+
+    p.y +=
+      p.vy;
   }
 }
 
@@ -2036,15 +2011,15 @@ function drawLetter(letter) {
 
 
 // ==================================================
-// NAVIGATION
+// NAVIGATION LAYOUT
 // ==================================================
 
 function getNavigationLayout() {
 
   let buttonSize =
     width < 500
-      ? 24
-      : 40;
+      ? 40
+      : 44;
 
 
   let margin =
@@ -2053,13 +2028,10 @@ function getNavigationLayout() {
       : 24;
 
 
-  // I put them close to the bottom,
-  // but above the browser edge.
-
   let bottomMargin =
     width < 500
-      ? 22
-      : 24;
+      ? 18
+      : 22;
 
 
   let visibleBottom =
@@ -2084,7 +2056,7 @@ function getNavigationLayout() {
       margin,
 
     radius:
-      12,
+      9,
 
     leftX:
       margin,
@@ -2124,16 +2096,17 @@ function drawNavigation() {
   strokeJoin(ROUND);
 
 
-  // ------------------------------------------------
   // LEFT BUTTON
-  // ------------------------------------------------
 
-  rect(
-    nav.leftX,
-    nav.y,
+  ellipse(
+    nav.leftX +
+      nav.buttonSize / 2,
+
+    nav.y +
+      nav.buttonSize / 2,
+
     nav.buttonSize,
-    nav.buttonSize,
-    nav.radius
+    nav.buttonSize
   );
 
 
@@ -2150,16 +2123,17 @@ function drawNavigation() {
   );
 
 
-  // ------------------------------------------------
   // RIGHT BUTTON
-  // ------------------------------------------------
 
-  rect(
-    nav.rightX,
-    nav.y,
+  ellipse(
+    nav.rightX +
+      nav.buttonSize / 2,
+
+    nav.y +
+      nav.buttonSize / 2,
+
     nav.buttonSize,
-    nav.buttonSize,
-    nav.radius
+    nav.buttonSize
   );
 
 
@@ -2299,8 +2273,7 @@ function navigationHitTest() {
     getNavigationLayout();
 
 
-  // Give the mobile buttons a slightly
-  // larger invisible touch target.
+  // Slightly larger invisible touch target
 
   let extra =
     width < 500
@@ -2365,7 +2338,7 @@ function navigationHitTest() {
 
 
 // ==================================================
-// KEYBOARD NAVIGATION
+// KEYBOARD
 // ==================================================
 
 function keyPressed() {
