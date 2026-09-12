@@ -49,8 +49,6 @@ let secondaryRadiusMax = 165;
 
 let canvasPaddingX = 20;
 let canvasPaddingTop = 20;
-
-// Letter can actually touch the bottom.
 let canvasPaddingBottom = 0;
 
 
@@ -288,7 +286,7 @@ function buildWord() {
 
 
   // ------------------------------------------------
-  // FIND ACTUAL GLYPH BOUNDS
+  // ACTUAL GLYPH BOUNDS
   // ------------------------------------------------
 
   let minX = Infinity;
@@ -322,7 +320,7 @@ function buildWord() {
 
 
   // ------------------------------------------------
-  // HORIZONTAL CENTER
+  // CENTER HORIZONTALLY
   // ------------------------------------------------
 
   let glyphWidth =
@@ -342,7 +340,7 @@ function buildWord() {
 
 
   // ------------------------------------------------
-  // PLACE LETTER DIRECTLY ON VISIBLE BOTTOM
+  // PLACE GLYPH DIRECTLY ON VISIBLE BOTTOM
   // ------------------------------------------------
 
   let visibleBottom =
@@ -1140,13 +1138,10 @@ function updateBreath() {
 
 
   // ------------------------------------------------
-  // FIND CURRENT BASELINE
-  //
-  // Only actual points touching this line will
-  // be vertically constrained.
+  // ORIGINAL BOTTOM OF CURRENT BREATH
   // ------------------------------------------------
 
-  let bottomY =
+  let baseBottom =
     -Infinity;
 
 
@@ -1154,20 +1149,16 @@ function updateBreath() {
     let pt of breathBase
   ) {
 
-    bottomY =
+    baseBottom =
       max(
-        bottomY,
+        baseBottom,
         pt.y
       );
   }
 
 
-  // Very small contact zone only.
-  let baselineZone = 4;
-
-
   // ------------------------------------------------
-  // PROPOSED TARGETS
+  // CALCULATE ORGANIC TARGET SHAPE
   // ------------------------------------------------
 
   let proposedTargets = [];
@@ -1363,35 +1354,48 @@ function updateBreath() {
       1.5;
 
 
-    // ----------------------------------------------
-    // BASELINE CONTACT
-    //
-    // Only contour points already touching the floor
-    // keep their vertical position.
-    //
-    // X remains completely free.
-    // ----------------------------------------------
-
-    let distanceFromBottom =
-      bottomY -
-      base.y;
-
-
-    if (
-      distanceFromBottom <
-      baselineZone
-    ) {
-
-      targetY =
-        base.y;
-    }
-
-
     proposedTargets.push({
 
       x: targetX,
       y: targetY
     });
+  }
+
+
+  // ------------------------------------------------
+  // KEEP WHOLE ORGANIC SHAPE ON BASELINE
+  //
+  // No points are pinned.
+  // The shape is translated as one unit vertically.
+  // ------------------------------------------------
+
+  let proposedBottom =
+    -Infinity;
+
+
+  for (
+    let target of proposedTargets
+  ) {
+
+    proposedBottom =
+      max(
+        proposedBottom,
+        target.y
+      );
+  }
+
+
+  let verticalCorrection =
+    baseBottom -
+    proposedBottom;
+
+
+  for (
+    let target of proposedTargets
+  ) {
+
+    target.y +=
+      verticalCorrection;
   }
 
 
@@ -1680,7 +1684,9 @@ function updatePhysics() {
   let nextPositions = [];
 
 
-  for (let p of letter.points) {
+  for (
+    let p of letter.points
+  ) {
 
     let ax =
       (
@@ -2055,9 +2061,6 @@ function getNavigationLayout() {
     margin:
       margin,
 
-    radius:
-      9,
-
     leftX:
       margin,
 
@@ -2096,7 +2099,7 @@ function drawNavigation() {
   strokeJoin(ROUND);
 
 
-  // LEFT BUTTON
+  // LEFT
 
   ellipse(
     nav.leftX +
@@ -2123,7 +2126,7 @@ function drawNavigation() {
   );
 
 
-  // RIGHT BUTTON
+  // RIGHT
 
   ellipse(
     nav.rightX +
@@ -2273,8 +2276,6 @@ function navigationHitTest() {
     getNavigationLayout();
 
 
-  // Slightly larger invisible touch target
-
   let extra =
     width < 500
       ? 10
@@ -2338,7 +2339,7 @@ function navigationHitTest() {
 
 
 // ==================================================
-// KEYBOARD
+// KEYBOARD NAVIGATION
 // ==================================================
 
 function keyPressed() {
@@ -2370,7 +2371,9 @@ function keyPressed() {
 
 async function startAudio() {
 
-  if (audioStarted) {
+  if (
+    audioStarted
+  ) {
 
     return;
   }
@@ -2442,7 +2445,8 @@ async function startAudio() {
     );
 
 
-    audioStarted = true;
+    audioStarted =
+      true;
 
 
     beginCalibration();
@@ -2463,18 +2467,28 @@ async function startAudio() {
 
 function beginCalibration() {
 
-  isCalibrating = true;
+  isCalibrating =
+    true;
 
-  calibrated = false;
 
-  calibrationSamples = [];
+  calibrated =
+    false;
+
+
+  calibrationSamples =
+    [];
+
 
   calibrationStartTime =
     millis();
 
-  ambientLevel = 0;
 
-  smoothLevel = 0;
+  ambientLevel =
+    0;
+
+
+  smoothLevel =
+    0;
 }
 
 
@@ -2546,9 +2560,12 @@ function updateCalibration() {
     );
 
 
-  isCalibrating = false;
+  isCalibrating =
+    false;
 
-  calibrated = true;
+
+  calibrated =
+    true;
 }
 
 
@@ -2572,7 +2589,8 @@ function updateMicLevel() {
   );
 
 
-  let sum = 0;
+  let sum =
+    0;
 
 
   for (
@@ -2665,21 +2683,36 @@ function touchStarted() {
 
 function resetBreathState() {
 
-  isBlowing = false;
+  isBlowing =
+    false;
 
-  quietFrames = 0;
 
-  blockedFrames = 0;
+  quietFrames =
+    0;
 
-  breathBase = [];
 
-  activeDrag = null;
+  blockedFrames =
+    0;
 
-  secondaryDrag = null;
 
-  lastRegion = -1;
+  breathBase =
+    [];
 
-  breathLevel = 0;
+
+  activeDrag =
+    null;
+
+
+  secondaryDrag =
+    null;
+
+
+  lastRegion =
+    -1;
+
+
+  breathLevel =
+    0;
 }
 
 
