@@ -34,7 +34,7 @@ let damping = 0.85;
 // DEFORMATION
 // ==================================================
 
-let dragSpeed = 0.9;
+let dragSpeed = 1.25;
 
 let mainRadiusMin = 145;
 let mainRadiusMax = 195;
