@@ -2024,8 +2024,8 @@ function getNavigationLayout() {
 
   let buttonSize =
     width < 500
-      ? 40
-      : 44;
+      ? 32
+      : 36;
 
 
   let margin =
@@ -2058,6 +2058,9 @@ function getNavigationLayout() {
     buttonSize:
       buttonSize,
 
+    radius:
+    8,
+
     margin:
       margin,
 
@@ -2087,29 +2090,25 @@ function drawNavigation() {
 
   push();
 
-
   noFill();
 
   stroke(0);
 
-  strokeWeight(2);
+  strokeWeight(1.5);
 
   strokeCap(ROUND);
 
   strokeJoin(ROUND);
 
 
-  // LEFT
+  // LEFT BUTTON
 
-  ellipse(
-    nav.leftX +
-      nav.buttonSize / 2,
-
-    nav.y +
-      nav.buttonSize / 2,
-
+  rect(
+    nav.leftX,
+    nav.y,
     nav.buttonSize,
-    nav.buttonSize
+    nav.buttonSize,
+    nav.radius
   );
 
 
@@ -2126,17 +2125,14 @@ function drawNavigation() {
   );
 
 
-  // RIGHT
+  // RIGHT BUTTON
 
-  ellipse(
-    nav.rightX +
-      nav.buttonSize / 2,
-
-    nav.y +
-      nav.buttonSize / 2,
-
+  rect(
+    nav.rightX,
+    nav.y,
     nav.buttonSize,
-    nav.buttonSize
+    nav.buttonSize,
+    nav.radius
   );
 
 
@@ -2169,11 +2165,11 @@ function drawArrow(
 ) {
 
   let shaft =
-    buttonSize * 0.34;
+    buttonSize * 0.30;
 
 
   let head =
-    buttonSize * 0.13;
+    buttonSize * 0.11;
 
 
   let startX =
