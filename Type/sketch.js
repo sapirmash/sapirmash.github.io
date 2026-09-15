@@ -2024,7 +2024,7 @@ function getNavigationLayout() {
 
   let buttonSize =
     width < 500
-      ? 32
+      ? 24
       : 36;
 
 
@@ -2036,7 +2036,7 @@ function getNavigationLayout() {
 
   let bottomMargin =
     width < 500
-      ? 18
+      ? 12
       : 22;
 
 
