@@ -141,8 +141,8 @@ async function setup() {
 
 function draw() {
 
-  // background("#ebc7f5");
-  background("ffffff");
+
+  background(250);
 
 
   if (audioStarted) {
