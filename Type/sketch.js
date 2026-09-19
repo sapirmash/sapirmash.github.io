@@ -2040,8 +2040,9 @@ function getNavigationLayout() {
 
   // Bottom of buttons = bottom of letter
   let buttonY =
-    visibleBottom -
-    buttonSize;
+  visibleBottom -
+  buttonSize -
+  2;
 
   return {
 
