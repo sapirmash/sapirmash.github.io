@@ -2024,21 +2024,13 @@ function getNavigationLayout() {
 
   let buttonSize =
     width < 500
-      ? 24
-      : 36;
-
+      ? 28
+      : 32;
 
   let margin =
     width < 500
       ? 16
       : 24;
-
-
-  let bottomMargin =
-    width < 500
-      ? 12
-      : 22;
-
 
   let visibleBottom =
     min(
@@ -2046,23 +2038,21 @@ function getNavigationLayout() {
       getVisibleBottom()
     );
 
-
+  // Bottom of buttons = bottom of letter
   let buttonY =
     visibleBottom -
-    bottomMargin -
     buttonSize;
-
 
   return {
 
     buttonSize:
       buttonSize,
 
-    radius:
-    8,
-
     margin:
       margin,
+
+    radius:
+      7,
 
     leftX:
       margin,
