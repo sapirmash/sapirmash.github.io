@@ -2,22 +2,14 @@ let font;
 
 
 // ==================================================
-// ALPHABET
-// ==================================================
-
-let alphabet =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-let currentLetterIndex = 0;
-
-
-// ==================================================
 // LETTER
 // ==================================================
 
+let word = "A";
+
 let letters = [];
 
-let col = "#000000";
+let col = "#ffffff";
 
 let fontSize = 350;
 
@@ -31,16 +23,26 @@ let damping = 0.85;
 
 
 // ==================================================
-// DEFORMATION
+// NEW BREATH RESPONSE
 // ==================================================
 
-let dragSpeed = 1.25;
+// Weak breath = local
+// Strong breath = broad
+let breathRadiusMin = 55;
+let breathRadiusMax = 210;
 
-let mainRadiusMin = 145;
-let mainRadiusMax = 195;
+// Weak breath = slow
+// Strong breath = much faster
+let breathSpeedMin = 0.18;
+let breathSpeedMax = 2.4;
 
-let secondaryRadiusMin = 120;
-let secondaryRadiusMax = 165;
+// Slight sideways/material bias.
+// Keeps the pressure from looking like
+// a perfectly symmetrical balloon.
+let flowBias = 0.28;
+
+// Very subtle organic irregularity
+let organicAmount = 1.2;
 
 
 // ==================================================
@@ -99,19 +101,22 @@ let quietFrames = 0;
 
 let breathBase = [];
 
-let activeDrag = null;
-let secondaryDrag = null;
+
+// ==================================================
+// PRESSURE POINT
+// ==================================================
+
+let breathImpact = null;
 
 
 // ==================================================
-// REGION / BOUNDARY LOGIC
+// DEBUG BREATH METER
+//
+// Keep this true while we tune sensitivity.
+// Later we can turn it off.
 // ==================================================
 
-let blockedFrames = 0;
-
-let blockedFramesBeforeNewDrag = 5;
-
-let lastRegion = -1;
+let showBreathMeter = true;
 
 
 // ==================================================
@@ -141,8 +146,7 @@ async function setup() {
 
 function draw() {
 
-
-  background(250);
+  background("#000000");
 
 
   if (audioStarted) {
@@ -166,70 +170,20 @@ function draw() {
 
   drawWord();
 
-  drawNavigation();
-}
-
-
-// ==================================================
-// CURRENT LETTER
-// ==================================================
-
-function getCurrentLetter() {
-
-  return alphabet[
-    currentLetterIndex
-  ];
-}
-
-
-// ==================================================
-// RESPONSIVE FONT SIZE
-// ==================================================
-
-function getResponsiveFontSize() {
-
-  let currentLetter =
-    getCurrentLetter();
-
-
-  let maxSize =
-    width < 500
-      ? width * 0.88
-      : 350;
-
-
-  textFont(font);
-
-  textSize(maxSize);
-
-
-  let availableWidth =
-    width - 80;
-
-
-  let measuredWidth =
-    textWidth(
-      currentLetter
-    );
-
 
   if (
-    measuredWidth >
-    availableWidth
+    showBreathMeter &&
+    audioStarted &&
+    calibrated
   ) {
 
-    maxSize *=
-      availableWidth /
-      measuredWidth;
+    drawBreathMeter();
   }
-
-
-  return maxSize;
 }
 
 
 // ==================================================
-// SAFARI VISIBLE BOTTOM
+// VISIBLE BOTTOM
 // ==================================================
 
 function getVisibleBottom() {
@@ -248,6 +202,46 @@ function getVisibleBottom() {
 
 
 // ==================================================
+// RESPONSIVE FONT SIZE
+// ==================================================
+
+function getResponsiveFontSize() {
+
+  let maxSize =
+    width < 500
+      ? width * 0.88
+      : 350;
+
+
+  textFont(font);
+
+  textSize(maxSize);
+
+
+  let availableWidth =
+    width - 80;
+
+
+  let measuredWidth =
+    textWidth(word);
+
+
+  if (
+    measuredWidth >
+    availableWidth
+  ) {
+
+    maxSize *=
+      availableWidth /
+      measuredWidth;
+  }
+
+
+  return maxSize;
+}
+
+
+// ==================================================
 // BUILD WORD
 // ==================================================
 
@@ -260,18 +254,10 @@ function buildWord() {
     getResponsiveFontSize();
 
 
-  textFont(font);
-
-  textSize(fontSize);
-
-
-  let currentLetter =
-    getCurrentLetter();
-
-
   let letter =
     buildLetter(
-      currentLetter,
+      word,
+      0,
       0,
       fontSize
     );
@@ -286,17 +272,20 @@ function buildWord() {
   }
 
 
-  // ------------------------------------------------
-  // ACTUAL GLYPH BOUNDS
-  // ------------------------------------------------
+  // ----------------------------------------------
+  // GLYPH BOUNDS
+  // ----------------------------------------------
 
   let minX = Infinity;
   let maxX = -Infinity;
 
+  let minY = Infinity;
   let maxY = -Infinity;
 
 
-  for (let p of letter.points) {
+  for (
+    let p of letter.points
+  ) {
 
     minX =
       min(
@@ -312,6 +301,13 @@ function buildWord() {
       );
 
 
+    minY =
+      min(
+        minY,
+        p.hy
+      );
+
+
     maxY =
       max(
         maxY,
@@ -320,13 +316,13 @@ function buildWord() {
   }
 
 
-  // ------------------------------------------------
-  // CENTER HORIZONTALLY
-  // ------------------------------------------------
-
   let glyphWidth =
     maxX - minX;
 
+
+  // ----------------------------------------------
+  // CENTER HORIZONTALLY
+  // ----------------------------------------------
 
   let desiredLeft =
     (
@@ -340,9 +336,9 @@ function buildWord() {
     minX;
 
 
-  // ------------------------------------------------
-  // PLACE GLYPH DIRECTLY ON VISIBLE BOTTOM
-  // ------------------------------------------------
+  // ----------------------------------------------
+  // SIT DIRECTLY ON BOTTOM
+  // ----------------------------------------------
 
   let visibleBottom =
     min(
@@ -351,20 +347,18 @@ function buildWord() {
     );
 
 
-  let desiredBottom =
-    visibleBottom;
-
-
   let shiftY =
-    desiredBottom -
+    visibleBottom -
     maxY;
 
 
-  // ------------------------------------------------
+  // ----------------------------------------------
   // APPLY POSITION
-  // ------------------------------------------------
+  // ----------------------------------------------
 
-  for (let p of letter.points) {
+  for (
+    let p of letter.points
+  ) {
 
     p.hx += shiftX;
     p.hy += shiftY;
@@ -374,7 +368,9 @@ function buildWord() {
   }
 
 
-  letters.push(letter);
+  letters.push(
+    letter
+  );
 }
 
 
@@ -385,7 +381,8 @@ function buildWord() {
 function buildLetter(
   char,
   x,
-  y
+  y,
+  size
 ) {
 
   let contours =
@@ -393,7 +390,7 @@ function buildLetter(
       char,
       x,
       y,
-      fontSize,
+      size,
       {
         sampleFactor: 0.35,
         simplifyThreshold: 0
@@ -406,12 +403,16 @@ function buildLetter(
   let allPoints = [];
 
 
-  for (let contour of contours) {
+  for (
+    let contour of contours
+  ) {
 
     let pts = [];
 
 
-    for (let p of contour) {
+    for (
+      let p of contour
+    ) {
 
       let pt = {
 
@@ -426,9 +427,14 @@ function buildLetter(
       };
 
 
-      pts.push(pt);
+      pts.push(
+        pt
+      );
 
-      allPoints.push(pt);
+
+      allPoints.push(
+        pt
+      );
     }
 
 
@@ -464,7 +470,9 @@ function getLetterBounds(letter) {
   let maxY = -Infinity;
 
 
-  for (let p of letter.points) {
+  for (
+    let p of letter.points
+  ) {
 
     minX =
       min(
@@ -515,10 +523,10 @@ function getLetterBounds(letter) {
 
 
 // ==================================================
-// AVAILABLE SPACE
+// CHOOSE PRESSURE POINT
 // ==================================================
 
-function getAvailableSpace(letter) {
+function chooseImpactPoint(letter) {
 
   let bounds =
     getLetterBounds(
@@ -526,158 +534,48 @@ function getAvailableSpace(letter) {
     );
 
 
+  // We still need a position where the breath
+  // "lands", because a microphone cannot detect
+  // spatial position.
+  //
+  // But unlike before, this does NOT choose
+  // a random movement direction.
+  //
+  // Keep the point away from extreme edges.
+
+  let x =
+    random(
+      bounds.minX +
+      bounds.w * 0.22,
+
+      bounds.maxX -
+      bounds.w * 0.22
+    );
+
+
+  let y =
+    random(
+      bounds.minY +
+      bounds.h * 0.18,
+
+      bounds.maxY -
+      bounds.h * 0.18
+    );
+
+
   return {
 
-    left:
-      bounds.minX -
-      canvasPaddingX,
+    x: x,
+    y: y,
 
-
-    right:
-      width -
-      canvasPaddingX -
-      bounds.maxX,
-
-
-    top:
-      bounds.minY -
-      canvasPaddingTop,
-
-
-    bottom:
-      min(
-        height,
-        getVisibleBottom()
-      ) -
-      canvasPaddingBottom -
-      bounds.maxY
-  };
-}
-
-
-// ==================================================
-// CHOOSE REGION
-// ==================================================
-
-function chooseRegion(letter) {
-
-  let space =
-    getAvailableSpace(
-      letter
-    );
-
-
-  let regions = [
-
-    {
-      id: 0,
-
-      score:
-        max(space.left, 0) +
-        max(space.top, 0)
-    },
-
-    {
-      id: 1,
-
-      score:
-        max(space.right, 0) +
-        max(space.top, 0)
-    },
-
-    {
-      id: 2,
-
-      score:
-        max(space.left, 0) * 2
-    },
-
-    {
-      id: 3,
-
-      score:
-        max(space.right, 0) * 2
-    },
-
-    {
-      id: 4,
-
-      score:
-        max(space.left, 0) +
-        max(space.bottom, 0)
-    },
-
-    {
-      id: 5,
-
-      score:
-        max(space.right, 0) +
-        max(space.bottom, 0)
-    }
-  ];
-
-
-  let available =
-    regions.filter(
-      r =>
-        r.id !== lastRegion &&
-        r.score > 10
-    );
-
-
-  if (
-    available.length === 0
-  ) {
-
-    available =
-      regions.filter(
-        r =>
-          r.score > 5
-      );
-  }
-
-
-  if (
-    available.length === 0
-  ) {
-
-    available =
-      regions;
-  }
-
-
-  let maxScore =
-    max(
-      available.map(
-        r => r.score
+    // Each breath gets only a tiny material bias.
+    // This is NOT the main direction.
+    biasAngle:
+      random(
+        -PI,
+        PI
       )
-    );
-
-
-  let goodRegions =
-    available.filter(
-      r =>
-        r.score >=
-        maxScore * 0.55
-    );
-
-
-  if (
-    goodRegions.length === 0
-  ) {
-
-    goodRegions =
-      available;
-  }
-
-
-  let chosen =
-    random(
-      goodRegions
-    );
-
-
-  return chosen.id;
+  };
 }
 
 
@@ -690,313 +588,24 @@ function beginBreath(letter) {
   breathBase = [];
 
 
-  for (let p of letter.points) {
+  for (
+    let p of letter.points
+  ) {
 
     breathBase.push({
 
       x: p.hx,
       y: p.hy
+
     });
   }
 
 
-  let bounds =
-    getLetterBounds(
+  breathImpact =
+    chooseImpactPoint(
       letter
     );
-
-
-  let minX =
-    bounds.minX;
-
-  let minY =
-    bounds.minY;
-
-  let w =
-    bounds.w;
-
-  let h =
-    bounds.h;
-
-
-  let region =
-    chooseRegion(
-      letter
-    );
-
-
-  lastRegion =
-    region;
-
-
-  let anchorX;
-  let anchorY;
-  let angle;
-
-
-  // ------------------------------------------------
-  // UPPER LEFT
-  // ------------------------------------------------
-
-  if (region === 0) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.18,
-        0.38
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.12,
-        0.34
-      );
-
-
-    angle =
-      random(
-        -2.45,
-        -1.55
-      );
-  }
-
-
-  // ------------------------------------------------
-  // UPPER RIGHT
-  // ------------------------------------------------
-
-  else if (region === 1) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.62,
-        0.84
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.12,
-        0.36
-      );
-
-
-    angle =
-      random(
-        -1.55,
-        -0.65
-      );
-  }
-
-
-  // ------------------------------------------------
-  // MIDDLE LEFT
-  // ------------------------------------------------
-
-  else if (region === 2) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.12,
-        0.34
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.38,
-        0.62
-      );
-
-
-    angle =
-      random(
-        2.55,
-        3.35
-      );
-  }
-
-
-  // ------------------------------------------------
-  // MIDDLE RIGHT
-  // ------------------------------------------------
-
-  else if (region === 3) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.64,
-        0.88
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.38,
-        0.64
-      );
-
-
-    angle =
-      random(
-        -0.35,
-        0.45
-      );
-  }
-
-
-  // ------------------------------------------------
-  // LOWER LEFT
-  // ------------------------------------------------
-
-  else if (region === 4) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.18,
-        0.44
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.66,
-        0.88
-      );
-
-
-    angle =
-      random(
-        1.8,
-        2.55
-      );
-  }
-
-
-  // ------------------------------------------------
-  // LOWER RIGHT
-  // ------------------------------------------------
-
-  else {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.56,
-        0.82
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.66,
-        0.88
-      );
-
-
-    angle =
-      random(
-        0.55,
-        1.25
-      );
-  }
-
-
-  // ------------------------------------------------
-  // MAIN SMEAR
-  // ------------------------------------------------
-
-  activeDrag = {
-
-    ax: anchorX,
-    ay: anchorY,
-
-    angle: angle,
-
-    distance: 0,
-
-    radius:
-      random(
-        mainRadiusMin,
-        mainRadiusMax
-      ),
-
-    strength:
-      random(
-        0.85,
-        1.1
-      )
-  };
-
-
-  // ------------------------------------------------
-  // SECONDARY SMEAR
-  // ------------------------------------------------
-
-  secondaryDrag = {
-
-    ax:
-      anchorX +
-      random(
-        -45,
-        45
-      ),
-
-    ay:
-      anchorY +
-      random(
-        -45,
-        45
-      ),
-
-    angle:
-      angle +
-      random(
-        -0.45,
-        0.45
-      ),
-
-    distance: 0,
-
-    radius:
-      random(
-        secondaryRadiusMin,
-        secondaryRadiusMax
-      ),
-
-    strength:
-      random(
-        0.25,
-        0.45
-      )
-  };
 }
-
-
 // ==================================================
 // UPDATE BREATH
 // ==================================================
@@ -1015,6 +624,10 @@ function updateBreath() {
     letters[0];
 
 
+  // ==================================================
+  // RAW BREATH ABOVE AMBIENT
+  // ==================================================
+
   let aboveAmbient =
     max(
       smoothLevel -
@@ -1023,15 +636,31 @@ function updateBreath() {
     );
 
 
-  // ------------------------------------------------
-  // BREATH STRENGTH
-  // ------------------------------------------------
+  // ==================================================
+  // MORE SENSITIVE BREATH MAPPING
+  // ==================================================
+  //
+  // We want much more useful separation between:
+  //
+  // soft
+  // medium
+  // strong
+  //
+  // rather than quickly reaching 1.
+  // ==================================================
+
+  let sensitivityRange =
+    max(
+      startThreshold * 3.8,
+      0.035
+    );
+
 
   breathLevel =
     map(
       aboveAmbient,
       stopThreshold,
-      startThreshold * 2.2,
+      sensitivityRange,
       0,
       1
     );
@@ -1045,16 +674,19 @@ function updateBreath() {
     );
 
 
+  // Slight curve gives us more resolution
+  // in the weak / medium range.
+
   breathLevel =
     pow(
       breathLevel,
-      0.85
+      1.15
     );
 
 
-  // ------------------------------------------------
+  // ==================================================
   // START BREATH
-  // ------------------------------------------------
+  // ==================================================
 
   if (
     !isBlowing &&
@@ -1062,10 +694,13 @@ function updateBreath() {
       startThreshold
   ) {
 
-    isBlowing = true;
+    isBlowing =
+      true;
 
-    quietFrames = 0;
-    blockedFrames = 0;
+
+    quietFrames =
+      0;
+
 
     beginBreath(
       letter
@@ -1073,9 +708,9 @@ function updateBreath() {
   }
 
 
-  // ------------------------------------------------
+  // ==================================================
   // STOP BREATH
-  // ------------------------------------------------
+  // ==================================================
 
   if (isBlowing) {
 
@@ -1088,7 +723,8 @@ function updateBreath() {
 
     } else {
 
-      quietFrames = 0;
+      quietFrames =
+        0;
     }
 
 
@@ -1096,15 +732,21 @@ function updateBreath() {
       quietFrames > 10
     ) {
 
-      isBlowing = false;
+      isBlowing =
+        false;
 
-      quietFrames = 0;
-      blockedFrames = 0;
 
-      breathBase = [];
+      quietFrames =
+        0;
 
-      activeDrag = null;
-      secondaryDrag = null;
+
+      breathBase =
+        [];
+
+
+      breathImpact =
+        null;
+
 
       return;
     }
@@ -1113,8 +755,7 @@ function updateBreath() {
 
   if (
     !isBlowing ||
-    !activeDrag ||
-    !secondaryDrag ||
+    !breathImpact ||
     breathBase.length === 0
   ) {
 
@@ -1122,25 +763,59 @@ function updateBreath() {
   }
 
 
-  // ------------------------------------------------
-  // ADVANCE SMEAR
-  // ------------------------------------------------
+  // ==================================================
+  // BREATH POWER
+  // ==================================================
+  //
+  // This is where weak and strong breaths
+  // become visually different.
+  // ==================================================
 
-  activeDrag.distance +=
-    breathLevel *
-    dragSpeed *
-    activeDrag.strength;
+  let breathPower =
+    pow(
+      breathLevel,
+      1.35
+    );
 
 
-  secondaryDrag.distance +=
-    breathLevel *
-    dragSpeed *
-    secondaryDrag.strength;
+  // ==================================================
+  // STRENGTH CONTROLS RADIUS
+  // ==================================================
+
+  let currentRadius =
+    lerp(
+      breathRadiusMin,
+      breathRadiusMax,
+      breathPower
+    );
 
 
-  // ------------------------------------------------
-  // ORIGINAL BOTTOM OF CURRENT BREATH
-  // ------------------------------------------------
+  // ==================================================
+  // STRENGTH CONTROLS SPEED
+  // ==================================================
+
+  let currentSpeed =
+    lerp(
+      breathSpeedMin,
+      breathSpeedMax,
+      breathPower
+    );
+
+
+  // At extremely tiny levels,
+  // don't continue accumulating movement.
+
+  if (
+    breathLevel < 0.025
+  ) {
+
+    currentSpeed = 0;
+  }
+
+
+  // ==================================================
+  // ORIGINAL BOTTOM
+  // ==================================================
 
   let baseBottom =
     -Infinity;
@@ -1158,9 +833,9 @@ function updateBreath() {
   }
 
 
-  // ------------------------------------------------
-  // CALCULATE ORGANIC TARGET SHAPE
-  // ------------------------------------------------
+  // ==================================================
+  // PROPOSED SHAPE
+  // ==================================================
 
   let proposedTargets = [];
 
@@ -1171,138 +846,148 @@ function updateBreath() {
     i++
   ) {
 
+    let p =
+      letter.points[i];
+
+
     let base =
       breathBase[i];
 
 
-    let targetX =
-      base.x;
-
-
-    let targetY =
-      base.y;
-
-
     // ----------------------------------------------
-    // MAIN SMEAR
+    // DISTANCE FROM BREATH IMPACT
     // ----------------------------------------------
 
-    let mainDX =
+    let dx =
       base.x -
-      activeDrag.ax;
+      breathImpact.x;
 
 
-    let mainDY =
+    let dy =
       base.y -
-      activeDrag.ay;
+      breathImpact.y;
 
 
-    let mainDistance =
+    let distance =
       sqrt(
-        mainDX * mainDX +
-        mainDY * mainDY
+        dx * dx +
+        dy * dy
       );
 
 
-    let mainInfluence =
+    // ----------------------------------------------
+    // OUTWARD DIRECTION
+    // ----------------------------------------------
+
+    let safeDistance =
+      max(
+        distance,
+        0.001
+      );
+
+
+    let dirX =
+      dx /
+      safeDistance;
+
+
+    let dirY =
+      dy /
+      safeDistance;
+
+
+    // ----------------------------------------------
+    // GAUSSIAN PRESSURE
+    //
+    // Same soft falloff concept we liked before.
+    // ----------------------------------------------
+
+    let influence =
       Math.exp(
         -(
-          mainDistance *
-          mainDistance
+          distance *
+          distance
         ) /
         (
           2 *
-          activeDrag.radius *
-          activeDrag.radius
+          currentRadius *
+          currentRadius
         )
       );
 
 
-    mainInfluence =
+    influence =
       pow(
-        mainInfluence,
+        influence,
         0.95
       );
 
 
+    // ----------------------------------------------
+    // CUMULATIVE PRESSURE
+    //
+    // Start from current hx/hy so pressure
+    // keeps accumulating while blowing.
+    // ----------------------------------------------
+
+    let targetX =
+      p.hx;
+
+
+    let targetY =
+      p.hy;
+
+
     targetX +=
-      cos(
-        activeDrag.angle
-      ) *
-      activeDrag.distance *
-      mainInfluence;
+      dirX *
+      currentSpeed *
+      influence;
 
 
     targetY +=
+      dirY *
+      currentSpeed *
+      influence;
+
+
+    // ----------------------------------------------
+    // SUBTLE MATERIAL FLOW BIAS
+    //
+    // Prevents a mathematically perfect
+    // radial balloon effect.
+    //
+    // It is deliberately much weaker than
+    // the outward pressure.
+    // ----------------------------------------------
+
+    let biasX =
+      cos(
+        breathImpact.biasAngle
+      );
+
+
+    let biasY =
       sin(
-        activeDrag.angle
-      ) *
-      activeDrag.distance *
-      mainInfluence;
-
-
-    // ----------------------------------------------
-    // SECONDARY SMEAR
-    // ----------------------------------------------
-
-    let secondaryDX =
-      base.x -
-      secondaryDrag.ax;
-
-
-    let secondaryDY =
-      base.y -
-      secondaryDrag.ay;
-
-
-    let secondaryDistance =
-      sqrt(
-        secondaryDX *
-        secondaryDX +
-        secondaryDY *
-        secondaryDY
-      );
-
-
-    let secondaryInfluence =
-      Math.exp(
-        -(
-          secondaryDistance *
-          secondaryDistance
-        ) /
-        (
-          2 *
-          secondaryDrag.radius *
-          secondaryDrag.radius
-        )
-      );
-
-
-    secondaryInfluence =
-      pow(
-        secondaryInfluence,
-        1.08
+        breathImpact.biasAngle
       );
 
 
     targetX +=
-      cos(
-        secondaryDrag.angle
-      ) *
-      secondaryDrag.distance *
-      secondaryInfluence;
+      biasX *
+      currentSpeed *
+      influence *
+      flowBias;
 
 
     targetY +=
-      sin(
-        secondaryDrag.angle
-      ) *
-      secondaryDrag.distance *
-      secondaryInfluence;
+      biasY *
+      currentSpeed *
+      influence *
+      flowBias;
 
 
     // ----------------------------------------------
-    // SMALL ORGANIC VARIATION
+    // TINY ORGANIC IRREGULARITY
     // ----------------------------------------------
 
     let variationX =
@@ -1343,32 +1028,35 @@ function updateBreath() {
 
     targetX +=
       variationX *
-      breathLevel *
-      mainInfluence *
-      1.5;
+      organicAmount *
+      currentSpeed *
+      influence *
+      0.15;
 
 
     targetY +=
       variationY *
-      breathLevel *
-      mainInfluence *
-      1.5;
+      organicAmount *
+      currentSpeed *
+      influence *
+      0.15;
 
 
     proposedTargets.push({
 
       x: targetX,
       y: targetY
+
     });
   }
 
 
-  // ------------------------------------------------
-  // KEEP WHOLE ORGANIC SHAPE ON BASELINE
+  // ==================================================
+  // KEEP THE WHOLE LETTER ON THE BASELINE
   //
-  // No points are pinned.
-  // The shape is translated as one unit vertically.
-  // ------------------------------------------------
+  // Same successful logic as before.
+  // No individual points are pinned.
+  // ==================================================
 
   let proposedBottom =
     -Infinity;
@@ -1400,51 +1088,20 @@ function updateBreath() {
   }
 
 
-  // ------------------------------------------------
+  // ==================================================
   // SAFE DEFORMATION
-  // ------------------------------------------------
+  // ==================================================
 
   let safeScale =
     getSafeDeformationScale(
-      breathBase,
+      letter.points,
       proposedTargets
     );
 
 
-  if (
-    safeScale < 0.15
-  ) {
-
-    blockedFrames++;
-
-  } else {
-
-    blockedFrames = 0;
-  }
-
-
-  // ------------------------------------------------
-  // CHANGE REGION IF BLOCKED
-  // ------------------------------------------------
-
-  if (
-    blockedFrames >=
-      blockedFramesBeforeNewDrag
-  ) {
-
-    blockedFrames = 0;
-
-    beginBreath(
-      letter
-    );
-
-    return;
-  }
-
-
-  // ------------------------------------------------
+  // ==================================================
   // APPLY TARGET
-  // ------------------------------------------------
+  // ==================================================
 
   for (
     let i = 0;
@@ -1456,62 +1113,43 @@ function updateBreath() {
       letter.points[i];
 
 
-    let base =
-      breathBase[i];
-
-
-    let proposed =
+    let target =
       proposedTargets[i];
 
 
     let dx =
-      proposed.x -
-      base.x;
+      target.x -
+      p.hx;
 
 
     let dy =
-      proposed.y -
-      base.y;
+      target.y -
+      p.hy;
 
 
-    let safeTargetX =
-      base.x +
+    p.hx +=
       dx *
       safeScale;
 
 
-    let safeTargetY =
-      base.y +
+    p.hy +=
       dy *
       safeScale;
-
-
-    p.hx =
-      lerp(
-        p.hx,
-        safeTargetX,
-        0.11
-      );
-
-
-    p.hy =
-      lerp(
-        p.hy,
-        safeTargetY,
-        0.11
-      );
   }
 }
+
+
 // ==================================================
 // SAFE DEFORMATION SCALE
 // ==================================================
 
 function getSafeDeformationScale(
-  basePoints,
+  currentPoints,
   targetPoints
 ) {
 
-  let safeScale = 1;
+  let safeScale =
+    1;
 
 
   let leftBoundary =
@@ -1537,12 +1175,12 @@ function getSafeDeformationScale(
 
   for (
     let i = 0;
-    i < basePoints.length;
+    i < currentPoints.length;
     i++
   ) {
 
-    let base =
-      basePoints[i];
+    let current =
+      currentPoints[i];
 
 
     let target =
@@ -1551,12 +1189,12 @@ function getSafeDeformationScale(
 
     let dx =
       target.x -
-      base.x;
+      current.hx;
 
 
     let dy =
       target.y -
-      base.y;
+      current.hy;
 
 
     // LEFT
@@ -1564,11 +1202,13 @@ function getSafeDeformationScale(
     if (dx < 0) {
 
       let available =
-        base.x -
+        current.hx -
         leftBoundary;
 
 
-      if (available <= 0) {
+      if (
+        available <= 0
+      ) {
 
         safeScale = 0;
 
@@ -1589,10 +1229,12 @@ function getSafeDeformationScale(
 
       let available =
         rightBoundary -
-        base.x;
+        current.hx;
 
 
-      if (available <= 0) {
+      if (
+        available <= 0
+      ) {
 
         safeScale = 0;
 
@@ -1612,11 +1254,13 @@ function getSafeDeformationScale(
     if (dy < 0) {
 
       let available =
-        base.y -
+        current.hy -
         topBoundary;
 
 
-      if (available <= 0) {
+      if (
+        available <= 0
+      ) {
 
         safeScale = 0;
 
@@ -1637,10 +1281,12 @@ function getSafeDeformationScale(
 
       let available =
         bottomBoundary -
-        base.y;
+        current.hy;
 
 
-      if (available <= 0) {
+      if (
+        available <= 0
+      ) {
 
         safeScale = 0;
 
@@ -1740,11 +1386,12 @@ function updatePhysics() {
   }
 
 
-  // ------------------------------------------------
-  // SAFE PHYSICS
-  // ------------------------------------------------
+  // ==================================================
+  // KEEP PHYSICS INSIDE CANVAS
+  // ==================================================
 
-  let physicsScale = 1;
+  let physicsScale =
+    1;
 
 
   let leftBoundary =
@@ -1792,8 +1439,6 @@ function updatePhysics() {
       p.y;
 
 
-    // LEFT
-
     if (dx < 0) {
 
       let available =
@@ -1815,8 +1460,6 @@ function updatePhysics() {
       }
     }
 
-
-    // RIGHT
 
     if (dx > 0) {
 
@@ -1840,8 +1483,6 @@ function updatePhysics() {
     }
 
 
-    // TOP
-
     if (dy < 0) {
 
       let available =
@@ -1863,8 +1504,6 @@ function updatePhysics() {
       }
     }
 
-
-    // BOTTOM
 
     if (dy > 0) {
 
@@ -1897,9 +1536,9 @@ function updatePhysics() {
     );
 
 
-  // ------------------------------------------------
-  // APPLY PHYSICS
-  // ------------------------------------------------
+  // ==================================================
+  // APPLY
+  // ==================================================
 
   for (
     let i = 0;
@@ -1933,8 +1572,6 @@ function updatePhysics() {
       p.vy;
   }
 }
-
-
 // ==================================================
 // DRAW WORD
 // ==================================================
@@ -1974,7 +1611,7 @@ function drawLetter(letter) {
   beginShape();
 
 
-  // Outer contour
+  // OUTER
 
   for (
     let p of letter.contours[0]
@@ -1987,7 +1624,7 @@ function drawLetter(letter) {
   }
 
 
-  // Inner contours / holes
+  // HOLES
 
   for (
     let i = 1;
@@ -2018,338 +1655,68 @@ function drawLetter(letter) {
 
 
 // ==================================================
-// NAVIGATION LAYOUT
+// BREATH METER
 // ==================================================
 
-function getNavigationLayout() {
+function drawBreathMeter() {
 
-  let buttonSize =
-    width < 500
-      ? 28
-      : 32;
-
-  let margin =
-    width < 500
-      ? 16
-      : 24;
-
-  let visibleBottom =
+  let meterWidth =
     min(
-      height,
-      getVisibleBottom()
+      180,
+      width - 40
     );
 
-  // Bottom of buttons = bottom of letter
-  let buttonY =
-  visibleBottom -
-  buttonSize -
-  2;
 
-  return {
-
-    buttonSize:
-      buttonSize,
-
-    margin:
-      margin,
-
-    radius:
-      7,
-
-    leftX:
-      margin,
-
-    rightX:
-      width -
-      margin -
-      buttonSize,
-
-    y:
-      buttonY
-  };
-}
+  let meterHeight =
+    5;
 
 
-// ==================================================
-// DRAW NAVIGATION
-// ==================================================
+  let x =
+    20;
 
-function drawNavigation() {
 
-  let nav =
-    getNavigationLayout();
+  let y =
+    24;
 
 
   push();
 
-  noFill();
 
-  stroke(0);
+  // Background
 
-  strokeWeight(1.5);
+  noStroke();
 
-  strokeCap(ROUND);
+  fill(
+    255,
+    35
+  );
 
-  strokeJoin(ROUND);
-
-
-  // LEFT BUTTON
 
   rect(
-    nav.leftX,
-    nav.y,
-    nav.buttonSize,
-    nav.buttonSize,
-    nav.radius
+    x,
+    y,
+    meterWidth,
+    meterHeight,
+    meterHeight / 2
   );
 
 
-  drawArrow(
-    nav.leftX +
-      nav.buttonSize / 2,
+  // Current breath
 
-    nav.y +
-      nav.buttonSize / 2,
+  fill(255);
 
-    -1,
-
-    nav.buttonSize
-  );
-
-
-  // RIGHT BUTTON
 
   rect(
-    nav.rightX,
-    nav.y,
-    nav.buttonSize,
-    nav.buttonSize,
-    nav.radius
-  );
-
-
-  drawArrow(
-    nav.rightX +
-      nav.buttonSize / 2,
-
-    nav.y +
-      nav.buttonSize / 2,
-
-    1,
-
-    nav.buttonSize
+    x,
+    y,
+    meterWidth *
+      breathLevel,
+    meterHeight,
+    meterHeight / 2
   );
 
 
   pop();
-}
-
-
-// ==================================================
-// DRAW ARROW
-// ==================================================
-
-function drawArrow(
-  cx,
-  cy,
-  direction,
-  buttonSize
-) {
-
-  let shaft =
-    buttonSize * 0.30;
-
-
-  let head =
-    buttonSize * 0.11;
-
-
-  let startX =
-    cx -
-    direction *
-    shaft / 2;
-
-
-  let endX =
-    cx +
-    direction *
-    shaft / 2;
-
-
-  line(
-    startX,
-    cy,
-    endX,
-    cy
-  );
-
-
-  line(
-    endX,
-    cy,
-
-    endX -
-      direction *
-      head,
-
-    cy -
-      head
-  );
-
-
-  line(
-    endX,
-    cy,
-
-    endX -
-      direction *
-      head,
-
-    cy +
-      head
-  );
-}
-
-
-// ==================================================
-// NEXT LETTER
-// ==================================================
-
-function nextLetter() {
-
-  currentLetterIndex =
-    (
-      currentLetterIndex + 1
-    ) %
-    alphabet.length;
-
-
-  buildWord();
-
-  resetBreathState();
-}
-
-
-// ==================================================
-// PREVIOUS LETTER
-// ==================================================
-
-function previousLetter() {
-
-  currentLetterIndex--;
-
-
-  if (
-    currentLetterIndex < 0
-  ) {
-
-    currentLetterIndex =
-      alphabet.length - 1;
-  }
-
-
-  buildWord();
-
-  resetBreathState();
-}
-
-
-// ==================================================
-// NAVIGATION HIT TEST
-// ==================================================
-
-function navigationHitTest() {
-
-  let nav =
-    getNavigationLayout();
-
-
-  let extra =
-    width < 500
-      ? 10
-      : 4;
-
-
-  // LEFT
-
-  if (
-    mouseX >=
-      nav.leftX - extra &&
-
-    mouseX <=
-      nav.leftX +
-      nav.buttonSize +
-      extra &&
-
-    mouseY >=
-      nav.y - extra &&
-
-    mouseY <=
-      nav.y +
-      nav.buttonSize +
-      extra
-  ) {
-
-    previousLetter();
-
-    return true;
-  }
-
-
-  // RIGHT
-
-  if (
-    mouseX >=
-      nav.rightX - extra &&
-
-    mouseX <=
-      nav.rightX +
-      nav.buttonSize +
-      extra &&
-
-    mouseY >=
-      nav.y - extra &&
-
-    mouseY <=
-      nav.y +
-      nav.buttonSize +
-      extra
-  ) {
-
-    nextLetter();
-
-    return true;
-  }
-
-
-  return false;
-}
-
-
-// ==================================================
-// KEYBOARD NAVIGATION
-// ==================================================
-
-function keyPressed() {
-
-  if (
-    keyCode === RIGHT_ARROW
-  ) {
-
-    nextLetter();
-
-    return false;
-  }
-
-
-  if (
-    keyCode === LEFT_ARROW
-  ) {
-
-    previousLetter();
-
-    return false;
-  }
 }
 
 
@@ -2577,8 +1944,7 @@ function updateMicLevel() {
   );
 
 
-  let sum =
-    0;
+  let sum = 0;
 
 
   for (
@@ -2618,18 +1984,10 @@ function updateMicLevel() {
 
 
 // ==================================================
-// MOUSE / TOUCH
+// START ON TAP
 // ==================================================
 
 function mousePressed() {
-
-  if (
-    navigationHitTest()
-  ) {
-
-    return false;
-  }
-
 
   if (
     !audioStarted
@@ -2646,14 +2004,6 @@ function mousePressed() {
 function touchStarted() {
 
   if (
-    navigationHitTest()
-  ) {
-
-    return false;
-  }
-
-
-  if (
     !audioStarted
   ) {
 
@@ -2666,7 +2016,7 @@ function touchStarted() {
 
 
 // ==================================================
-// RESET BREATH
+// RESET
 // ==================================================
 
 function resetBreathState() {
@@ -2679,7 +2029,7 @@ function resetBreathState() {
     0;
 
 
-  blockedFrames =
+  breathLevel =
     0;
 
 
@@ -2687,20 +2037,8 @@ function resetBreathState() {
     [];
 
 
-  activeDrag =
+  breathImpact =
     null;
-
-
-  secondaryDrag =
-    null;
-
-
-  lastRegion =
-    -1;
-
-
-  breathLevel =
-    0;
 }
 
 
@@ -2723,7 +2061,7 @@ function windowResized() {
 
 
 // ==================================================
-// SAFARI VISUAL VIEWPORT
+// SAFARI VIEWPORT
 // ==================================================
 
 if (
