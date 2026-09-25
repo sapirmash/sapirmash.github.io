@@ -82,9 +82,6 @@ let secondaryDrag = null;
 // REGION / BOUNDARY LOGIC
 // ==================================================
 
-let blockedFrames = 0;
-let blockedFramesBeforeNewDrag = 5;
-
 let lastRegion = -1;
 
 
@@ -885,8 +882,6 @@ function updateBreath() {
 
     quietFrames = 0;
 
-    blockedFrames = 0;
-
     beginBreath(letter);
   }
 
@@ -1238,33 +1233,6 @@ function updateBreath() {
     );
 
 
-  // ==================================================
-  // BLOCKED DIRECTION
-  // ==================================================
-
-  if (
-    safeScale < 0.15
-  ) {
-
-    blockedFrames++;
-
-  } else {
-
-    blockedFrames = 0;
-  }
-
-
-  if (
-    blockedFrames >=
-    blockedFramesBeforeNewDrag
-  ) {
-
-    blockedFrames = 0;
-
-    beginBreath(letter);
-
-    return;
-  }
 
 
   // ==================================================
