@@ -161,12 +161,28 @@ function draw() {
     updateBreath();
   }
 
-
   updatePhysics();
 
   drawWord();
 
   drawNavigation();
+
+    push();
+  
+  fill(255);
+  noStroke();
+  
+  textSize(14);
+  textAlign(LEFT, TOP);
+  
+  text(
+    "breath: " +
+    breathLevel.toFixed(2),
+    20,
+    20
+  );
+  
+  pop();
 }
 
 
