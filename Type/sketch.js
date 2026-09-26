@@ -708,6 +708,9 @@ function chooseRegion(letter) {
 
 function beginBreath(letter) {
 
+  if (!letter) return;
+
+
   breathBase = [];
 
 
@@ -717,33 +720,37 @@ function beginBreath(letter) {
 
       x: p.hx,
       y: p.hy
+
     });
   }
 
 
-  let bounds =
-    getLetterBounds(
-      letter
-    );
+  let space =
+    getAvailableSpace(letter);
 
 
   let minX =
-    bounds.minX;
+    space.minX;
+
+  let maxX =
+    space.maxX;
 
   let minY =
-    bounds.minY;
+    space.minY;
+
+  let maxY =
+    space.maxY;
+
 
   let w =
-    bounds.w;
+    maxX - minX;
 
   let h =
-    bounds.h;
+    maxY - minY;
 
 
   let region =
-    chooseRegion(
-      letter
-    );
+    chooseRegion(letter);
 
 
   lastRegion =
@@ -755,202 +762,127 @@ function beginBreath(letter) {
   let angle;
 
 
-  // ------------------------------------------------
-  // UPPER LEFT
-  // ------------------------------------------------
+  // ==================================================
+  // KEEP RANDOM REGION / RANDOM ANCHOR POSITION
+  // ==================================================
 
   if (region === 0) {
 
+    // UPPER LEFT
+
     anchorX =
-      minX +
-      w *
       random(
-        0.18,
-        0.38
+        minX + w * 0.10,
+        minX + w * 0.45
       );
 
+    anchorY =
+      random(
+        minY + h * 0.05,
+        minY + h * 0.40
+      );
+
+  } else if (region === 1) {
+
+    // UPPER RIGHT
+
+    anchorX =
+      random(
+        minX + w * 0.55,
+        minX + w * 0.90
+      );
 
     anchorY =
-      minY +
-      h *
       random(
-        0.12,
-        0.34
+        minY + h * 0.05,
+        minY + h * 0.40
+      );
+
+  } else if (region === 2) {
+
+    // MIDDLE LEFT
+
+    anchorX =
+      random(
+        minX + w * 0.05,
+        minX + w * 0.40
+      );
+
+    anchorY =
+      random(
+        minY + h * 0.30,
+        minY + h * 0.70
+      );
+
+  } else if (region === 3) {
+
+    // MIDDLE RIGHT
+
+    anchorX =
+      random(
+        minX + w * 0.60,
+        minX + w * 0.95
+      );
+
+    anchorY =
+      random(
+        minY + h * 0.30,
+        minY + h * 0.70
+      );
+
+  } else if (region === 4) {
+
+    // LOWER LEFT
+
+    anchorX =
+      random(
+        minX + w * 0.08,
+        minX + w * 0.45
+      );
+
+    anchorY =
+      random(
+        minY + h * 0.62,
+        minY + h * 0.92
+      );
+
+  } else {
+
+    // LOWER RIGHT
+
+    anchorX =
+      random(
+        minX + w * 0.55,
+        minX + w * 0.92
+      );
+
+    anchorY =
+      random(
+        minY + h * 0.62,
+        minY + h * 0.92
       );
   }
 
 
-  // ------------------------------------------------
-  // UPPER RIGHT
-  // ------------------------------------------------
+  // ==================================================
+  // NEW: CONSISTENT BREATH DIRECTION
+  //
+  // Slightly upward-right.
+  // If you want it even more stable,
+  // remove the random(...) part.
+  // ==================================================
 
-  else if (region === 1) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.62,
-        0.84
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.12,
-        0.36
-      );
-  }
+  angle =
+    -0.35 +
+    random(
+      -0.10,
+      0.10
+    );
 
 
-  // ------------------------------------------------
-  // MIDDLE LEFT
-  // ------------------------------------------------
-
-  else if (region === 2) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.12,
-        0.34
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.38,
-        0.62
-      );
-
-  }
-
-
-  // ------------------------------------------------
-  // MIDDLE RIGHT
-  // ------------------------------------------------
-
-  else if (region === 3) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.64,
-        0.88
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.38,
-        0.64
-      );
-
-  }
-
-
-  // ------------------------------------------------
-  // LOWER LEFT
-  // ------------------------------------------------
-
-  else if (region === 4) {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.18,
-        0.44
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.66,
-        0.88
-      );
-  }
-
-
-  // ------------------------------------------------
-  // LOWER RIGHT
-  // ------------------------------------------------
-
-  else {
-
-    anchorX =
-      minX +
-      w *
-      random(
-        0.56,
-        0.82
-      );
-
-
-    anchorY =
-      minY +
-      h *
-      random(
-        0.66,
-        0.88
-      );
-  }
-
-  // ------------------------------------------------
-// DIRECTION FROM IMPACT POSITION
-// ------------------------------------------------
-
-// Center of the current letter
-
-let centerX =
-  minX + w * 0.5;
-
-let centerY =
-  minY + h * 0.5;
-
-
-// Direction from the center of the letter
-// toward the point where the breath landed
-
-let directionX =
-  anchorX - centerX;
-
-let directionY =
-  anchorY - centerY;
-
-
-// Convert that direction into an angle
-
-angle =
-  atan2(
-    directionY,
-    directionX
-  );
-
-
-// Add only a TINY amount of variation
-// so the result doesn't feel mechanical
-
-angle +=
-  random(
-    -0.12,
-    0.12
-  );
-
-
-  // ------------------------------------------------
+  // ==================================================
   // MAIN SMEAR
-  // ------------------------------------------------
+  // ==================================================
 
   activeDrag = {
 
@@ -975,9 +907,9 @@ angle +=
   };
 
 
-  // ------------------------------------------------
+  // ==================================================
   // SECONDARY SMEAR
-  // ------------------------------------------------
+  // ==================================================
 
   secondaryDrag = {
 
@@ -1017,7 +949,6 @@ angle +=
       )
   };
 }
-
 
 // ==================================================
 // UPDATE BREATH
