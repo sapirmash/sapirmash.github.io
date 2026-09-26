@@ -169,7 +169,7 @@ function draw() {
 
     push();
   
-  fill(255);
+  fill(0);
   noStroke();
   
   textSize(14);
