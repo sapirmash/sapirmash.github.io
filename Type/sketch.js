@@ -777,13 +777,6 @@ function beginBreath(letter) {
         0.12,
         0.34
       );
-
-
-    angle =
-      random(
-        -2.45,
-        -1.55
-      );
   }
 
 
@@ -808,13 +801,6 @@ function beginBreath(letter) {
       random(
         0.12,
         0.36
-      );
-
-
-    angle =
-      random(
-        -1.55,
-        -0.65
       );
   }
 
@@ -842,12 +828,6 @@ function beginBreath(letter) {
         0.62
       );
 
-
-    angle =
-      random(
-        2.55,
-        3.35
-      );
   }
 
 
@@ -874,12 +854,6 @@ function beginBreath(letter) {
         0.64
       );
 
-
-    angle =
-      random(
-        -0.35,
-        0.45
-      );
   }
 
 
@@ -904,13 +878,6 @@ function beginBreath(letter) {
       random(
         0.66,
         0.88
-      );
-
-
-    angle =
-      random(
-        1.8,
-        2.55
       );
   }
 
@@ -937,14 +904,48 @@ function beginBreath(letter) {
         0.66,
         0.88
       );
-
-
-    angle =
-      random(
-        0.55,
-        1.25
-      );
   }
+
+  // ------------------------------------------------
+// DIRECTION FROM IMPACT POSITION
+// ------------------------------------------------
+
+// Center of the current letter
+
+let centerX =
+  minX + w * 0.5;
+
+let centerY =
+  minY + h * 0.5;
+
+
+// Direction from the center of the letter
+// toward the point where the breath landed
+
+let directionX =
+  anchorX - centerX;
+
+let directionY =
+  anchorY - centerY;
+
+
+// Convert that direction into an angle
+
+angle =
+  atan2(
+    directionY,
+    directionX
+  );
+
+
+// Add only a TINY amount of variation
+// so the result doesn't feel mechanical
+
+angle +=
+  random(
+    -0.12,
+    0.12
+  );
 
 
   // ------------------------------------------------
