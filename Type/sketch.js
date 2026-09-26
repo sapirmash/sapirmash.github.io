@@ -198,7 +198,7 @@ function getResponsiveFontSize() {
 
   let maxSize =
     width < 500
-      ? width * 0.70
+      ? width * 0.60
       : 350;
 
 
