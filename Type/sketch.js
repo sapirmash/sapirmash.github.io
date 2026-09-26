@@ -1061,11 +1061,31 @@ function updateBreath() {
     );
 
 
-  breathLevel =
-    pow(
-      breathLevel,
-      0.85
-    );
+// NEW iPhone-sensitive mapping
+
+breathLevel =
+  map(
+    breathLevel,
+    0.60,
+    1.0,
+    0.05,
+    1.0
+  );
+
+
+breathLevel =
+  constrain(
+    breathLevel,
+    0,
+    1
+  );
+
+
+breathLevel =
+  pow(
+    breathLevel,
+    1.15
+  );
 
 
   // ------------------------------------------------
