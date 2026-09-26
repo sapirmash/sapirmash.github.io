@@ -17,7 +17,7 @@ let currentLetterIndex = 0;
 
 let letters = [];
 
-let col = "#000000";
+let col = "#ffffff";
 
 let fontSize = 350;
 
@@ -147,7 +147,7 @@ async function setup() {
 function draw() {
 
 
-  background(250);
+  background(0);
 
 
   if (audioStarted) {
@@ -2153,7 +2153,7 @@ function drawNavigation() {
 
   noFill();
 
-  stroke(0);
+  stroke(255);
 
   strokeWeight(1.5);
 
