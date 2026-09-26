@@ -171,23 +171,6 @@ function draw() {
   drawWord();
 
   drawNavigation();
-
-    push();
-  
-  fill(0);
-  noStroke();
-  
-  textSize(14);
-  textAlign(LEFT, TOP);
-  
-  text(
-    "breath: " +
-    breathLevel.toFixed(2),
-    20,
-    20
-  );
-  
-  pop();
 }
 
 
