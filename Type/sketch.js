@@ -691,9 +691,6 @@ function chooseRegion(letter) {
 
 function beginBreath(letter) {
 
-  if (!letter) return;
-
-
   breathBase = [];
 
 
@@ -708,32 +705,37 @@ function beginBreath(letter) {
   }
 
 
-  let space =
-    getAvailableSpace(letter);
+  // ==================================================
+  // GET LETTER BOUNDS
+  // ==================================================
+
+  let bounds =
+    getLetterBounds(
+      letter
+    );
 
 
   let minX =
-    space.minX;
-
-  let maxX =
-    space.maxX;
+    bounds.minX;
 
   let minY =
-    space.minY;
-
-  let maxY =
-    space.maxY;
-
+    bounds.minY;
 
   let w =
-    maxX - minX;
+    bounds.w;
 
   let h =
-    maxY - minY;
+    bounds.h;
 
+
+  // ==================================================
+  // CHOOSE RANDOM REGION
+  // ==================================================
 
   let region =
-    chooseRegion(letter);
+    chooseRegion(
+      letter
+    );
 
 
   lastRegion =
@@ -745,114 +747,162 @@ function beginBreath(letter) {
   let angle;
 
 
-  // ==================================================
-  // KEEP RANDOM REGION / RANDOM ANCHOR POSITION
-  // ==================================================
+  // ------------------------------------------------
+  // UPPER LEFT
+  // ------------------------------------------------
 
   if (region === 0) {
 
-    // UPPER LEFT
-
     anchorX =
+      minX +
+      w *
       random(
-        minX + w * 0.10,
-        minX + w * 0.45
+        0.18,
+        0.38
       );
+
 
     anchorY =
+      minY +
+      h *
       random(
-        minY + h * 0.05,
-        minY + h * 0.40
+        0.12,
+        0.34
       );
+  }
 
-  } else if (region === 1) {
 
-    // UPPER RIGHT
+  // ------------------------------------------------
+  // UPPER RIGHT
+  // ------------------------------------------------
+
+  else if (region === 1) {
 
     anchorX =
+      minX +
+      w *
       random(
-        minX + w * 0.55,
-        minX + w * 0.90
+        0.62,
+        0.84
       );
+
 
     anchorY =
+      minY +
+      h *
       random(
-        minY + h * 0.05,
-        minY + h * 0.40
+        0.12,
+        0.36
       );
+  }
 
-  } else if (region === 2) {
 
-    // MIDDLE LEFT
+  // ------------------------------------------------
+  // MIDDLE LEFT
+  // ------------------------------------------------
+
+  else if (region === 2) {
 
     anchorX =
+      minX +
+      w *
       random(
-        minX + w * 0.05,
-        minX + w * 0.40
+        0.12,
+        0.34
       );
+
 
     anchorY =
+      minY +
+      h *
       random(
-        minY + h * 0.30,
-        minY + h * 0.70
+        0.38,
+        0.62
       );
+  }
 
-  } else if (region === 3) {
 
-    // MIDDLE RIGHT
+  // ------------------------------------------------
+  // MIDDLE RIGHT
+  // ------------------------------------------------
+
+  else if (region === 3) {
 
     anchorX =
+      minX +
+      w *
       random(
-        minX + w * 0.60,
-        minX + w * 0.95
+        0.64,
+        0.88
       );
+
 
     anchorY =
+      minY +
+      h *
       random(
-        minY + h * 0.30,
-        minY + h * 0.70
+        0.38,
+        0.64
       );
+  }
 
-  } else if (region === 4) {
 
-    // LOWER LEFT
+  // ------------------------------------------------
+  // LOWER LEFT
+  // ------------------------------------------------
+
+  else if (region === 4) {
 
     anchorX =
+      minX +
+      w *
       random(
-        minX + w * 0.08,
-        minX + w * 0.45
+        0.18,
+        0.44
       );
+
 
     anchorY =
+      minY +
+      h *
       random(
-        minY + h * 0.62,
-        minY + h * 0.92
+        0.66,
+        0.88
       );
+  }
 
-  } else {
 
-    // LOWER RIGHT
+  // ------------------------------------------------
+  // LOWER RIGHT
+  // ------------------------------------------------
+
+  else {
 
     anchorX =
+      minX +
+      w *
       random(
-        minX + w * 0.55,
-        minX + w * 0.92
+        0.56,
+        0.82
       );
 
+
     anchorY =
+      minY +
+      h *
       random(
-        minY + h * 0.62,
-        minY + h * 0.92
+        0.66,
+        0.88
       );
   }
 
 
   // ==================================================
   // NEW: CONSISTENT BREATH DIRECTION
+  // ==================================================
   //
   // Slightly upward-right.
-  // If you want it even more stable,
-  // remove the random(...) part.
+  // Only tiny variation between breaths.
   // ==================================================
 
   angle =
