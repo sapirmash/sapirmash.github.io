@@ -67,6 +67,11 @@ let smoothLevel = 0;
 
 let audioStarted = false;
 
+let isMobile =
+  /iPhone|iPad|iPod|Android/i.test(
+    navigator.userAgent
+  );
+
 
 // ==================================================
 // CALIBRATION
@@ -1061,31 +1066,50 @@ function updateBreath() {
     );
 
 
-// NEW iPhone-sensitive mapping
+// ------------------------------------------------
+// DEVICE-SPECIFIC BREATH RESPONSE
+// ------------------------------------------------
 
-breathLevel =
-  map(
-    breathLevel,
-    0.60,
-    1.0,
-    0.05,
-    1.0
-  );
+if (isMobile) {
+
+  // iPhone / mobile:
+  // expand the compressed microphone range
+
+  breathLevel =
+    map(
+      breathLevel,
+      0.60,
+      1.0,
+      0.05,
+      1.0
+    );
 
 
-breathLevel =
-  constrain(
-    breathLevel,
-    0,
-    1
-  );
+  breathLevel =
+    constrain(
+      breathLevel,
+      0,
+      1
+    );
 
 
-breathLevel =
-  pow(
-    breathLevel,
-    1.15
-  );
+  breathLevel =
+    pow(
+      breathLevel,
+      1.15
+    );
+
+} else {
+
+  // Desktop:
+  // keep the original response
+
+  breathLevel =
+    pow(
+      breathLevel,
+      0.85
+    );
+}
 
 
   // ------------------------------------------------
