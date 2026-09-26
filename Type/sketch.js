@@ -171,6 +171,7 @@ function draw() {
   drawWord();
 
   drawNavigation();
+
 }
 
 
@@ -198,7 +199,7 @@ function getResponsiveFontSize() {
 
   let maxSize =
     width < 500
-      ? width * 0.60
+      ? width * 0.70
       : 350;
 
 
@@ -700,14 +701,9 @@ function beginBreath(letter) {
 
       x: p.hx,
       y: p.hy
-
     });
   }
 
-
-  // ==================================================
-  // GET LETTER BOUNDS
-  // ==================================================
 
   let bounds =
     getLetterBounds(
@@ -727,10 +723,6 @@ function beginBreath(letter) {
   let h =
     bounds.h;
 
-
-  // ==================================================
-  // CHOOSE RANDOM REGION
-  // ==================================================
 
   let region =
     chooseRegion(
@@ -819,6 +811,7 @@ function beginBreath(letter) {
         0.38,
         0.62
       );
+
   }
 
 
@@ -844,6 +837,7 @@ function beginBreath(letter) {
         0.38,
         0.64
       );
+
   }
 
 
@@ -896,26 +890,51 @@ function beginBreath(letter) {
       );
   }
 
+  // ------------------------------------------------
+// DIRECTION FROM IMPACT POSITION
+// ------------------------------------------------
 
-  // ==================================================
-  // NEW: CONSISTENT BREATH DIRECTION
-  // ==================================================
-  //
-  // Slightly upward-right.
-  // Only tiny variation between breaths.
-  // ==================================================
+// Center of the current letter
 
-  angle =
-    -0.35 +
-    random(
-      -0.10,
-      0.10
-    );
+let centerX =
+  minX + w * 0.5;
+
+let centerY =
+  minY + h * 0.5;
 
 
-  // ==================================================
+// Direction from the center of the letter
+// toward the point where the breath landed
+
+let directionX =
+  anchorX - centerX;
+
+let directionY =
+  anchorY - centerY;
+
+
+// Convert that direction into an angle
+
+angle =
+  atan2(
+    directionY,
+    directionX
+  );
+
+
+// Add only a TINY amount of variation
+// so the result doesn't feel mechanical
+
+angle +=
+  random(
+    -0.12,
+    0.12
+  );
+
+
+  // ------------------------------------------------
   // MAIN SMEAR
-  // ==================================================
+  // ------------------------------------------------
 
   activeDrag = {
 
@@ -940,9 +959,9 @@ function beginBreath(letter) {
   };
 
 
-  // ==================================================
+  // ------------------------------------------------
   // SECONDARY SMEAR
-  // ==================================================
+  // ------------------------------------------------
 
   secondaryDrag = {
 
@@ -982,6 +1001,7 @@ function beginBreath(letter) {
       )
   };
 }
+
 
 // ==================================================
 // UPDATE BREATH
