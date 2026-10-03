@@ -18,7 +18,7 @@ let currentLetterIndex = 0;
 
 let letters = [];
 
-let col = "#ffffff";
+let col = "#000000";
 
 let fontSize = 350;
 
@@ -125,6 +125,7 @@ let lastRegion = -1;
 // ==================================================
 
 async function setup() {
+  pixelDensity(Math.min(window.devicePixelRatio || 1, 2));
 
   createCanvas(
     windowWidth,
@@ -148,7 +149,8 @@ async function setup() {
 function draw() {
 
 
-  background(0);
+  background(255);
+  if (!font || !letters.length) return;
 
 
   if (audioStarted) {
@@ -171,7 +173,6 @@ function draw() {
 
   drawWord();
 
-  drawBoundaryGuide();
 
   drawNavigation();
 
@@ -1471,27 +1472,267 @@ secondaryDrag.distance +=
   }
 
 
-  // Limit each point independently. Contact on one side must not stop
-  // points that can still move elsewhere inside the canvas.
-  const bounds=deformationBounds();
-  let requested=0,available=0;
-  for(let i=0;i<letter.points.length;i++){
-    const p=letter.points[i],target=proposedTargets[i];
-    const x=constrain(target.x,bounds.left,bounds.right);
-    const y=constrain(target.y,bounds.top,bounds.bottom);
-    requested+=Math.hypot(target.x-p.hx,target.y-p.hy);
-    available+=Math.hypot(x-p.hx,y-p.hy);
-    p.hx=lerp(p.hx,x,.11);
-    p.hy=lerp(p.hy,y,.11);
+  // ------------------------------------------------
+  // SAFE DEFORMATION
+  // ------------------------------------------------
+
+  let safeScale =
+    getSafeDeformationScale(
+      breathBase,
+      proposedTargets
+    );
+
+
+  if (
+    safeScale < 0.15
+  ) {
+
+    blockedFrames++;
+
+  } else {
+
+    blockedFrames = 0;
   }
-  // Choose another region only when this entire gesture runs out of room.
-  if(requested>letter.points.length*.05 && available/requested<.08)blockedFrames++;
-  else blockedFrames=0;
-  if(blockedFrames>=blockedFramesBeforeNewDrag){blockedFrames=0;beginBreath(letter);}
+
+
+  // ------------------------------------------------
+  // CHANGE REGION IF BLOCKED
+  // ------------------------------------------------
+
+  if (
+    blockedFrames >=
+      blockedFramesBeforeNewDrag
+  ) {
+
+    blockedFrames = 0;
+
+    beginBreath(
+      letter
+    );
+
+    return;
+  }
+
+
+  // ------------------------------------------------
+  // APPLY TARGET
+  // ------------------------------------------------
+
+  for (
+    let i = 0;
+    i < letter.points.length;
+    i++
+  ) {
+
+    let p =
+      letter.points[i];
+
+
+    let base =
+      breathBase[i];
+
+
+    let proposed =
+      proposedTargets[i];
+
+
+    let dx =
+      proposed.x -
+      base.x;
+
+
+    let dy =
+      proposed.y -
+      base.y;
+
+
+    let safeTargetX =
+      base.x +
+      dx *
+      safeScale;
+
+
+    let safeTargetY =
+      base.y +
+      dy *
+      safeScale;
+
+
+    p.hx =
+      lerp(
+        p.hx,
+        safeTargetX,
+        0.11
+      );
+
+
+    p.hy =
+      lerp(
+        p.hy,
+        safeTargetY,
+        0.11
+      );
+  }
 }
-function deformationBounds(){
-  return {left:canvasPaddingX,right:width-canvasPaddingX,top:canvasPaddingTop,
-    bottom:Math.min(height,getVisibleBottom())-canvasPaddingBottom};
+// ==================================================
+// SAFE DEFORMATION SCALE
+// ==================================================
+
+function getSafeDeformationScale(
+  basePoints,
+  targetPoints
+) {
+
+  let safeScale = 1;
+
+
+  let leftBoundary =
+    canvasPaddingX;
+
+
+  let rightBoundary =
+    width -
+    canvasPaddingX;
+
+
+  let topBoundary =
+    canvasPaddingTop;
+
+
+  let bottomBoundary =
+    min(
+      height,
+      getVisibleBottom()
+    ) -
+    canvasPaddingBottom;
+
+
+  for (
+    let i = 0;
+    i < basePoints.length;
+    i++
+  ) {
+
+    let base =
+      basePoints[i];
+
+
+    let target =
+      targetPoints[i];
+
+
+    let dx =
+      target.x -
+      base.x;
+
+
+    let dy =
+      target.y -
+      base.y;
+
+
+    // LEFT
+
+    if (dx < 0) {
+
+      let available =
+        base.x -
+        leftBoundary;
+
+
+      if (available <= 0) {
+
+        safeScale = 0;
+
+      } else {
+
+        safeScale =
+          min(
+            safeScale,
+            available / -dx
+          );
+      }
+    }
+
+
+    // RIGHT
+
+    if (dx > 0) {
+
+      let available =
+        rightBoundary -
+        base.x;
+
+
+      if (available <= 0) {
+
+        safeScale = 0;
+
+      } else {
+
+        safeScale =
+          min(
+            safeScale,
+            available / dx
+          );
+      }
+    }
+
+
+    // TOP
+
+    if (dy < 0) {
+
+      let available =
+        base.y -
+        topBoundary;
+
+
+      if (available <= 0) {
+
+        safeScale = 0;
+
+      } else {
+
+        safeScale =
+          min(
+            safeScale,
+            available / -dy
+          );
+      }
+    }
+
+
+    // BOTTOM
+
+    if (dy > 0) {
+
+      let available =
+        bottomBoundary -
+        base.y;
+
+
+      if (available <= 0) {
+
+        safeScale = 0;
+
+      } else {
+
+        safeScale =
+          min(
+            safeScale,
+            available / dy
+          );
+      }
+    }
+  }
+
+
+  return constrain(
+    safeScale,
+    0,
+    1
+  );
 }
 
 
@@ -1500,18 +1741,268 @@ function deformationBounds(){
 // ==================================================
 
 function updatePhysics() {
-  if(!letters.length)return;
-  const bounds=deformationBounds();
-  for(const p of letters[0].points){
-    p.vx=(p.vx+(p.hx-p.x)*springK)*damping;
-    p.vy=(p.vy+(p.hy-p.y)*springK)*damping;
-    const x=p.x+p.vx,y=p.y+p.vy;
-    p.x=constrain(x,bounds.left,bounds.right);
-    p.y=constrain(y,bounds.top,bounds.bottom);
-    // Stop only the outward component at contact, preserving sliding and
-    // all other points' motion. Inward motion stays free on the next frame.
-    if(x<bounds.left || x>bounds.right)p.vx=0;
-    if(y<bounds.top || y>bounds.bottom)p.vy=0;
+
+  if (
+    letters.length === 0
+  ) {
+
+    return;
+  }
+
+
+  let letter =
+    letters[0];
+
+
+  let nextPositions = [];
+
+
+  for (
+    let p of letter.points
+  ) {
+
+    let ax =
+      (
+        p.hx -
+        p.x
+      ) *
+      springK;
+
+
+    let ay =
+      (
+        p.hy -
+        p.y
+      ) *
+      springK;
+
+
+    let nextVX =
+      (
+        p.vx +
+        ax
+      ) *
+      damping;
+
+
+    let nextVY =
+      (
+        p.vy +
+        ay
+      ) *
+      damping;
+
+
+    nextPositions.push({
+
+      x:
+        p.x +
+        nextVX,
+
+      y:
+        p.y +
+        nextVY,
+
+      vx:
+        nextVX,
+
+      vy:
+        nextVY
+    });
+  }
+
+
+  // ------------------------------------------------
+  // SAFE PHYSICS
+  // ------------------------------------------------
+
+  let physicsScale = 1;
+
+
+  let leftBoundary =
+    canvasPaddingX;
+
+
+  let rightBoundary =
+    width -
+    canvasPaddingX;
+
+
+  let topBoundary =
+    canvasPaddingTop;
+
+
+  let bottomBoundary =
+    min(
+      height,
+      getVisibleBottom()
+    ) -
+    canvasPaddingBottom;
+
+
+  for (
+    let i = 0;
+    i < letter.points.length;
+    i++
+  ) {
+
+    let p =
+      letter.points[i];
+
+
+    let next =
+      nextPositions[i];
+
+
+    let dx =
+      next.x -
+      p.x;
+
+
+    let dy =
+      next.y -
+      p.y;
+
+
+    // LEFT
+
+    if (dx < 0) {
+
+      let available =
+        p.x -
+        leftBoundary;
+
+
+      if (available <= 0) {
+
+        physicsScale = 0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available / -dx
+          );
+      }
+    }
+
+
+    // RIGHT
+
+    if (dx > 0) {
+
+      let available =
+        rightBoundary -
+        p.x;
+
+
+      if (available <= 0) {
+
+        physicsScale = 0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available / dx
+          );
+      }
+    }
+
+
+    // TOP
+
+    if (dy < 0) {
+
+      let available =
+        p.y -
+        topBoundary;
+
+
+      if (available <= 0) {
+
+        physicsScale = 0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available / -dy
+          );
+      }
+    }
+
+
+    // BOTTOM
+
+    if (dy > 0) {
+
+      let available =
+        bottomBoundary -
+        p.y;
+
+
+      if (available <= 0) {
+
+        physicsScale = 0;
+
+      } else {
+
+        physicsScale =
+          min(
+            physicsScale,
+            available / dy
+          );
+      }
+    }
+  }
+
+
+  physicsScale =
+    constrain(
+      physicsScale,
+      0,
+      1
+    );
+
+
+  // ------------------------------------------------
+  // APPLY PHYSICS
+  // ------------------------------------------------
+
+  for (
+    let i = 0;
+    i < letter.points.length;
+    i++
+  ) {
+
+    let p =
+      letter.points[i];
+
+
+    let next =
+      nextPositions[i];
+
+
+    p.vx =
+      next.vx *
+      physicsScale;
+
+
+    p.vy =
+      next.vy *
+      physicsScale;
+
+
+    p.x +=
+      p.vx;
+
+
+    p.y +=
+      p.vy;
   }
 }
 
@@ -1523,7 +2014,7 @@ function updatePhysics() {
 function drawWord() {
   const ctx = drawingContext;
   ctx.save();
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#000000';
   ctx.beginPath();
   for (const letter of letters) for (const pts of letter.contours) {
     if (!pts.length) continue;
@@ -1549,7 +2040,7 @@ function roundContour(contour) {
   });
   const total=lengths.reduce((a,b)=>a+b,0);
   if (!total) return contour;
-  const count=Math.max(12,Math.ceil(total/2));
+  const count=Math.max(12,Math.ceil(total/4));
   const spacing=total/count;
   let segment=0,start=0;
   for(let i=0;i<count;i++){
@@ -1655,7 +2146,7 @@ function drawNavigation() {
 
   noFill();
 
-  stroke(255);
+  stroke(0);
 
   strokeWeight(1.5);
 
@@ -2318,20 +2809,3 @@ if (
   );
 }
 
-// Preview guide: the same limits used by deformation and physics.
-function drawBoundaryGuide() {
-  const ctx=drawingContext;
-  const left=canvasPaddingX,right=width-canvasPaddingX;
-  const top=canvasPaddingTop,bottom=Math.min(height,getVisibleBottom())-canvasPaddingBottom;
-  ctx.save();
-  ctx.strokeStyle='#ff7070';
-  ctx.lineWidth=1;
-  ctx.setLineDash([6,5]);
-  // Keep the bottom stroke visible when the limit coincides with the canvas edge.
-  ctx.strokeRect(left,top,right-left,Math.min(bottom,height-.5)-top);
-  ctx.setLineDash([]);
-  ctx.fillStyle='#ff7070';
-  ctx.font='11px system-ui';
-  ctx.fillText('DEFORMATION BOUNDARY',left+8,top+17);
-  ctx.restore();
-}
