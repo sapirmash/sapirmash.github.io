@@ -1,0 +1,551 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Assemble — drag test</title><style>html,body{margin:0;overflow:hidden;background:#FFFFFF}canvas{display:block;touch-action:none}button{position:fixed;right:20px;top:20px;background:transparent;color:#000000;border:1px solid #00000050;border-radius:20px;padding:9px 16px;cursor:pointer}</style><script src="assets/p5.min.js"></script></head><body><script>let font;
+
+let letters = [];
+
+let word = "Assemble";
+
+let draggedPoint = null;
+let draggedLetter = null;
+
+let col = "#000000";
+// let col = "#000000";
+
+let fontSize = 280;
+let letterSpacing = 20;
+
+let kerning = {
+  "WA": -30,
+  "AR": -20,
+  "RP": 15
+};
+
+let springK = 0.30;
+let damping = 0.72;
+
+let pullRadius = 70;
+
+
+/* ----------------------------------------
+   SETUP
+---------------------------------------- */
+
+function setup() {
+  pixelDensity(Math.max(2, window.devicePixelRatio || 1));
+  createCanvas(windowWidth, windowHeight);
+  buildWord();
+}
+
+/* ----------------------------------------
+   DRAW
+---------------------------------------- */
+
+function draw() {
+  // background("#F0B6F8");
+  background("#FFFFFF");
+
+  updatePhysics();
+
+  drawWord();
+}
+
+
+/* ----------------------------------------
+   BUILD WORD
+---------------------------------------- */
+
+const svgPaths = ["M55.8356 58.8109H21.5997L13.9641 78.4421H0L31.1235 1.09521H46.0835L77.539 78.4421H63.575L55.8148 58.8109H55.8356ZM51.2915 47.4455L38.3234 12.6879L26.0193 47.4455H51.2708H51.2915Z", "M129.37 61.6832C129.37 72.3874 120.282 78.8967 106.546 78.8967C92.1459 78.8967 82.4976 72.4907 81.3979 60.4847L95.1338 58.7282C95.694 67.4486 102.105 69.1017 107.21 69.1017C112.75 69.1017 116.526 67.4486 116.526 62.9231C116.526 58.0669 113.974 56.4138 104.014 54.6367C88.1829 51.7643 83.8463 45.1517 83.8463 36.328C83.8463 26.1818 92.7062 19.6725 106.442 19.6725C118.85 19.6725 128.498 26.1818 129.702 38.6424L116.402 40.2956C115.634 31.4719 110.862 29.3641 105.654 29.3641C99.1176 29.3641 96.69 31.9058 96.69 35.8734C96.69 40.2956 98.9101 41.9487 109.43 43.9325C125.49 46.9082 129.37 51.8676 129.37 61.7039V61.6832Z", "M183.525 61.6832C183.525 72.3874 174.437 78.8967 160.701 78.8967C146.301 78.8967 136.653 72.4907 135.553 60.4847L149.289 58.7282C149.849 67.4486 156.261 69.1017 161.365 69.1017C166.905 69.1017 170.681 67.4486 170.681 62.9231C170.681 58.0669 168.129 56.4138 158.17 54.6367C142.338 51.7643 138.002 45.1517 138.002 36.328C138.002 26.1818 146.861 19.6725 160.597 19.6725C173.005 19.6725 182.653 26.1818 183.857 38.6424L170.557 40.2956C169.789 31.4719 165.017 29.3641 159.809 29.3641C153.273 29.3641 150.845 31.9058 150.845 35.8734C150.845 40.2956 153.065 41.9487 163.585 43.9325C179.645 46.9082 183.525 51.8676 183.525 61.7039V61.6832Z", "M245.897 51.971H205.685C206.578 62.7785 211.661 68.5232 220.417 68.3992C227.949 68.2959 231.269 65.3202 232.493 58.4596L245.337 60.4434C242.888 71.5815 234.589 78.8554 220.189 78.9794C203.797 79.0827 192.385 67.9446 192.385 49.3053C192.385 31.2033 203.569 19.6312 220.085 19.6312C235.709 19.6312 245.897 29.7774 245.897 45.7717V51.9504V51.971ZM205.893 43.4779H232.929C232.369 34.4269 228.489 29.3642 219.961 29.2402C212.097 29.1369 207.117 33.6624 205.893 43.4779Z", "M335.616 39.4896V78.318H322.544V41.804C322.544 32.3191 318.892 30.2113 313.352 30.2113C306.712 30.2113 302.272 35.0674 302.272 45.5443V78.318H289.2V41.804C289.2 32.3191 285.548 30.2113 280.008 30.2113C273.369 30.2113 268.928 35.0674 268.928 45.5443V78.318H255.856V20.9537H268.928V29.5501C272.02 22.7101 277.352 19.6105 284.988 19.6105C293.64 19.6105 299.16 23.8053 301.276 31.7405C304.16 23.3507 309.908 19.6105 318.332 19.6105C329.515 19.6105 335.616 26.2231 335.616 39.469V39.4896Z", "M402.49 49.2019C402.49 67.18 392.178 78.9793 377.778 78.9793C368.586 78.9793 362.486 74.4538 359.27 66.622V78.3181H346.198V0H359.27V31.8852C362.486 24.1567 368.586 19.6312 377.778 19.6312C392.178 19.6312 402.49 31.3272 402.49 49.2019ZM389.19 49.3259C389.19 36.9686 383.753 30.356 374.354 30.356C364.498 30.356 359.062 36.9686 359.062 49.3259C359.062 61.5799 364.498 68.4198 374.354 68.4198C383.67 68.4198 389.19 61.5799 389.19 49.3259Z", "M411.453 0H424.525V78.3387H411.453V0Z", "M487 51.971H446.789C447.681 62.7785 452.765 68.5232 461.521 68.3992C469.053 68.2959 472.372 65.3202 473.597 58.4596L486.44 60.4434C483.992 71.5815 475.692 78.8554 461.292 78.9794C444.901 79.0827 433.489 67.9446 433.489 49.3053C433.489 30.666 444.672 19.6312 461.189 19.6312C476.813 19.6312 487 29.7774 487 45.7717V51.9504V51.971ZM447.017 43.4779H474.053C473.493 34.4269 469.613 29.3642 461.085 29.2402C453.221 29.1369 448.241 33.6624 447.017 43.4779Z"];
+
+// Sample each original SVG segment separately to preserve its exact corners.
+function sampleSvgPath(data) {
+  const tokens = data.match(/[MLHVCZ]|[-+]?(?:\d*\.)?\d+(?:e[-+]?\d+)?/gi);
+  const contours = [];
+  let contour, x = 0, y = 0, sx = 0, sy = 0, i = 0;
+  const point = (px, py) => ({x:px, y:py, hx:px, hy:py, vx:0, vy:0});
+  const segment = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  while (i < tokens.length) {
+    const command = tokens[i++];
+    if (command === 'M') {
+      x = Number(tokens[i++]); y = Number(tokens[i++]); sx = x; sy = y;
+      contour = [point(x,y)]; contours.push(contour);
+      continue;
+    }
+    let args = [];
+    const count = {L:2, H:1, V:1, C:6, Z:0}[command];
+    if (count === undefined) throw new Error('Unsupported SVG command: ' + command);
+    for (let j=0;j<count;j++) args.push(Number(tokens[i++]));
+    const closing = command === 'Z';
+    segment.setAttribute('d', `M${x} ${y} ` + (closing ? `L${sx} ${sy}` : command + args.join(' ')));
+    const length = segment.getTotalLength();
+    const steps = Math.max(1, Math.ceil(length / 0.45));
+    for (let j=1; j<=steps; j++) {
+      if (closing && j === steps) continue;
+      const p = segment.getPointAtLength(length * j / steps);
+      if (Math.hypot(p.x-contour.at(-1).x,p.y-contour.at(-1).y)>1e-6) contour.push(point(p.x,p.y));
+    }
+    const end = segment.getPointAtLength(length);
+    x = end.x; y = end.y;
+  }
+  return contours;
+}
+
+function buildWord() {
+  draggedPoint = draggedLetter = null;
+  letters = svgPaths.map(data => {
+    const contours = sampleSvgPath(data);
+    return {contours, points:contours.flat()};
+  });
+  fitOutlineToWindow();
+}
+
+function fitOutlineToWindow() {
+  const points = letters.flatMap(letter => letter.points);
+  if (!points.length) return;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const p of points) {
+    minX = Math.min(minX, p.x); maxX = Math.max(maxX, p.x);
+    minY = Math.min(minY, p.y); maxY = Math.max(maxY, p.y);
+  }
+  const outlineWidth = maxX - minX, outlineHeight = maxY - minY;
+  if (outlineWidth <= 0 || outlineHeight <= 0) return;
+  const scale = Math.min(width * 0.70 / outlineWidth, height * 0.74 / outlineHeight);
+  const centerX = (minX + maxX) / 2, centerY = (minY + maxY) / 2;
+  for (const p of points) {
+    p.x = p.hx = (p.x - centerX) * scale + width / 2;
+    p.y = p.hy = (p.y - centerY) * scale + height / 2;
+    p.vx = p.vy = 0;
+  }
+}
+
+
+/* ----------------------------------------
+   BUILD ONE LETTER
+---------------------------------------- */
+
+function buildLetter(
+  char,
+  x,
+  y
+) {
+
+  // p5 2.3.2 native contours
+  let contours =
+    font.textToContours(
+      char,
+      x,
+      y,
+      {
+        sampleFactor: 1.2,
+        simplifyThreshold: 0
+      }
+    );
+
+
+  let processedContours = [];
+
+  let allPoints = [];
+
+
+  for (let contour of contours) {
+
+    let pts = [];
+
+    for (let p of contour) {
+
+      let point = {
+        hx: p.x,
+        hy: p.y,
+
+        x: p.x,
+        y: p.y,
+
+        vx: 0,
+        vy: 0
+      };
+
+      pts.push(point);
+
+      allPoints.push(point);
+    }
+
+    processedContours.push(pts);
+  }
+
+
+  return {
+    char: char,
+
+    contours:
+      processedContours,
+
+    points:
+      allPoints
+  };
+}
+
+
+/* ----------------------------------------
+   PHYSICS
+---------------------------------------- */
+
+function updatePhysics() {
+  deformToward(mouseX, mouseY);
+}
+
+function deformToward(targetX, targetY) {
+  if (!draggedLetter || !draggedPoint) return;
+  const letter = draggedLetter;
+  if (!letter.allowedCrossings) {
+    letter.allowedCrossings = new Set();
+    outlineIsSafe(letter, new Map(letter.points.map(p => [p, {x:p.x,y:p.y}])), true);
+  }
+  const radius = Math.max(1, pullRadius);
+  const anchorX = draggedPoint.x;
+  const anchorY = draggedPoint.y;
+  let dx = targetX - anchorX;
+  let dy = targetY - anchorY;
+  const distance = Math.hypot(dx, dy);
+  if (distance < 0.01) return;
+  // Compose small one-to-one deformations. There is no total drag limit.
+  // Each step's maximum Gaussian slope is safely below one.
+  const step = Math.min(distance * 0.3, radius * 0.18);
+  dx *= step / distance;
+  dy *= step / distance;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const candidate = new Map();
+    for (const p of letter.points) {
+      const d = Math.hypot(p.x - anchorX, p.y - anchorY);
+      const influence = Math.exp(-(d * d) / (2 * radius * radius));
+      candidate.set(p, { x: p.x + dx * influence, y: p.y + dy * influence });
+    }
+    if (outlineIsSafe(letter, candidate)) {
+      for (const p of letter.points) {
+        const next = candidate.get(p);
+        p.x = next.x; p.y = next.y;
+        p.vx = p.vy = 0;
+      }
+      return;
+    }
+    // If a sampled edge would cross another, try a smaller safe step.
+    dx *= 0.5; dy *= 0.5;
+  }
+}
+
+function outlineIsSafe(letter, candidate, recordExisting = false) {
+  const edges = [];
+  const epsilon = 1e-7;
+  for (let ci = 0; ci < letter.contours.length; ci++) {
+    const contour = letter.contours[ci];
+    const points = contour.map(p => candidate.get(p));
+    // Fonts may repeat the first point to close a contour.
+    if (points.length > 1 && Math.hypot(points[0].x - points.at(-1).x,
+        points[0].y - points.at(-1).y) < epsilon) points.pop();
+    if (points.length < 3) continue;
+    for (let i = 0; i < points.length; i++) {
+      const a = points[i], b = points[(i + 1) % points.length];
+      edges.push({ a, b, ci, i, count: points.length,
+        minX: Math.min(a.x,b.x), maxX: Math.max(a.x,b.x),
+        minY: Math.min(a.y,b.y), maxY: Math.max(a.y,b.y) });
+    }
+  }
+  edges.sort((a,b) => a.minX - b.minX);
+  const cross = (a,b,c) => (b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
+  for (let i = 0; i < edges.length; i++) {
+    const a = edges[i];
+    for (let j = i + 1; j < edges.length && edges[j].minX <= a.maxX + epsilon; j++) {
+      const b = edges[j];
+      if (a.ci === b.ci && (Math.abs(a.i-b.i) === 1 || Math.abs(a.i-b.i) === a.count-1)) continue;
+      if (a.maxY < b.minY-epsilon || b.maxY < a.minY-epsilon) continue;
+      const c1=cross(a.a,a.b,b.a), c2=cross(a.a,a.b,b.b);
+      const c3=cross(b.a,b.b,a.a), c4=cross(b.a,b.b,a.b);
+      if (((c1 >= -epsilon && c2 <= epsilon) || (c2 >= -epsilon && c1 <= epsilon)) &&
+          ((c3 >= -epsilon && c4 <= epsilon) || (c4 >= -epsilon && c3 <= epsilon))) {
+        const ids = [a.ci + ":" + a.i, b.ci + ":" + b.i].sort();
+        const key = ids.join("|");
+        if (recordExisting) letter.allowedCrossings.add(key);
+        else if (!letter.allowedCrossings?.has(key)) return false;
+      }
+    }
+  }
+  return true;
+}
+
+
+/* ----------------------------------------
+   SAVE DEFORMATION
+---------------------------------------- */
+
+function commitDeformation() {
+
+  if (!draggedLetter) {
+    return;
+  }
+
+
+  for (
+    let p
+    of draggedLetter.points
+  ) {
+
+    p.hx = p.x;
+    p.hy = p.y;
+
+    p.vx = 0;
+    p.vy = 0;
+  }
+
+
+  draggedLetter.safePull = null;
+  draggedPoint = null;
+  draggedLetter = null;
+}
+
+
+/* ----------------------------------------
+   DRAW
+---------------------------------------- */
+
+function drawWord() {
+
+  noStroke();
+  fill(col);
+
+
+  for (
+    let letter
+    of letters
+  ) {
+
+    drawLetter(letter);
+  }
+}
+
+
+function drawLetter(letter) {
+  const ctx = drawingContext;
+  ctx.beginPath();
+  for (const contour of letter.contours) {
+    if (!contour.length) continue;
+    ctx.moveTo(contour[0].x, contour[0].y);
+    for (let i=1; i<contour.length; i++) ctx.lineTo(contour[i].x, contour[i].y);
+    ctx.closePath();
+  }
+  ctx.fillStyle = col;
+  ctx.fill('evenodd');
+}
+
+/* ----------------------------------------
+   HIT TEST
+---------------------------------------- */
+
+function getPointAt(
+  mx,
+  my
+) {
+
+  let bestPoint = null;
+  let bestLetter = null;
+
+  let bestDistance = 45;
+
+
+  for (
+    let letter
+    of letters
+  ) {
+
+    for (
+      let p
+      of letter.points
+    ) {
+
+      let d =
+        dist(
+          mx,
+          my,
+          p.x,
+          p.y
+        );
+
+
+      if (
+        d <
+        bestDistance
+      ) {
+
+        bestDistance = d;
+
+        bestPoint = p;
+
+        bestLetter =
+          letter;
+      }
+    }
+  }
+
+
+  return {
+    point:
+      bestPoint,
+
+    letter:
+      bestLetter
+  };
+}
+
+
+/* ----------------------------------------
+   MOUSE
+---------------------------------------- */
+
+function mousePressed() {
+
+  let hit =
+    getPointAt(
+      mouseX,
+      mouseY
+    );
+
+
+  draggedPoint =
+    hit.point;
+
+  draggedLetter =
+    hit.letter;
+}
+
+
+function mouseReleased() {
+
+  if (
+    draggedPoint &&
+    draggedLetter
+  ) {
+
+    commitDeformation();
+  }
+}
+
+
+/* ----------------------------------------
+   TOUCH
+---------------------------------------- */
+
+function touchStarted() {
+
+  let hit =
+    getPointAt(
+      mouseX,
+      mouseY
+    );
+
+
+  draggedPoint =
+    hit.point;
+
+  draggedLetter =
+    hit.letter;
+
+
+  return false;
+}
+
+
+function touchEnded() {
+
+  if (
+    draggedPoint &&
+    draggedLetter
+  ) {
+
+    commitDeformation();
+  }
+
+
+  return false;
+}
+
+
+/* ----------------------------------------
+   RESIZE
+---------------------------------------- */
+
+function windowResized() {
+
+  resizeCanvas(
+    windowWidth,
+    windowHeight
+  );
+
+  buildWord();
+}
+
+/* WORD PICKER + CUSTOM TEXT */
+function setWord(value) {
+  const next = value.trim().slice(0, 24);
+  if (!next || !font) return;
+  word = next;
+  buildWord();
+}
+
+function createWordControls() {
+  const panel = document.createElement("form");
+  panel.style.cssText = "position:fixed;top:20px;left:20px;right:20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:14px sans-serif;color:#000000;z-index:10";
+  const picker = document.createElement("select");
+  picker.setAttribute("aria-label", "Choose a word");
+  ["melt", "flow", "soft", "drip", "morph", "stretch", "bloom", "dream"].forEach(value => {
+    const option = document.createElement("option");
+    option.value = option.textContent = value;
+    picker.appendChild(option);
+  });
+  const input = document.createElement("input");
+  input.placeholder = "Type your own word";
+  input.setAttribute("aria-label", "Custom word");
+  input.maxLength = 24;
+  const apply = document.createElement("button");
+  apply.type = "submit";
+  apply.textContent = "Apply";
+  const reset = document.createElement("button");
+  reset.type = "button";
+  reset.textContent = "Reset shape";
+  const hint = document.createElement("span");
+  hint.textContent = "Drag letter edges to reshape them.";
+  [picker, input, apply, reset].forEach(el => {
+    el.style.cssText = "font:inherit;color:inherit;background:#fff8;border:1px solid #00000040;border-radius:8px;padding:10px 12px;max-width:100%;box-sizing:border-box";
+    panel.appendChild(el);
+  });
+  panel.appendChild(hint);
+  picker.addEventListener("change", () => { input.value = picker.value; setWord(picker.value); });
+  panel.addEventListener("submit", event => { event.preventDefault(); setWord(input.value); });
+  reset.addEventListener("click", () => buildWord());
+  ["pointerdown", "mousedown", "touchstart", "touchend"].forEach(type =>
+    panel.addEventListener(type, event => event.stopPropagation()));
+  document.body.style.margin = "0";
+  document.body.style.overflow = "hidden";
+  document.body.appendChild(panel);
+}
+
+function sculptM() {
+  const letter = letters[0];
+  if (!letter) return;
+  const xs = letter.points.map(p => p.x), ys = letter.points.map(p => p.y);
+  const left = Math.min(...xs), right = Math.max(...xs);
+  const top = Math.min(...ys), bottom = Math.max(...ys);
+  const w = right-left, h = bottom-top;
+  const gestures = [
+    [left+w*.12,top,Math.max(55,left-w*.5),Math.max(70,top-h*.38)],
+    [right-w*.12,top,Math.min(width-65,right+w*.4),Math.max(65,top-h*.27)],
+    [left+w*.12,bottom,Math.max(55,left-w*.45),Math.min(height-65,bottom+h*.32)],
+    [right-w*.12,bottom,Math.min(width-65,right+w*.38),Math.min(height-65,bottom+h*.36)],
+    [left+w*.5,top+h*.68,left+w*.3,bottom+h*.12],
+    [left+w*.07,top+h*.42,left+w*.37,top+h*.3],
+    [right-w*.06,top+h*.44,right-w*.34,top+h*.6]
+  ];
+  for (const [sx,sy,tx,ty] of gestures) {
+    draggedLetter = letter;
+    draggedPoint = letter.points.reduce((a,b) =>
+      Math.hypot(a.x-sx,a.y-sy) < Math.hypot(b.x-sx,b.y-sy) ? a : b);
+    for(let i=0;i<80;i++) deformToward(tx,ty);
+    commitDeformation();
+  }
+}
+</script></body></html>
